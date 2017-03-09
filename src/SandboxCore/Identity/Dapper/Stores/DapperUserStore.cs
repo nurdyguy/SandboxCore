@@ -14,6 +14,34 @@ using SandboxCore.Identity.Dapper.Repositories.Contracts;
 
 namespace SandboxCore.Identity.Dapper.Stores
 {
+    public class DapperUserStore<TUser, TKey, TUserRole, TRoleClaim> : 
+                            DapperUserStore<TUser, TKey, TUserRole, TRoleClaim, 
+                                            DapperIdentityUserClaim<TKey>, DapperIdentityUserLogin<TKey>, DapperIdentityRole<TKey, TUserRole, TRoleClaim>>,
+                            IUserStore<TUser>,
+                            IUserLoginStore<TUser>,
+                            IUserRoleStore<TUser>,
+                            IUserClaimStore<TUser>,
+                            IUserPasswordStore<TUser>,
+                            IUserSecurityStampStore<TUser>,
+                            IUserEmailStore<TUser>,
+                            IUserLockoutStore<TUser>,
+                            IUserPhoneNumberStore<TUser>,
+                            IQueryableUserStore<TUser>,
+                            IUserTwoFactorStore<TUser>,
+                            IUserAuthenticationTokenStore<TUser>
+        where TUser : DapperIdentityUser<TKey, DapperIdentityUserClaim<TKey>, TUserRole, DapperIdentityUserLogin<TKey>>
+        where TKey : IEquatable<TKey>
+        where TUserRole : DapperIdentityUserRole<TKey>
+        where TRoleClaim : DapperIdentityRoleClaim<TKey>
+    {
+        
+        public DapperUserStore(IConnectionProvider connProv,
+                               ILogger<DapperUserStore<TUser, TKey, TUserRole, TRoleClaim>> log,
+                               IUserRepository<TUser, TKey, TUserRole, TRoleClaim> roleRepo) : base(connProv, log, roleRepo)
+        {
+        }
+    }
+
     public class DapperUserStore<TUser, TKey, TUserRole, TRoleClaim, TUserClaim, TUserLogin, TRole> :
                                                                         IUserStore<TUser>,
                                                                         IUserLoginStore<TUser>,
@@ -33,7 +61,7 @@ namespace SandboxCore.Identity.Dapper.Stores
         where TRoleClaim : DapperIdentityRoleClaim<TKey>
         where TUserClaim : DapperIdentityUserClaim<TKey>
         where TUserLogin : DapperIdentityUserLogin<TKey>
-        where TRole      : DapperIdentityRole<TKey, TUserRole, TRoleClaim>
+        where TRole : DapperIdentityRole<TKey, TUserRole, TRoleClaim>
     {
         private DbTransaction _transaction;
         private DbConnection _connection;

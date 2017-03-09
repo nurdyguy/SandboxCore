@@ -11,7 +11,8 @@ using SandboxCore.Identity.Dapper.Repositories.Contracts;
 
 namespace SandboxCore.Identity.Dapper.Stores
 {
-    public class DapperRoleStore<TRole, TKey, TUserRole, TRoleClaim> : IRoleStore<TRole>
+    public class DapperRoleStore<TRole, TKey, TUserRole, TRoleClaim>
+        : IRoleStore<TRole>
         where TRole : DapperIdentityRole<TKey, TUserRole, TRoleClaim>
         where TKey : IEquatable<TKey>
         where TUserRole : DapperIdentityUserRole<TKey>
@@ -26,6 +27,8 @@ namespace SandboxCore.Identity.Dapper.Stores
             _roleRepository = roleRepo;
             _log = log;
         }
+
+
 
         public async Task<IdentityResult> CreateAsync(TRole role, CancellationToken cancellationToken)
         {

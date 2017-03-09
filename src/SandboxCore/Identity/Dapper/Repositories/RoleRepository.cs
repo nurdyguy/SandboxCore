@@ -28,6 +28,7 @@ namespace SandboxCore.Identity.Dapper.Repositories
         private readonly IConnectionProvider _connectionProvider;
         private readonly ILogger<RoleRepository<TRole, TKey, TUserRole, TRoleClaim>> _log;
         private readonly SqlConfiguration _sqlConfiguration;
+
         public RoleRepository(IConnectionProvider connProv, ILogger<RoleRepository<TRole, TKey, TUserRole, TRoleClaim>> log, SqlConfiguration sqlConf)
         {
             _connectionProvider = connProv;

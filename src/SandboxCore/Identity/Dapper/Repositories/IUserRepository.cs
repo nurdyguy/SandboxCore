@@ -9,6 +9,17 @@ using Identity.Dapper.Entities;
 
 namespace SandboxCore.Identity.Dapper.Repositories.Contracts
 {
+    public interface IUserRepository<TUser, TKey, TUserRole, TRoleClaim>
+                            : IUserRepository<TUser, TKey, TUserRole, TRoleClaim, 
+                                DapperIdentityUserClaim<TKey>, DapperIdentityUserLogin<TKey>,
+                                DapperIdentityRole<TKey, TUserRole, TRoleClaim>>
+        where TUser : DapperIdentityUser<TKey, DapperIdentityUserClaim<TKey>, TUserRole, DapperIdentityUserLogin<TKey>>
+        where TKey : IEquatable<TKey>
+        where TUserRole : DapperIdentityUserRole<TKey>
+        where TRoleClaim : DapperIdentityRoleClaim<TKey>
+    {
+    }
+
     public interface IUserRepository<TUser, TKey, TUserRole, TRoleClaim, TUserClaim, TUserLogin, TRole>
         where TUser : DapperIdentityUser<TKey, TUserClaim, TUserRole, TUserLogin>
         where TKey : IEquatable<TKey>
@@ -16,7 +27,7 @@ namespace SandboxCore.Identity.Dapper.Repositories.Contracts
         where TRoleClaim : DapperIdentityRoleClaim<TKey>
         where TUserClaim : DapperIdentityUserClaim<TKey>
         where TUserLogin : DapperIdentityUserLogin<TKey>
-        where TRole      : DapperIdentityRole<TKey, TUserRole, TRoleClaim>
+        where TRole : DapperIdentityRole<TKey, TUserRole, TRoleClaim>
     {
         Task<TKey> Insert(TUser user, CancellationToken cancellationToken, DbTransaction transaction = null);
         Task<bool> Remove(TKey id, CancellationToken cancellationToken, DbTransaction transaction = null);
