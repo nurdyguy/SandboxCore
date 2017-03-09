@@ -8,10 +8,17 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-
-using SandboxCore.Models;
-using SandboxCore.Services;
 using Microsoft.AspNetCore.Identity;
+
+using Identity.Dapper.SqlServer;
+using Identity.Dapper;
+using Identity.Dapper.Entities;
+using Identity.Dapper.Stores;
+
+using SandboxCore.Identity.Models;
+using SandboxCore.Services;
+using SandboxCore.Identity.Stores;
+using SandboxCore.Identity.Dapper.SqlServer;
 
 namespace SandboxCore
 {
@@ -46,13 +53,22 @@ namespace SandboxCore
             services.AddApplicationInsightsTelemetry(Configuration);
 
 
-            services.AddSingleton<IUserStore<ApplicationUser>, ExampleUserStore>();
-            services.AddSingleton<IRoleStore<ApplicationRole>, ExampleRoleStore>();
+            services.AddSingleton<IUserStore, UserStore>();
+            services.AddSingleton<IRoleStore, RoleStore>();
 
+            //services.AddSingleton<IUserStore<DapperIdentityUser<int>>, DapperUserStore<DapperIdentityUser<int>, int, DapperIdentityUserRole<int>, DapperIdentityRoleClaim<int>>>();
+            //services.AddSingleton<IRoleStore<DapperIdentityRole<int>>, DapperRoleStore<DapperIdentityRole<int>, int, DapperIdentityUserRole<int>, DapperIdentityRoleClaim<int>>>();
 
-            services.AddIdentity<ApplicationUser, ApplicationRole>()
-                .AddDefaultTokenProviders();
+            services.ConfigureSandboxCoreDapperSqlServerConnectionProvider(Configuration.GetSection("DapperIdentity"))
+                .ConfigureDapperIdentityCryptography(Configuration.GetSection("DapperIdentityCryptography"));
 
+            services.AddIdentity<User, Role>()
+                    .AddSandboxCoreDapperIdentityForSqlServer<int, UserRole, RoleClaim, UserClaim, UserLogin>()
+                    .AddDefaultTokenProviders();
+
+            //services.AddIdentity<DapperIdentityUser<int>, DapperIdentityRole<int>>()
+            //        .AddDapperIdentityForSqlServer()
+            //        .AddDefaultTokenProviders();
 
             services.AddMvc();
 
