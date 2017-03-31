@@ -1,7 +1,7 @@
 {
   "runtimeTarget": {
     "name": ".NETCoreApp,Version=v1.0/",
-    "signature": "39689cede1bd9bcc1b189792b5eed2f57e753aae"
+    "signature": "dc104612b666a80800dc133ee373e61e08929565"
   },
   "compilationOptions": {
     "defines": [
@@ -34,11 +34,26 @@
           "Microsoft.Extensions.Logging.Debug": "1.0.0",
           "Microsoft.Extensions.Options.ConfigurationExtensions": "1.1.0",
           "Microsoft.VisualStudio.Web.BrowserLink.Loader": "14.0.0",
-          "Identity.Dapper": "0.4.0-alpha",
-          "Identity.Dapper.SqlServer": "0.4.0-alpha"
+          "AutoMapper": "5.2.0",
+          "Identity.Dapper": "1.0.0",
+          "Identity.Dapper.SqlServer": "1.0.0",
+          "Microsoft.Extensions.Caching.Memory": "1.1.0"
         },
         "compile": {
           "SandboxCore.dll": {}
+        }
+      },
+      "AutoMapper/5.2.0": {
+        "dependencies": {
+          "Microsoft.CSharp": "4.3.0",
+          "NETStandard.Library": "1.6.1",
+          "System.Collections.Specialized": "4.3.0",
+          "System.ComponentModel.TypeConverter": "4.3.0",
+          "System.Dynamic.Runtime": "4.3.0",
+          "System.Linq.Queryable": "4.0.1"
+        },
+        "compile": {
+          "lib/netstandard1.3/AutoMapper.dll": {}
         }
       },
       "Dapper/1.50.2": {
@@ -64,34 +79,6 @@
         },
         "compile": {
           "lib/netstandard1.3/Dapper.dll": {}
-        }
-      },
-      "Identity.Dapper/0.4.0-alpha": {
-        "dependencies": {
-          "Dapper": "1.50.2",
-          "Microsoft.AspNetCore.Identity": "1.1.0",
-          "Microsoft.CSharp": "4.3.0",
-          "Microsoft.Extensions.Options.ConfigurationExtensions": "1.1.0",
-          "NETStandard.Library": "1.6.1",
-          "System.Data.Common": "4.3.0",
-          "System.Reflection": "4.3.0",
-          "System.Security.Cryptography.Algorithms": "4.3.0"
-        },
-        "compile": {
-          "lib/netstandard1.6/Identity.Dapper.dll": {}
-        }
-      },
-      "Identity.Dapper.SqlServer/0.4.0-alpha": {
-        "dependencies": {
-          "Identity.Dapper": "0.4.0-alpha",
-          "Microsoft.Extensions.Configuration": "1.1.0",
-          "Microsoft.Extensions.Configuration.Json": "1.1.0",
-          "Microsoft.Extensions.Configuration.UserSecrets": "1.1.0",
-          "NETStandard.Library": "1.6.1",
-          "System.Data.SqlClient": "4.3.0"
-        },
-        "compile": {
-          "lib/netstandard1.6/Identity.Dapper.SqlServer.dll": {}
         }
       },
       "Libuv/1.9.0": {
@@ -437,7 +424,7 @@
           "Microsoft.AspNetCore.Mvc.Razor": "1.0.1",
           "Microsoft.AspNetCore.Mvc.TagHelpers": "1.0.1",
           "Microsoft.AspNetCore.Mvc.ViewFeatures": "1.0.1",
-          "Microsoft.Extensions.Caching.Memory": "1.0.0",
+          "Microsoft.Extensions.Caching.Memory": "1.1.0",
           "Microsoft.Extensions.DependencyInjection": "1.0.0"
         },
         "compile": {
@@ -539,7 +526,7 @@
       "Microsoft.AspNetCore.Mvc.Razor.Host/1.0.1": {
         "dependencies": {
           "Microsoft.AspNetCore.Razor.Runtime": "1.0.0",
-          "Microsoft.Extensions.Caching.Memory": "1.0.0",
+          "Microsoft.Extensions.Caching.Memory": "1.1.0",
           "Microsoft.Extensions.FileProviders.Physical": "1.1.0",
           "System.Collections.Concurrent": "4.3.0",
           "System.ComponentModel.TypeConverter": "4.3.0",
@@ -553,7 +540,7 @@
       "Microsoft.AspNetCore.Mvc.TagHelpers/1.0.1": {
         "dependencies": {
           "Microsoft.AspNetCore.Mvc.Razor": "1.0.1",
-          "Microsoft.Extensions.Caching.Memory": "1.0.0",
+          "Microsoft.Extensions.Caching.Memory": "1.1.0",
           "Microsoft.Extensions.FileSystemGlobbing": "1.1.0",
           "Microsoft.Extensions.Primitives": "1.1.0"
         },
@@ -797,24 +784,21 @@
           "lib/netstandard1.3/Microsoft.DotNet.InternalAbstractions.dll": {}
         }
       },
-      "Microsoft.Extensions.Caching.Abstractions/1.0.0": {
+      "Microsoft.Extensions.Caching.Abstractions/1.1.0": {
         "dependencies": {
           "Microsoft.Extensions.Primitives": "1.1.0",
-          "System.Collections": "4.3.0",
-          "System.Threading": "4.3.0",
-          "System.Threading.Tasks": "4.3.0"
+          "NETStandard.Library": "1.6.1"
         },
         "compile": {
           "lib/netstandard1.0/Microsoft.Extensions.Caching.Abstractions.dll": {}
         }
       },
-      "Microsoft.Extensions.Caching.Memory/1.0.0": {
+      "Microsoft.Extensions.Caching.Memory/1.1.0": {
         "dependencies": {
-          "Microsoft.Extensions.Caching.Abstractions": "1.0.0",
+          "Microsoft.Extensions.Caching.Abstractions": "1.1.0",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "1.1.0",
           "Microsoft.Extensions.Options": "1.1.0",
-          "System.Linq": "4.3.0",
-          "System.Threading": "4.3.0"
+          "NETStandard.Library": "1.6.1"
         },
         "compile": {
           "lib/netstandard1.3/Microsoft.Extensions.Caching.Memory.dll": {}
@@ -1474,6 +1458,9 @@
           "System.Runtime": "4.3.0",
           "System.Runtime.Extensions": "4.3.0",
           "System.Threading": "4.3.0"
+        },
+        "compile": {
+          "ref/netstandard1.3/System.Collections.Specialized.dll": {}
         }
       },
       "System.ComponentModel/4.3.0": {
@@ -2817,6 +2804,34 @@
           "System.Xml.XDocument": "4.3.0",
           "System.Xml.XPath": "4.0.1"
         }
+      },
+      "Identity.Dapper/1.0.0": {
+        "dependencies": {
+          "Dapper": "1.50.2",
+          "Microsoft.AspNetCore.Identity": "1.1.0",
+          "Microsoft.CSharp": "4.3.0",
+          "Microsoft.Extensions.Options.ConfigurationExtensions": "1.1.0",
+          "NETStandard.Library": "1.6.1",
+          "System.Data.Common": "4.3.0",
+          "System.Reflection": "4.3.0",
+          "System.Security.Cryptography.Algorithms": "4.3.0"
+        },
+        "compile": {
+          "Identity.Dapper.dll": {}
+        }
+      },
+      "Identity.Dapper.SqlServer/1.0.0": {
+        "dependencies": {
+          "Identity.Dapper": "1.0.0",
+          "Microsoft.Extensions.Configuration": "1.1.0",
+          "Microsoft.Extensions.Configuration.Json": "1.1.0",
+          "Microsoft.Extensions.Configuration.UserSecrets": "1.1.0",
+          "NETStandard.Library": "1.6.1",
+          "System.Data.SqlClient": "4.3.0"
+        },
+        "compile": {
+          "Identity.Dapper.SqlServer.dll": {}
+        }
       }
     },
     ".NETCoreApp,Version=v1.0/": {
@@ -2840,11 +2855,26 @@
           "Microsoft.Extensions.Logging.Debug": "1.0.0",
           "Microsoft.Extensions.Options.ConfigurationExtensions": "1.1.0",
           "Microsoft.VisualStudio.Web.BrowserLink.Loader": "14.0.0",
-          "Identity.Dapper": "0.4.0-alpha",
-          "Identity.Dapper.SqlServer": "0.4.0-alpha"
+          "AutoMapper": "5.2.0",
+          "Identity.Dapper": "1.0.0",
+          "Identity.Dapper.SqlServer": "1.0.0",
+          "Microsoft.Extensions.Caching.Memory": "1.1.0"
         },
         "runtime": {
           "SandboxCore.dll": {}
+        }
+      },
+      "AutoMapper/5.2.0": {
+        "dependencies": {
+          "Microsoft.CSharp": "4.3.0",
+          "NETStandard.Library": "1.6.1",
+          "System.Collections.Specialized": "4.3.0",
+          "System.ComponentModel.TypeConverter": "4.3.0",
+          "System.Dynamic.Runtime": "4.3.0",
+          "System.Linq.Queryable": "4.0.1"
+        },
+        "runtime": {
+          "lib/netstandard1.3/AutoMapper.dll": {}
         }
       },
       "Dapper/1.50.2": {
@@ -2870,34 +2900,6 @@
         },
         "runtime": {
           "lib/netstandard1.3/Dapper.dll": {}
-        }
-      },
-      "Identity.Dapper/0.4.0-alpha": {
-        "dependencies": {
-          "Dapper": "1.50.2",
-          "Microsoft.AspNetCore.Identity": "1.1.0",
-          "Microsoft.CSharp": "4.3.0",
-          "Microsoft.Extensions.Options.ConfigurationExtensions": "1.1.0",
-          "NETStandard.Library": "1.6.1",
-          "System.Data.Common": "4.3.0",
-          "System.Reflection": "4.3.0",
-          "System.Security.Cryptography.Algorithms": "4.3.0"
-        },
-        "runtime": {
-          "lib/netstandard1.6/Identity.Dapper.dll": {}
-        }
-      },
-      "Identity.Dapper.SqlServer/0.4.0-alpha": {
-        "dependencies": {
-          "Identity.Dapper": "0.4.0-alpha",
-          "Microsoft.Extensions.Configuration": "1.1.0",
-          "Microsoft.Extensions.Configuration.Json": "1.1.0",
-          "Microsoft.Extensions.Configuration.UserSecrets": "1.1.0",
-          "NETStandard.Library": "1.6.1",
-          "System.Data.SqlClient": "4.3.0"
-        },
-        "runtime": {
-          "lib/netstandard1.6/Identity.Dapper.SqlServer.dll": {}
         }
       },
       "Libuv/1.9.0": {
@@ -3243,7 +3245,7 @@
           "Microsoft.AspNetCore.Mvc.Razor": "1.0.1",
           "Microsoft.AspNetCore.Mvc.TagHelpers": "1.0.1",
           "Microsoft.AspNetCore.Mvc.ViewFeatures": "1.0.1",
-          "Microsoft.Extensions.Caching.Memory": "1.0.0",
+          "Microsoft.Extensions.Caching.Memory": "1.1.0",
           "Microsoft.Extensions.DependencyInjection": "1.0.0"
         },
         "runtime": {
@@ -3345,7 +3347,7 @@
       "Microsoft.AspNetCore.Mvc.Razor.Host/1.0.1": {
         "dependencies": {
           "Microsoft.AspNetCore.Razor.Runtime": "1.0.0",
-          "Microsoft.Extensions.Caching.Memory": "1.0.0",
+          "Microsoft.Extensions.Caching.Memory": "1.1.0",
           "Microsoft.Extensions.FileProviders.Physical": "1.1.0",
           "System.Collections.Concurrent": "4.3.0",
           "System.ComponentModel.TypeConverter": "4.3.0",
@@ -3359,7 +3361,7 @@
       "Microsoft.AspNetCore.Mvc.TagHelpers/1.0.1": {
         "dependencies": {
           "Microsoft.AspNetCore.Mvc.Razor": "1.0.1",
-          "Microsoft.Extensions.Caching.Memory": "1.0.0",
+          "Microsoft.Extensions.Caching.Memory": "1.1.0",
           "Microsoft.Extensions.FileSystemGlobbing": "1.1.0",
           "Microsoft.Extensions.Primitives": "1.1.0"
         },
@@ -3606,24 +3608,21 @@
           "lib/netstandard1.3/Microsoft.DotNet.InternalAbstractions.dll": {}
         }
       },
-      "Microsoft.Extensions.Caching.Abstractions/1.0.0": {
+      "Microsoft.Extensions.Caching.Abstractions/1.1.0": {
         "dependencies": {
           "Microsoft.Extensions.Primitives": "1.1.0",
-          "System.Collections": "4.3.0",
-          "System.Threading": "4.3.0",
-          "System.Threading.Tasks": "4.3.0"
+          "NETStandard.Library": "1.6.1"
         },
         "runtime": {
           "lib/netstandard1.0/Microsoft.Extensions.Caching.Abstractions.dll": {}
         }
       },
-      "Microsoft.Extensions.Caching.Memory/1.0.0": {
+      "Microsoft.Extensions.Caching.Memory/1.1.0": {
         "dependencies": {
-          "Microsoft.Extensions.Caching.Abstractions": "1.0.0",
+          "Microsoft.Extensions.Caching.Abstractions": "1.1.0",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "1.1.0",
           "Microsoft.Extensions.Options": "1.1.0",
-          "System.Linq": "4.3.0",
-          "System.Threading": "4.3.0"
+          "NETStandard.Library": "1.6.1"
         },
         "runtime": {
           "lib/netstandard1.3/Microsoft.Extensions.Caching.Memory.dll": {}
@@ -5521,6 +5520,34 @@
         "runtime": {
           "lib/netstandard1.3/System.Xml.XPath.XDocument.dll": {}
         }
+      },
+      "Identity.Dapper/1.0.0": {
+        "dependencies": {
+          "Dapper": "1.50.2",
+          "Microsoft.AspNetCore.Identity": "1.1.0",
+          "Microsoft.CSharp": "4.3.0",
+          "Microsoft.Extensions.Options.ConfigurationExtensions": "1.1.0",
+          "NETStandard.Library": "1.6.1",
+          "System.Data.Common": "4.3.0",
+          "System.Reflection": "4.3.0",
+          "System.Security.Cryptography.Algorithms": "4.3.0"
+        },
+        "runtime": {
+          "Identity.Dapper.dll": {}
+        }
+      },
+      "Identity.Dapper.SqlServer/1.0.0": {
+        "dependencies": {
+          "Identity.Dapper": "1.0.0",
+          "Microsoft.Extensions.Configuration": "1.1.0",
+          "Microsoft.Extensions.Configuration.Json": "1.1.0",
+          "Microsoft.Extensions.Configuration.UserSecrets": "1.1.0",
+          "NETStandard.Library": "1.6.1",
+          "System.Data.SqlClient": "4.3.0"
+        },
+        "runtime": {
+          "Identity.Dapper.SqlServer.dll": {}
+        }
       }
     }
   },
@@ -5530,20 +5557,15 @@
       "serviceable": false,
       "sha512": ""
     },
+    "AutoMapper/5.2.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ulUMmzFg1vAFMpTyJsplgnC7pOIFlb25dbldHd7J4eroQWjSV4iAoOQ33h1oMjf6mLo3uZ8aRNUN2rgpOeSE1w=="
+    },
     "Dapper/1.50.2": {
       "type": "package",
       "serviceable": true,
       "sha512": "sha512-PhxIV8TI/5aYdLT4epuIZB+Evf0sv9gcQDpFGa04fSKDfNQIChRq0sKUgQbfpFWbuDW/UDDuiL3Grkhp/cvYrA=="
-    },
-    "Identity.Dapper/0.4.0-alpha": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-daRmRBHPKzDzvyEZz5ZYCgunue1Pc9ubnAb89bxU0ceZT2H3AFdswW2ncOKaq5uJ6GrOyiQLV981Tbwqql10ow=="
-    },
-    "Identity.Dapper.SqlServer/0.4.0-alpha": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-C8JaEZVkiqw49j+1zvQMIR6Bh7rGEFDL8m5Ar4wJbMBr7syvKNXott1oavecwRh3QQshZiOFJBv6mxGVGTtvzw=="
     },
     "Libuv/1.9.0": {
       "type": "package",
@@ -5805,15 +5827,15 @@
       "serviceable": true,
       "sha512": "sha512-AAguUq7YyKk3yDWPoWA8DrLZvURxB/LrDdTn1h5lmPeznkFUpfC3p459w5mQYQE0qpquf/CkSQZ0etiV5vRHFA=="
     },
-    "Microsoft.Extensions.Caching.Abstractions/1.0.0": {
+    "Microsoft.Extensions.Caching.Abstractions/1.1.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-IxlFDVOchL6tdR05bk7EiJvMtvZrVkZXBhkbXqc3GxOHOrHFGcN+92WoWFPeBpdpy8ot/Px5ZdXzt7k+2n1Bdg=="
+      "sha512": "sha512-uMbUDz/lNoO9LGc+DSjKMLWJk+y4qX6syDRcmQC0w6LSQzizkRqmo5Y8jO0ePtZRjF2lSGgO5URt4YgB6STDBQ=="
     },
-    "Microsoft.Extensions.Caching.Memory/1.0.0": {
+    "Microsoft.Extensions.Caching.Memory/1.1.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-6+7zTufCnZ+tfrUo7RbIRR3LB0BxwOwxfXuo0IbLyIvgoToGpWuz5wYEDfCYNOvpig9tY8FA0I1uRHYmITMXMQ=="
+      "sha512": "sha512-ihFzFRKf/LrXHIvn0wDDt6oLxaAjsCPfrIzV9CLrTURD7qT+HujJ0TaRfC91e6tB8OAgkzY4AsHRBNq8KzrQQQ=="
     },
     "Microsoft.Extensions.Configuration/1.1.0": {
       "type": "package",
@@ -6624,6 +6646,16 @@
       "type": "package",
       "serviceable": true,
       "sha512": "sha512-FLhdYJx4331oGovQypQ8JIw2kEmNzCsjVOVYY/16kZTUoquZG85oVn7yUhBE2OZt1yGPSXAL0HTEfzjlbNpM7Q=="
+    },
+    "Identity.Dapper/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Identity.Dapper.SqlServer/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
     }
   }
 }

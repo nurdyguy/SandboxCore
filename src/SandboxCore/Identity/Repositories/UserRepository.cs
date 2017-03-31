@@ -2,17 +2,23 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
+using System.Threading;
+using System.Data.Common;
+using System.Text;
 using Microsoft.Extensions.Logging;
 
-using Identity.Dapper.Entities;
-using Identity.Dapper.Connections;
-using Identity.Dapper.Models;
+using Dapper;
+using SandboxCore.Identity.Dapper;
+using SandboxCore.Identity.Dapper.Entities;
+using SandboxCore.Identity.Dapper.Connections;
+using SandboxCore.Identity.Dapper.Models;
 
 using SandboxCore.Identity.Models;
 using SandboxCore.Identity.Repositories.Contracts;
 
 using SandboxCore.Identity.Dapper.Repositories;
+
+
 
 namespace SandboxCore.Identity.Repositories
 {
@@ -28,7 +34,7 @@ namespace SandboxCore.Identity.Repositories
                               SqlConfiguration sqlConf,
                               IRoleRepository roleRepo
                             )
-                : base(connProv, log, sqlConf, roleRepo)//  as SandboxCore.Identity.Dapper.Repositories.Contracts.IRoleRepository<DapperIdentityRole<int, UserRole, RoleClaim>, int, UserRole, RoleClaim>)
+                : base(connProv, log, sqlConf, roleRepo)
         {
             _connectionProvider = connProv;
             _log = log;
@@ -40,5 +46,30 @@ namespace SandboxCore.Identity.Repositories
         {
             _roleRepository.GetById(1);
         }
+
+        public async Task<IEnumerable<User>> GetAllUsersWithoutRoles()
+        {
+            try
+            {
+                using (var conn = _connectionProvider.Create())
+                {
+                    const string query = @"
+                        Select t1.* 
+                        From [Users] t1
+                            left Join [UserRoles] t2 on t1.Id = t2.UserId 
+                        Where 
+                            t2.UserId is null";
+                    var users = await conn.QueryAsync<User>(query);
+                    return users;
+                }
+            }
+            catch (Exception ex)
+            {
+                _log.LogError(new EventId(15), ex.Message, ex);
+
+                return null;
+            }
+        }
+
     }
 }

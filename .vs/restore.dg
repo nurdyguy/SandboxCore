@@ -1,1 +1,4 @@
 #:C:\DevWork\SandboxCore\src\SandboxCore\SandboxCore.xproj
+C:\DevWork\SandboxCore\src\SandboxCore\SandboxCore.xproj|C:\DevWork\SandboxCore\src\Identity.Dapper\Identity.Dapper.xproj
+C:\DevWork\SandboxCore\src\SandboxCore\SandboxCore.xproj|C:\DevWork\SandboxCore\src\Identity.Dapper.SqlServer\Identity.Dapper.SqlServer.xproj
+C:\DevWork\SandboxCore\src\Identity.Dapper.SqlServer\Identity.Dapper.SqlServer.xproj|C:\DevWork\SandboxCore\src\Identity.Dapper\Identity.Dapper.xproj

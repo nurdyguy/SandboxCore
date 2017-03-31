@@ -1,4 +1,7 @@
-﻿@{
+﻿
+@using SandboxCore.Authorization;
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
@@ -102,7 +105,54 @@
         <h2>Run & Deploy</h2>
         <ul>
             <li><a href="http://go.microsoft.com/fwlink/?LinkID=517851">Run your app</a></li>
+            <li><a href="http://go.microsoft.com/fwlink/?LinkID=517853">Run tools such as EF migrations and more</a></li>
             <li><a href="http://go.microsoft.com/fwlink/?LinkID=398609">Publish to Microsoft Azure Web Apps</a></li>
         </ul>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-3">
+        <h2>Owner</h2>
+        @if (User.IsOwner())
+        {
+            <div style="width:200px;height:200px;background-color:green;"></div>
+        }
+        else
+        {
+            <div style="width:200px;height:200px;background-color:red;"></div>
+        }
+    </div>
+    <div class="col-md-3">
+        <h2>Admin</h2>
+        @if (User.IsAdmin())
+        {
+            <div style="width:200px;height:200px;background-color:green;"></div>
+        }
+        else
+        {
+            <div style="width:200px;height:200px;background-color:red;"></div>
+        }
+    </div>
+    <div class="col-md-3">
+        <h2>User</h2>
+        @if (User.IsUser())
+        {
+            <div style="width:200px;height:200px;background-color:green;"></div>
+        }
+        else
+        {
+            <div style="width:200px;height:200px;background-color:red;"></div>
+        }
+    </div>
+    <div class="col-md-3">
+        <h2>Authenticated</h2>
+        @if (User.Identity.IsAuthenticated)
+        {
+            <div style="width:200px;height:200px;background-color:green;"></div>
+        }
+        else
+        {
+            <div style="width:200px;height:200px;background-color:red;"></div>
+        }
     </div>
 </div>

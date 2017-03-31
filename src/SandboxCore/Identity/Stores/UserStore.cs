@@ -1,37 +1,50 @@
-﻿using Identity.Dapper.Entities;
+﻿using SandboxCore.Identity.Dapper.Entities;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Identity.Dapper.Connections;
+using SandboxCore.Identity.Dapper.Connections;
 
 using Microsoft.Extensions.Logging;
 
 using SandboxCore.Identity.Dapper.Stores;
 using SandboxCore.Identity.Models;
 using SandboxCore.Identity.Repositories.Contracts;
+using System.Data.Common;
 
 namespace SandboxCore.Identity.Stores
 {
     public class UserStore : DapperUserStore<User, int, UserRole, RoleClaim, UserClaim, UserLogin, Role>, IUserStore                            
     {
-        //private DbTransaction _transaction;
-        //private DbConnection _connection;
+        private DbTransaction _transaction;
+        private DbConnection _connection;
 
         private readonly IConnectionProvider _connectionProvider;
         private readonly ILogger<UserStore> _log;
-        private readonly IUserRepository _userRepository;
+        private readonly IUserRepository _userRepo;
+        private readonly SandboxCore.Identity.Dapper.UnitOfWork.Contracts.IUnitOfWork _unitOfWork;
+        private readonly SandboxCore.Identity.Dapper.Models.DapperIdentityOptions _dapperIdentityOptions;
 
         public UserStore(IConnectionProvider connProv, 
                          ILogger<UserStore> log,
-                         IUserRepository userRepo)
-                : base(connProv, log, userRepo)
+                         IUserRepository userRepo,
+                         SandboxCore.Identity.Dapper.UnitOfWork.Contracts.IUnitOfWork uow,
+                         SandboxCore.Identity.Dapper.Models.DapperIdentityOptions dapperIdOpts)
+                : base(connProv, log, userRepo, uow, dapperIdOpts)
         {
             _connectionProvider = connProv;
             _log = log;
-            _userRepository = userRepo;
+            _userRepo = userRepo;
+            _unitOfWork = uow;
+            _dapperIdentityOptions = dapperIdOpts;
+        }
+
+        public async Task<IEnumerable<User>> GetAllUsersWithoutRoles()
+        {
+            var users = await _userRepo.GetAllUsersWithoutRoles();
+            return users;
         }
 
         //public Task<IdentityResult> CreateAsync(DapperIdentityUser user, CancellationToken cancellationToken)

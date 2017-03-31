@@ -4,8 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
-using Identity.Dapper.Connections;
-using Identity.Dapper.Models;
+using SandboxCore.Identity.Dapper.Connections;
+using SandboxCore.Identity.Dapper.Models;
 
 using SandboxCore.Identity.Dapper.Repositories;
 

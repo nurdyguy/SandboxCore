@@ -1,4 +1,4 @@
-﻿using Identity.Dapper.Entities;
+﻿using SandboxCore.Identity.Dapper.Entities;
 
 namespace SandboxCore.Identity.Models
 {

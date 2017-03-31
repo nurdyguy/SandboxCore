@@ -1,11 +1,21 @@
-﻿using Identity.Dapper.Entities;
+﻿using System;
+using SandboxCore.Identity.Dapper.Entities;
+
 
 namespace SandboxCore.Identity.Models
 {
     // Add profile data for application users by adding properties to the User class
     public class User : DapperIdentityUser<int, UserClaim, UserRole, UserLogin>
     {
-        
+        //--added--
+        string FirstName { get; set; }
+        string LastName { get; set; }
+        string Salt { get; set; }
+        string TempPassword { get; set; }
+        bool IsActive { get; set; }
+        DateTime RegisteredOn { get; set; }
+        DateTime LastLogOn { get; set; }
+        string ThirdPartyGuid { get; set; }
     }
 
     
@@ -53,8 +63,8 @@ create table Users(
 	Email 						varchar(50) not null,
 	UserName					varchar(50) not null,
 	FirstName					varchar(50) null,
-	LastName					varchar(50) not null,
-	Salt						varchar(50) null,
+	LastName					varchar(50) null,
+	Salt						varchar(50) not null default 'x',
 	PasswordHash				varchar(max) not null,
 	TempPassword				varchar(20) null,	
 	IsActive					bit not null default 1,

@@ -8,28 +8,39 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 using SandboxCore.Identity.Models;
+using SandboxCore.Identity.Managers;
 using SandboxCore.Models.ManageViewModels;
 using SandboxCore.Services;
+using SandboxCore.Identity.Stores;
+
+using SandboxCore.Identity.Dapper.Stores;
+using SandboxCore.Identity.Dapper.Entities;
 
 namespace SandboxCore.Controllers
 {
     [Authorize]
     public class ManageController : Controller
     {
-        private readonly UserManager<User> _userManager;
+        private readonly UserDataService _userDataService;
+        private readonly RoleManager<Role> _roleManager;
         private readonly SignInManager<User> _signInManager;
+        private readonly UserStore _userStore;
         private readonly IEmailSender _emailSender;
         private readonly ISmsSender _smsSender;
         private readonly ILogger _logger;
 
         public ManageController(
-        UserManager<User> userManager,
-        SignInManager<User> signInManager,
-        IEmailSender emailSender,
-        ISmsSender smsSender,
-        ILoggerFactory loggerFactory)
+            UserDataService userDataService,
+            RoleManager<Role> roleManager,
+            SignInManager<User> signInManager,
+            IUserStore userStore,
+            IEmailSender emailSender,
+            ISmsSender smsSender,
+            ILoggerFactory loggerFactory)
         {
-            _userManager = userManager;
+            _userDataService = userDataService;
+            _roleManager = roleManager;
+            _userStore = userStore as UserStore;
             _signInManager = signInManager;
             _emailSender = emailSender;
             _smsSender = smsSender;
@@ -57,10 +68,10 @@ namespace SandboxCore.Controllers
             }
             var model = new IndexViewModel
             {
-                HasPassword = await _userManager.HasPasswordAsync(user),
-                PhoneNumber = await _userManager.GetPhoneNumberAsync(user),
-                TwoFactor = await _userManager.GetTwoFactorEnabledAsync(user),
-                Logins = await _userManager.GetLoginsAsync(user),
+                HasPassword = await _userDataService.HasPasswordAsync(user),
+                PhoneNumber = await _userDataService.GetPhoneNumberAsync(user),
+                TwoFactor = await _userDataService.GetTwoFactorEnabledAsync(user),
+                Logins = await _userDataService.GetLoginsAsync(user),
                 BrowserRemembered = await _signInManager.IsTwoFactorClientRememberedAsync(user)
             };
             return View(model);
@@ -76,7 +87,7 @@ namespace SandboxCore.Controllers
             var user = await GetCurrentUserAsync();
             if (user != null)
             {
-                var result = await _userManager.RemoveLoginAsync(user, account.LoginProvider, account.ProviderKey);
+                var result = await _userDataService.RemoveLoginAsync(user, account.LoginProvider, account.ProviderKey);
                 if (result.Succeeded)
                 {
                     await _signInManager.SignInAsync(user, isPersistent: false);
@@ -109,7 +120,7 @@ namespace SandboxCore.Controllers
             {
                 return View("Error");
             }
-            var code = await _userManager.GenerateChangePhoneNumberTokenAsync(user, model.PhoneNumber);
+            var code = await _userDataService.GenerateChangePhoneNumberTokenAsync(user, model.PhoneNumber);
             await _smsSender.SendSmsAsync(model.PhoneNumber, "Your security code is: " + code);
             return RedirectToAction(nameof(VerifyPhoneNumber), new { PhoneNumber = model.PhoneNumber });
         }
@@ -123,7 +134,7 @@ namespace SandboxCore.Controllers
             var user = await GetCurrentUserAsync();
             if (user != null)
             {
-                await _userManager.SetTwoFactorEnabledAsync(user, true);
+                await _userDataService.SetTwoFactorEnabledAsync(user, true);
                 await _signInManager.SignInAsync(user, isPersistent: false);
                 _logger.LogInformation(1, "User enabled two-factor authentication.");
             }
@@ -139,7 +150,7 @@ namespace SandboxCore.Controllers
             var user = await GetCurrentUserAsync();
             if (user != null)
             {
-                await _userManager.SetTwoFactorEnabledAsync(user, false);
+                await _userDataService.SetTwoFactorEnabledAsync(user, false);
                 await _signInManager.SignInAsync(user, isPersistent: false);
                 _logger.LogInformation(2, "User disabled two-factor authentication.");
             }
@@ -156,7 +167,7 @@ namespace SandboxCore.Controllers
             {
                 return View("Error");
             }
-            var code = await _userManager.GenerateChangePhoneNumberTokenAsync(user, phoneNumber);
+            var code = await _userDataService.GenerateChangePhoneNumberTokenAsync(user, phoneNumber);
             // Send an SMS to verify the phone number
             return phoneNumber == null ? View("Error") : View(new VerifyPhoneNumberViewModel { PhoneNumber = phoneNumber });
         }
@@ -174,7 +185,7 @@ namespace SandboxCore.Controllers
             var user = await GetCurrentUserAsync();
             if (user != null)
             {
-                var result = await _userManager.ChangePhoneNumberAsync(user, model.PhoneNumber, model.Code);
+                var result = await _userDataService.ChangePhoneNumberAsync(user, model.PhoneNumber, model.Code);
                 if (result.Succeeded)
                 {
                     await _signInManager.SignInAsync(user, isPersistent: false);
@@ -195,7 +206,7 @@ namespace SandboxCore.Controllers
             var user = await GetCurrentUserAsync();
             if (user != null)
             {
-                var result = await _userManager.SetPhoneNumberAsync(user, null);
+                var result = await _userDataService.SetPhoneNumberAsync(user, null);
                 if (result.Succeeded)
                 {
                     await _signInManager.SignInAsync(user, isPersistent: false);
@@ -226,7 +237,7 @@ namespace SandboxCore.Controllers
             var user = await GetCurrentUserAsync();
             if (user != null)
             {
-                var result = await _userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
+                var result = await _userDataService.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
                 if (result.Succeeded)
                 {
                     await _signInManager.SignInAsync(user, isPersistent: false);
@@ -261,7 +272,7 @@ namespace SandboxCore.Controllers
             var user = await GetCurrentUserAsync();
             if (user != null)
             {
-                var result = await _userManager.AddPasswordAsync(user, model.NewPassword);
+                var result = await _userDataService.AddPasswordAsync(user, model.NewPassword);
                 if (result.Succeeded)
                 {
                     await _signInManager.SignInAsync(user, isPersistent: false);
@@ -287,7 +298,7 @@ namespace SandboxCore.Controllers
             {
                 return View("Error");
             }
-            var userLogins = await _userManager.GetLoginsAsync(user);
+            var userLogins = await _userDataService.GetLoginsAsync(user);
             var otherLogins = _signInManager.GetExternalAuthenticationSchemes().Where(auth => userLogins.All(ul => auth.AuthenticationScheme != ul.LoginProvider)).ToList();
             ViewData["ShowRemoveButton"] = user.PasswordHash != null || userLogins.Count > 1;
             return View(new ManageLoginsViewModel
@@ -305,7 +316,7 @@ namespace SandboxCore.Controllers
         {
             // Request a redirect to the external login provider to link a login for the current user
             var redirectUrl = Url.Action("LinkLoginCallback", "Manage");
-            var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl, _userManager.GetUserId(User));
+            var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl, _userDataService.GetUserId(User));
             return Challenge(properties, provider);
         }
 
@@ -319,14 +330,57 @@ namespace SandboxCore.Controllers
             {
                 return View("Error");
             }
-            var info = await _signInManager.GetExternalLoginInfoAsync(await _userManager.GetUserIdAsync(user));
+            var info = await _signInManager.GetExternalLoginInfoAsync(await _userDataService.GetUserIdAsync(user));
             if (info == null)
             {
                 return RedirectToAction(nameof(ManageLogins), new { Message = ManageMessageId.Error });
             }
-            var result = await _userManager.AddLoginAsync(user, info);
+            var result = await _userDataService.AddLoginAsync(user, info);
             var message = result.Succeeded ? ManageMessageId.AddLoginSuccess : ManageMessageId.Error;
             return RedirectToAction(nameof(ManageLogins), new { Message = message });
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        public ActionResult AddRole(ManageMessageId? message = null)
+        {
+            ViewData["StatusMessage"] =
+               message == ManageMessageId.AddRoleSuccess ? "Role created successfully."
+               : message == ManageMessageId.Error ? "An error has occurred."
+               : "";
+
+            return View();
+        }
+        [AllowAnonymous]
+        [HttpPost]
+        public async Task<ActionResult> AddRole([FromBody] AddRoleViewModel model)
+        {
+            try
+            {
+                if (!ModelState.IsValid) return View(model);
+
+                var user = await _userDataService.FindByEmailAsync("yourface@yourface.org");
+
+                var currRoles = await _userDataService.GetRolesAsync(user);
+
+                var a = await Task.WhenAll(currRoles.Select(r => _userDataService.RemoveFromRoleAsync(user, r)));
+
+                var result1 = await _roleManager.CreateAsync(new Role { Name = model.RoleName });
+                var result2 = await _userDataService.AddToRoleAsync(user, model.RoleName);
+
+                if (result1.Succeeded && result2.Succeeded)
+                    await _userStore.SaveChanges();
+
+                var res = await _userDataService.UpdateAsync(user);
+
+                return RedirectToAction(nameof(AddRole), new { Message = result1.Succeeded && result2.Succeeded ? ManageMessageId.AddRoleSuccess : ManageMessageId.Error });
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+
         }
 
         #region Helpers
@@ -343,6 +397,7 @@ namespace SandboxCore.Controllers
         {
             AddPhoneSuccess,
             AddLoginSuccess,
+            AddRoleSuccess,
             ChangePasswordSuccess,
             SetTwoFactorSuccess,
             SetPasswordSuccess,
@@ -353,7 +408,7 @@ namespace SandboxCore.Controllers
 
         private Task<User> GetCurrentUserAsync()
         {
-            return _userManager.GetUserAsync(HttpContext.User);
+            return _userDataService.GetUserAsync(HttpContext.User);
         }
 
         #endregion
