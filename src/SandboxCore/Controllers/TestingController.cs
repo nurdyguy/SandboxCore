@@ -20,6 +20,9 @@ using System.Diagnostics;
 using Microsoft.Extensions.Caching.Memory;
 using System.Collections.Concurrent;
 
+
+using _calc = SandboxCore.Math.CombinationsCalculator;
+
 namespace SandboxCore.Controllers
 {
     [AllowAnonymous]
@@ -58,6 +61,24 @@ namespace SandboxCore.Controllers
         [HttpGet, Route("testing/getall/{max:int}")]
         public async Task<IActionResult> GetAll(int max = 52)
         {
+            //for (int i = 1; i <= max; i++)
+            //{
+            //    Debug.WriteLine($"//--------{i}----------");
+            //    ulong val = 1;
+            //    //Debug.WriteLine($"{i}c0 = {val}");
+            //    var str = "{ 1";
+            //    for (int j = 1; j <= i; j++)
+            //    {
+            //        val = _calc.nCr_next(i, j, val);
+            //        str += $", {val}";
+            //        //Debug.WriteLine($"{i}c{j} = {val}");
+            //    }
+            //    for (int k = i + 1; k <= 52; k++)
+            //        str += ", 0";
+            //    str += " },";
+            //    Debug.WriteLine(str);
+            //}
+            //return Json(0);
             var timer = new Stopwatch();
             var timers = new List<double>();
             timer.Start();
@@ -83,7 +104,7 @@ namespace SandboxCore.Controllers
             timer.Stop();
             timers.Add(timer.ElapsedMilliseconds / 1000.0);
             int counter = fullList.Count;
-            return Json(timers);
+            return Json(new { timers, counter });
         }
 
         // vs 52---14.2s
@@ -130,7 +151,7 @@ namespace SandboxCore.Controllers
         // vs 32---0.2s
         private List<List<int>> GenFullListFromCodes(int max = 52)
         {
-            var totalCombs = (int)nCr(max, 5);
+            var totalCombs = (int)_calc.nCr(max, 5);
             var codes = new List<int>(totalCombs - 1);
             for (int i = 0; i < totalCombs; i++)
                 codes.Add(i);
@@ -218,16 +239,16 @@ namespace SandboxCore.Controllers
 
         private int GetCombID(List<int> comb, int max = 51)
         {
-            UInt64 id = nCr(max + 1, comb.Count);
+            UInt64 id = _calc.nCr(max + 1, comb.Count);
             for (int i = 0; i < comb.Count; i++)
-                id -= nCr(max - comb[i], comb.Count - i);
+                id -= _calc.nCr(max - comb[i], comb.Count - i);
             return (int)id;
         }
 
         private List<int> GetCombFromID(int id, int combLength = 2, int max = 51)
         {
             List<int> comb = new List<int>(combLength);
-            var tId = nCr(max + 1, combLength) - (UInt64)id;
+            var tId = _calc.nCr(max + 1, combLength) - (UInt64)id;
             for (int i = combLength; i > 0; i--)
             {
                 UInt64 tVal = 0;
@@ -235,7 +256,7 @@ namespace SandboxCore.Controllers
                 int pos = 0;
                 while (!done)
                 {
-                    var t = nCr(max - pos, i);
+                    var t = _calc.nCr(max - pos, i);
                     if (t <= tId)
                     {
                         tVal = t;
@@ -250,28 +271,6 @@ namespace SandboxCore.Controllers
             return comb;
         }
 
-        private UInt64 nCr(int n, int r)
-        {
-            if (r > n)
-                return 0;
-            if (n == 0 || n == r)
-                return 1;
-            if (n - r < r)
-                return partFactorial(n, r) / partFactorial(n - r, 1);
-            else
-                return partFactorial(n, n - r) / partFactorial(r, 1);
-        }
-
-        private UInt64 partFactorial(int x, int y = 1)
-        {
-            if (x == 0 || x == y)
-                return 1;
-            if (y > x)
-                return 0;
-            UInt64 result = 1;
-            for (var i = y + 1; i <= x; i++)
-                result *= (UInt64)i;
-            return result;
-        }
+        
     }
 }
