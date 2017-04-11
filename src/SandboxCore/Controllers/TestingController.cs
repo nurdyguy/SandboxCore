@@ -35,7 +35,22 @@ namespace SandboxCore.Controllers
             _memoryCache = memCache;
         }
       
-        
+        public IActionResult Index()
+        {
+            return View();
+        }
+
+        public IActionResult Index2()
+        {
+            if (Request.Headers.Keys.Contains("Referer"))
+                ViewBag.Referer = HttpContext.Request.Headers["Referer"];
+            else
+                ViewBag.Referer = "";
+            var x = string.IsNullOrEmpty(ViewBag.Referer);
+            
+            return View();
+        }
+
         [HttpGet]
         public async Task<IActionResult> TimerTesting()
         {
@@ -270,6 +285,7 @@ namespace SandboxCore.Controllers
 
             return comb;
         }
+
 
         
     }
