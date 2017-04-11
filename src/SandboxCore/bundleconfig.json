@@ -20,5 +20,13 @@
     },
     // Optinally generate .map file
     "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/css/site.css",
+    "inputFiles": [
+      "wwwroot/scss/site.css",
+      "wwwroot/scss/layout.css",
+      "wwwroot/scss/userManagement.css"
+    ]
   }
 ]

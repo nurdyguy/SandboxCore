@@ -9,8 +9,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 
-using Identity.Dapper.Entities;
+using SandboxCore.Identity.Dapper.Entities;
 
+using SandboxCore.Identity.Managers;
 using SandboxCore.Identity.Models;
 using SandboxCore.Models.AccountViewModels;
 using SandboxCore.Services;
@@ -20,20 +21,20 @@ namespace SandboxCore.Controllers
     [Authorize]
     public class AccountController : Controller
     {
-        private readonly UserManager<User> _userManager;
+        private readonly UserDataService _userDataService;
         private readonly SignInManager<User> _signInManager;
         private readonly IEmailSender _emailSender;
         private readonly ISmsSender _smsSender;
         private readonly ILogger _logger;
 
         public AccountController(
-            UserManager<User> userManager,
+            UserDataService userDataService,
             SignInManager<User> signInManager,
             IEmailSender emailSender,
             ISmsSender smsSender,
             ILoggerFactory loggerFactory)
         {
-            _userManager = userManager;
+            _userDataService = userDataService;
             _signInManager = signInManager;
             _emailSender = emailSender;
             _smsSender = smsSender;
@@ -114,12 +115,12 @@ namespace SandboxCore.Controllers
             if (ModelState.IsValid)
             {
                 var user = new User { Email = model.Email, UserName = model.Email };
-                var result = await _userManager.CreateAsync(user, model.Password);
+                var result = await _userDataService.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
                     // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
                     // Send an email with this link
-                    //var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                    //var code = await _userDataService.GenerateEmailConfirmationTokenAsync(user);
                     //var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
                     //await _emailSender.SendEmailAsync(model.Email, "Confirm your account",
                     //    $"Please confirm your account by clicking this link: <a href='{callbackUrl}'>link</a>");
@@ -216,10 +217,10 @@ namespace SandboxCore.Controllers
                     return View("ExternalLoginFailure");
                 }
                 var user = new User { Email = model.Email };
-                var result = await _userManager.CreateAsync(user);
+                var result = await _userDataService.CreateAsync(user);
                 if (result.Succeeded)
                 {
-                    result = await _userManager.AddLoginAsync(user, info);
+                    result = await _userDataService.AddLoginAsync(user, info);
                     if (result.Succeeded)
                     {
                         await _signInManager.SignInAsync(user, isPersistent: false);
@@ -243,12 +244,12 @@ namespace SandboxCore.Controllers
             {
                 return View("Error");
             }
-            var user = await _userManager.FindByIdAsync(userId);
+            var user = await _userDataService.FindByIdAsync(userId);
             if (user == null)
             {
                 return View("Error");
             }
-            var result = await _userManager.ConfirmEmailAsync(user, code);
+            var result = await _userDataService.ConfirmEmailAsync(user, code);
             return View(result.Succeeded ? "ConfirmEmail" : "Error");
         }
 
@@ -270,8 +271,8 @@ namespace SandboxCore.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await _userManager.FindByNameAsync(model.Email);
-                if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
+                var user = await _userDataService.FindByNameAsync(model.Email);
+                if (user == null || !(await _userDataService.IsEmailConfirmedAsync(user)))
                 {
                     // Don't reveal that the user does not exist or is not confirmed
                     return View("ForgotPasswordConfirmation");
@@ -279,7 +280,7 @@ namespace SandboxCore.Controllers
 
                 // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
                 // Send an email with this link
-                //var code = await _userManager.GeneratePasswordResetTokenAsync(user);
+                //var code = await _userDataService.GeneratePasswordResetTokenAsync(user);
                 //var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
                 //await _emailSender.SendEmailAsync(model.Email, "Reset Password",
                 //   $"Please reset your password by clicking here: <a href='{callbackUrl}'>link</a>");
@@ -319,13 +320,13 @@ namespace SandboxCore.Controllers
             {
                 return View(model);
             }
-            var user = await _userManager.FindByNameAsync(model.Email);
+            var user = await _userDataService.FindByNameAsync(model.Email);
             if (user == null)
             {
                 // Don't reveal that the user does not exist
                 return RedirectToAction(nameof(AccountController.ResetPasswordConfirmation), "Account");
             }
-            var result = await _userManager.ResetPasswordAsync(user, model.Code, model.Password);
+            var result = await _userDataService.ResetPasswordAsync(user, model.Code, model.Password);
             if (result.Succeeded)
             {
                 return RedirectToAction(nameof(AccountController.ResetPasswordConfirmation), "Account");
@@ -354,7 +355,7 @@ namespace SandboxCore.Controllers
             {
                 return View("Error");
             }
-            var userFactors = await _userManager.GetValidTwoFactorProvidersAsync(user);
+            var userFactors = await _userDataService.GetValidTwoFactorProvidersAsync(user);
             var factorOptions = userFactors.Select(purpose => new SelectListItem { Text = purpose, Value = purpose }).ToList();
             return View(new SendCodeViewModel { Providers = factorOptions, ReturnUrl = returnUrl, RememberMe = rememberMe });
         }
@@ -378,7 +379,7 @@ namespace SandboxCore.Controllers
             }
 
             // Generate the token and send it
-            var code = await _userManager.GenerateTwoFactorTokenAsync(user, model.SelectedProvider);
+            var code = await _userDataService.GenerateTwoFactorTokenAsync(user, model.SelectedProvider);
             if (string.IsNullOrWhiteSpace(code))
             {
                 return View("Error");
@@ -387,11 +388,11 @@ namespace SandboxCore.Controllers
             var message = "Your security code is: " + code;
             if (model.SelectedProvider == "Email")
             {
-                await _emailSender.SendEmailAsync(await _userManager.GetEmailAsync(user), "Security Code", message);
+                await _emailSender.SendEmailAsync(await _userDataService.GetEmailAsync(user), "Security Code", message);
             }
             else if (model.SelectedProvider == "Phone")
             {
-                await _smsSender.SendSmsAsync(await _userManager.GetPhoneNumberAsync(user), message);
+                await _smsSender.SendSmsAsync(await _userDataService.GetPhoneNumberAsync(user), message);
             }
 
             return RedirectToAction(nameof(VerifyCode), new { Provider = model.SelectedProvider, ReturnUrl = model.ReturnUrl, RememberMe = model.RememberMe });
@@ -456,7 +457,7 @@ namespace SandboxCore.Controllers
 
         private async Task<User> GetCurrentUserAsync()
         {
-            return await _userManager.GetUserAsync(HttpContext.User);
+            return await _userDataService.GetUserAsync(HttpContext.User);
         }
 
         private IActionResult RedirectToLocal(string returnUrl)

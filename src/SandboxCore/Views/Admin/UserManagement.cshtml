@@ -1,0 +1,65 @@
+﻿@model UserManagementViewModel
+
+@{
+    ViewData["Title"] = "User Management";
+}
+
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+<script src="~/js/userManagement.js"></script>
+
+
+<div id="UserManagementContainer" class="row">
+    <div class="row">
+        <div class="col-md-4">
+            <h3 class="text-center">Owners</h3>
+            <div id="owners" class="userContainer">
+                @foreach (var o in Model.Owners)
+                {
+                    var displayName = $"{o.FirstName} {o.LastName}";
+                    if (string.IsNullOrWhiteSpace(displayName))
+                    {
+                        displayName = o.Email;
+                    }
+                    <div class="user" data-userid="@o.UserId">@(displayName)</div>
+                }
+            </div>
+        </div>
+        <div class="col-md-4">
+            <h3 class="text-center">Admins</h3>
+            <div id="admins" class="userContainer">
+                @foreach (var a in Model.Admins)
+                {
+                    var displayName = $"{a.FirstName} {a.LastName}";
+                    if (string.IsNullOrWhiteSpace(displayName))
+                    {
+                        displayName = a.Email;
+                    }
+                    <div class="user" data-userid="@a.UserId">@(displayName)</div>
+                }
+            </div>
+        </div>
+        <div class="col-md-4">
+            <h3 class="text-center">Users</h3>
+            <div id="users" class="userContainer">
+                @foreach (var u in Model.Users)
+                {
+                    var displayName = $"{u.FirstName} {u.LastName}";
+                    if (string.IsNullOrWhiteSpace(displayName))
+                    {
+                        displayName = u.Email;
+                    }
+                    <div class="user" data-userid="@u.UserId">@(displayName)</div>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+        </div>
+        <div class="col-md-4">
+            <button id="SaveUserRoles" class="btn btn-primary col-md-12">Save User Roles</button>
+        </div>
+        <div class="col-md-4">
+        </div>
+    </div>
+</div>

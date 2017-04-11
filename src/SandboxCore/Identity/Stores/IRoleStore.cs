@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Identity;
-
 using SandboxCore.Identity.Models;
 
 namespace SandboxCore.Identity.Stores

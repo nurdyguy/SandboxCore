@@ -1,6 +1,5 @@
 ﻿using SandboxCore.Identity.Dapper.Repositories.Contracts;
 using SandboxCore.Identity.Models;
-using entities = Identity.Dapper.Entities;
 
 namespace SandboxCore.Identity.Repositories.Contracts
 {

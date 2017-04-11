@@ -10,15 +10,23 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Identity;
 
-using Identity.Dapper.SqlServer;
-using Identity.Dapper;
-using Identity.Dapper.Entities;
-using Identity.Dapper.Stores;
+using SandboxCore.Identity.Dapper.SqlServer;
+using SandboxCore.Identity.Dapper;
+using dapperSql = SandboxCore.Identity.Dapper.SqlServer;
+using dapper = SandboxCore.Identity.Dapper;
+//using SandboxCore.Identity.Dapper.Entities;
+//using SandboxCore.Identity.Dapper.Stores;
 
 using SandboxCore.Identity.Models;
 using SandboxCore.Services;
 using SandboxCore.Identity.Stores;
-using SandboxCore.Identity.Dapper.SqlServer;
+using SandboxCore.Identity.Repositories;
+using SandboxCore.Identity.Repositories.Contracts;
+using SandboxCore.Identity.Managers;
+using SandboxCore.Identity;
+using SandboxCore.Identity.Dapper.Stores;
+using Microsoft.Extensions.Caching.Memory;
+
 
 namespace SandboxCore
 {
@@ -39,7 +47,7 @@ namespace SandboxCore
                 // This will push telemetry data through Application Insights pipeline faster, allowing you to view results immediately.
                 builder.AddApplicationInsightsSettings(developerMode: true);
             }
-
+            Mappings.AutoMapperConfig.Configure();
             builder.AddEnvironmentVariables();
             Configuration = builder.Build();
         }
@@ -52,25 +60,30 @@ namespace SandboxCore
             // Add framework services.
             services.AddApplicationInsightsTelemetry(Configuration);
 
-
             services.AddSingleton<IUserStore, UserStore>();
+            //services.AddSingleton<DapperUserStore<User, int, UserRole, RoleClaim, UserClaim, UserLogin, Role>, UserStore>();
             services.AddSingleton<IRoleStore, RoleStore>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IRoleRepository, RoleRepository>();
 
-            //services.AddSingleton<IUserStore<DapperIdentityUser<int>>, DapperUserStore<DapperIdentityUser<int>, int, DapperIdentityUserRole<int>, DapperIdentityRoleClaim<int>>>();
-            //services.AddSingleton<IRoleStore<DapperIdentityRole<int>>, DapperRoleStore<DapperIdentityRole<int>, int, DapperIdentityUserRole<int>, DapperIdentityRoleClaim<int>>>();
+            services.ConfigureDapperSqlServerConnectionProvider(Configuration.GetSection("DapperIdentity"))
+                .ConfigureDapperIdentityCryptography(Configuration.GetSection("DapperIdentityCryptography"))
+                .ConfigureDapperIdentityOptions(new SandboxCore.Identity.Dapper.Models.DapperIdentityOptions { UseTransactionalBehavior = true }); ;
 
-            services.ConfigureSandboxCoreDapperSqlServerConnectionProvider(Configuration.GetSection("DapperIdentity"))
-                .ConfigureDapperIdentityCryptography(Configuration.GetSection("DapperIdentityCryptography"));
+            services.AddIdentity<User, Role>()                        
+                        .AddDapperIdentityForSqlServer<int, UserRole, RoleClaim, UserClaim, UserLogin>(new SqlServerConfig())
+                        .AddUserManager<UserDataService>()
+                        .AddRoleManager<RoleDataService>()
+                        .AddDefaultTokenProviders();
 
-            services.AddIdentity<User, Role>()
-                    .AddSandboxCoreDapperIdentityForSqlServer<int, UserRole, RoleClaim, UserClaim, UserLogin>()
-                    .AddDefaultTokenProviders();
-
-            //services.AddIdentity<DapperIdentityUser<int>, DapperIdentityRole<int>>()
-            //        .AddDapperIdentityForSqlServer()
-            //        .AddDefaultTokenProviders();
-
+            // Add Caching Support
+            services.AddMemoryCache();
             services.AddMvc();
+
+            services.AddAuthorization(auth =>
+            {
+                auth.AddSecurity();
+            });
 
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();

@@ -1,4 +1,4 @@
-﻿using Identity.Dapper.Entities;
+﻿using SandboxCore.Identity.Dapper.Entities;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Identity.Dapper.Connections;
+using SandboxCore.Identity.Dapper.Connections;
 using Microsoft.Extensions.Logging;
 
 using SandboxCore.Identity.Dapper.Stores;
@@ -20,15 +20,21 @@ namespace SandboxCore.Identity.Stores
         private readonly IConnectionProvider _connectinProvider;
         private readonly ILogger<RoleStore> _log;
         private readonly IRoleRepository _roleRepository;
+        private readonly SandboxCore.Identity.Dapper.UnitOfWork.Contracts.IUnitOfWork _unitOfWork;
+        private readonly SandboxCore.Identity.Dapper.Models.DapperIdentityOptions _dapperIdentityOptions;
 
         public RoleStore(IConnectionProvider connProv, 
                          ILogger<RoleStore> log, 
-                         IRoleRepository roleRepo)
-            : base(connProv, log, roleRepo)
+                         IRoleRepository roleRepo,
+                         SandboxCore.Identity.Dapper.UnitOfWork.Contracts.IUnitOfWork uow,
+                         SandboxCore.Identity.Dapper.Models.DapperIdentityOptions dapperIdOpts)
+            : base(connProv, log, roleRepo, uow, dapperIdOpts)
         {
             _connectinProvider = connProv;
             _log = log;
             _roleRepository = roleRepo;
+            _unitOfWork = uow;
+            _dapperIdentityOptions = dapperIdOpts;
         }
 
 
