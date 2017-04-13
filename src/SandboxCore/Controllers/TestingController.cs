@@ -59,15 +59,41 @@ namespace SandboxCore.Controllers
             timer.Start();
 
             List<List<int>> fullList;
-            if (!_memoryCache.TryGetValue("fullList", out fullList))                           
-                return Json("try again");
+            //if (!_memoryCache.TryGetValue("fullList", out fullList))                           
+                //return Json("try again");
 
-            var used = new List<int>(){ 1, 3, 6, 9, 12, 15, 17, 20, 22, 25, 28, 29, 30, 31, 35, 40, 41, 46, 48, 50};
+            var used = new List<int>(){ 1, 3, 6, 17, 20, 22, 25, 30, 31, 35, 41, 46, 48, 50};
+
+            var all = new List<int>() { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
+                                        31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51};
+
+            var allSorted = new SortedList<int, int>() {
+                {0, 0},{1, 1},{2, 2},{3, 3},{4, 4},{5, 5},{6, 6},{7, 7},{8, 8},{9, 9},
+                {10, 10},{11, 11},{12, 12},{13, 13},{14, 14},{15, 15},{16, 16},{17, 17},{18, 18},{19, 19},
+                {20, 20},{21, 21},{22, 22},{23, 23},{24, 24},{25, 25},{26, 26},{27, 27},{28, 28},{29, 29},
+                {30, 30},{31, 31},{32, 32},{33, 33},{34, 34},{35, 35},{36, 36},{37, 37},{38, 38},{39, 39},
+                {40, 40},{41, 41},{42, 42},{43, 43},{44, 44},{45, 45},{46, 46},{47, 47},{48, 48},{49, 49},{50, 50},{51, 51} };
             //var result = fullList.Where(l => !l.Intersect<int>(used).Any());    // 1.1 - 1.3 seconds
-            var result = fullList.Where(l => !HasMatch(l, used));
+            //var result = fullList.Where(l => !HasMatch(l, used));
 
 
-            counter = result.Count();
+            for (var i = 0; i < 10000; i++)
+            {
+                // 10000x = .001s
+                //var avail = all.Where(a => !used.Any(u => u == a));
+
+                // 10000x = .16s
+                //var avail = all.Where(a => !used.Any(u => u == a)).ToList();
+
+                /*  10000x = .05s
+                var avail = new List<int>(52);
+                all.ForEach(a => { if (!used.Contains(a)) avail.Add(a); });
+                */
+                //var res = GenFullListFromCodes(avail.Count());
+            }
+
+
+            //counter = result.Count();
             timer.Stop();
             double elapsed = timer.ElapsedMilliseconds / 1000.0;
             return Json(new { elapsed, counter });
@@ -164,14 +190,14 @@ namespace SandboxCore.Controllers
         // vs 52---4.7s
         // vs 42---1.2s
         // vs 32---0.2s
-        private List<List<int>> GenFullListFromCodes(int max = 52)
+        private List<List<int>> GenFullListFromCodes(int max = 52, int combinationLength = 5)
         {
-            var totalCombs = (int)_calc.nCr(max, 5);
+            var totalCombs = (int)_calc.nCr(max, combinationLength);
             var codes = new List<int>(totalCombs - 1);
             for (int i = 0; i < totalCombs; i++)
                 codes.Add(i);
 
-            var decoded = DecodeCombs(codes, 5, max - 1);
+            var decoded = DecodeCombs(codes, combinationLength, max - 1);
             return decoded;
         }
 
