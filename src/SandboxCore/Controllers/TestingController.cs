@@ -54,18 +54,25 @@ namespace SandboxCore.Controllers
         [HttpGet]
         public async Task<IActionResult> TimerTesting()
         {
-            var timer = new Stopwatch();
-            int counter = 0;
-            timer.Start();
+            var watch = new Stopwatch();
+            var timers = new List<double>();
+            var counters = new List<int>();
+            watch.Start();
 
             List<List<int>> fullList;
-            //if (!_memoryCache.TryGetValue("fullList", out fullList))                           
-                //return Json("try again");
+            if (!_memoryCache.TryGetValue("fullList", out fullList))
+            {
+                fullList = GenFullList();
+                _memoryCache.Set("fullList", fullList);
+            }
+            //List<List<int>> fullList = GenFullListFromCodes();
 
             var used = new List<int>(){ 1, 3, 6, 17, 20, 22, 25, 30, 31, 35, 41, 46, 48, 50};
 
             var all = new List<int>() { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
                                         31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51};
+
+            //var avail = new List<int>(all);
 
             var allSorted = new SortedList<int, int>() {
                 {0, 0},{1, 1},{2, 2},{3, 3},{4, 4},{5, 5},{6, 6},{7, 7},{8, 8},{9, 9},
@@ -75,28 +82,72 @@ namespace SandboxCore.Controllers
                 {40, 40},{41, 41},{42, 42},{43, 43},{44, 44},{45, 45},{46, 46},{47, 47},{48, 48},{49, 49},{50, 50},{51, 51} };
             //var result = fullList.Where(l => !l.Intersect<int>(used).Any());    // 1.1 - 1.3 seconds
             //var result = fullList.Where(l => !HasMatch(l, used));
+            //counter = result.Count();
 
-
-            for (var i = 0; i < 10000; i++)
+            timers.Add(watch.ElapsedMilliseconds / 1000.0);
+            watch.Restart();
+            var bag = new ConcurrentBag<int>();
+            Parallel.ForEach(fullList, h =>
             {
-                // 10000x = .001s
-                //var avail = all.Where(a => !used.Any(u => u == a));
+                if (!HasMatch(h, used))
+                {
+                    bag.Add(1);
+                }
+            });
+            counters.Add(bag.Count());
 
-                // 10000x = .16s
-                //var avail = all.Where(a => !used.Any(u => u == a)).ToList();
+
+            timers.Add(watch.ElapsedMilliseconds / 1000.0);
+            watch.Restart();
+            var bag2 = new ConcurrentBag<int>();
+            Parallel.ForEach(fullList, h =>
+            {
+                if (!HasMatchBinarySearch(h, used))
+                {
+                    bag2.Add(1);
+                }
+            });
+            counters.Add(bag2.Count());
+
+
+
+            // testing fastest way to remove elements from a list
+            //for (var i = 0; i < 10000; i++)
+            {
+                /* 10000x = .001s  1000000x = .05s 
+                var avail = all.Where(a => !used.Any(u => u == a));
+                */
+
+                /* 10000x = .16s
+                var avail = all.Where(a => !used.Any(u => u == a)).ToList();
+                */
 
                 /*  10000x = .05s
                 var avail = new List<int>(52);
                 all.ForEach(a => { if (!used.Contains(a)) avail.Add(a); });
                 */
+
+                //var avail = new List<int>(all);
+                //used.ForEach(u => { if()})
+
                 //var res = GenFullListFromCodes(avail.Count());
+
+                /*  10000x = .011s
+                used.ForEach(u => allSorted.Remove(u));
+                */
+
+                /*  10000x = .03s  
+                all.RemoveAll(x => used.Contains(x));
+                */
+
+                //all = RemoveElementsBinary(all, used);
             }
+            
 
-
-            //counter = result.Count();
-            timer.Stop();
-            double elapsed = timer.ElapsedMilliseconds / 1000.0;
-            return Json(new { elapsed, counter });
+            //counter = result.Count();            
+            timers.Add(watch.ElapsedMilliseconds / 1000.0);
+            watch.Stop();
+            return Json(new { timers, counters });
         }
        
         [HttpGet, Route("testing/getall/{max:int}")]
@@ -243,11 +294,20 @@ namespace SandboxCore.Controllers
         // vs 20---still 1.3ish!!!
         private bool HasMatch(List<int> l1, List<int> l2)
         {
-            var match = false;
             for(int i = 0; i < l1.Count; i++)
                 for (int j = 0; j < l2.Count; j++)
                     if (l1[i] == l2[j])
                         return true;
+            return false;
+        }
+
+        private bool HasMatchBinarySearch(List<int> l1, List<int> l2)
+        {
+            for (int i = 0; i < l1.Count; i++)
+            {
+                if (l2.BinarySearch(l1[i]) >= 0)
+                    return true;
+            }
             return false;
         }
 
@@ -312,7 +372,27 @@ namespace SandboxCore.Controllers
             return comb;
         }
 
+        private List<int> RemoveElementsBinary(List<int> list, List<int> toRemove)
+        {
+            for (var i = 0; i < toRemove.Count; i++)
+            {
+                bool done = false;
+                if(list[0] == toRemove[i])
+                {
+                    //list.Remove()
+                }
+                while (!done)
+                {
+                    var first = list[0];
+                    var last = list[list.Count - 1];
+                    var mid = list[list.Count / 2];
 
-        
+
+                }
+            }
+            return list;
+        }
+
+
     }
 }
