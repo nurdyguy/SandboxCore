@@ -22,6 +22,7 @@ using System.Collections.Concurrent;
 
 
 using _calc = SandboxCore.Math.CombinationsCalculator;
+using System.Threading;
 
 namespace SandboxCore.Controllers
 {
@@ -58,7 +59,7 @@ namespace SandboxCore.Controllers
             var timers = new List<double>();
             var counters = new List<int>();
             watch.Start();
-
+            
             List<List<int>> fullList;
             if (!_memoryCache.TryGetValue("fullList", out fullList))
             {
@@ -104,7 +105,7 @@ namespace SandboxCore.Controllers
             {
                 if (!HasMatchBinarySearch(h, used))
                 {
-                    bag2.Add(1);
+                    //bag2.Add(1);
                 }
             });
             counters.Add(bag2.Count());
@@ -149,7 +150,111 @@ namespace SandboxCore.Controllers
             watch.Stop();
             return Json(new { timers, counters });
         }
-       
+
+        [HttpGet]
+        public async Task<IActionResult> LoopTester()
+        {
+            var watch = new Stopwatch();
+            var timers = new List<double>();
+            var counters = new List<int>();
+            watch.Start();
+
+            
+
+            var intList = new List<int>();
+            
+            for(var i = 0; i < 2500000; i++)
+            {
+                intList.Add(i);   
+            }
+            
+            var bagResult = new ConcurrentBag<RandResult>()
+            {
+                new RandResult() { id = 0, val = 0 },
+                new RandResult() { id = 1, val = 0 },
+                new RandResult() { id = 2, val = 0 },
+                new RandResult() { id = 3, val = 0 },
+                new RandResult() { id = 4, val = 0 }
+            };
+
+            var conDictResult = new ConcurrentDictionary<int, RandResult>();            
+            conDictResult.GetOrAdd(0, new RandResult() { id = 0, val = 0 });
+            conDictResult.GetOrAdd(1, new RandResult() { id = 1, val = 0 });
+            conDictResult.GetOrAdd(2, new RandResult() { id = 2, val = 0 });
+            conDictResult.GetOrAdd(3, new RandResult() { id = 3, val = 0 });
+            conDictResult.GetOrAdd(4, new RandResult() { id = 4, val = 0 });
+
+            var intDict = new ConcurrentDictionary<int, int>();
+
+            var listResult = new List<RandResult>()
+            {
+                new RandResult() { id = 0, val = 0 },
+                new RandResult() { id = 1, val = 0 },
+                new RandResult() { id = 2, val = 0 },
+                new RandResult() { id = 3, val = 0 },
+                new RandResult() { id = 4, val = 0 }
+            };
+
+            var arrayResult = new RandResult[5]
+            {
+                new RandResult() { id = 0, val = 0 },
+                new RandResult() { id = 1, val = 0 },
+                new RandResult() { id = 2, val = 0 },
+                new RandResult() { id = 3, val = 0 },
+                new RandResult() { id = 4, val = 0 }
+            };
+
+            //timers.Add(watch.ElapsedMilliseconds / 1000.0);
+            watch.Restart();
+            Parallel.ForEach(intList, i =>
+            {
+                //conDictResult[i % 5].val++;                
+                //conDictResult.TryUpdate(i%5, )
+                //conDictResult.AddOrUpdate(i%5, new RandResult() { id = i%5, val = 1 }, (key, value) => value );       //---- ~500ms
+                intDict.AddOrUpdate(i % 5, 1, (key, value) => value++);         //---- ~400ms
+            });
+            timers.Add(watch.ElapsedMilliseconds / 1000.0);
+
+            //watch.Restart();
+            //var _lock = new object();
+            //Parallel.ForEach(intList, i =>
+            //{
+            //    lock (_lock)
+            //    {
+            //        listResult[i % 5].val++;
+
+            //    }
+            //});
+            //timers.Add(watch.ElapsedMilliseconds / 1000.0);
+
+            watch.Restart();
+            var dict = new Dictionary<int, int>()
+            {
+                { 0, 0 },{ 1, 1 },{ 2, 2 },{ 3, 3 },{ 4, 4 }
+            };
+            int[] indexes = new int[5] { 0, 1, 2, 3, 4 };
+            int[] ints = new int[5] { 0, 0, 0, 0, 0 };
+            Parallel.ForEach(intList, i =>
+            {
+                //Interlocked.Increment(ref ints[i % 5]);
+                //var k = dict.First(kvp => kvp.Value == i % 5).Key;---350ms
+                //var k = indexes[i % 5];                    //---150ms
+                //dict.TryGetValue(i % 10, out int k);      //---200ms
+                Interlocked.Increment(ref ints[indexes[i % 5]]);
+            });
+            timers.Add(watch.ElapsedMilliseconds / 1000.0);
+
+            //watch.Restart();
+            //intList.ForEach(i =>
+            //{
+            //    listResult.First(b => b.id == i % 5).val++;
+            //});
+            //timers.Add(watch.ElapsedMilliseconds / 1000.0);
+
+            watch.Stop();
+            return Json(new { timers, counters });
+        }
+
         [HttpGet, Route("testing/getall/{max:int}")]
         public async Task<IActionResult> GetAll(int max = 52)
         {
@@ -393,6 +498,11 @@ namespace SandboxCore.Controllers
             return list;
         }
 
-
+        public class RandResult
+        {
+            public int id { get; set; }
+            public int val { get; set; }
+            
+        }
     }
 }

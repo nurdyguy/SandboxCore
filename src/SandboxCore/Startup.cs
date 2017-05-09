@@ -26,7 +26,8 @@ using SandboxCore.Identity.Managers;
 using SandboxCore.Identity;
 using SandboxCore.Identity.Dapper.Stores;
 using Microsoft.Extensions.Caching.Memory;
-
+using SandboxCore.Services.Contracts;
+using SandboxCore.Services.Implementations;
 
 namespace SandboxCore
 {
@@ -84,6 +85,8 @@ namespace SandboxCore
             {
                 auth.AddSecurity();
             });
+
+            services.AddSingleton<IEulerService, EulerService>();
 
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
