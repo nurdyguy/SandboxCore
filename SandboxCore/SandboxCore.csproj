@@ -9,6 +9,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Include="wwwroot\js\Account\userManagement.js">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
     <Content Include="wwwroot\js\Account\MyProfile.js">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
@@ -16,6 +19,7 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
     <Content Include="wwwroot\js\Account\MyProfile.min.js" />
+    <Content Include="wwwroot\js\Account\UserManagement.min.js" />
     <Content Include="wwwroot\js\logoutRedirect.js">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
@@ -49,8 +53,17 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Startup.StartupAuthorization.cs" />
+    <None Include="wwwroot\js\Account\UserManagement.es5.js">
+      <DependentUpon>userManagement.js</DependentUpon>
+    </None>
+    <None Include="wwwroot\js\Account\UserManagement.es5.min.js">
+      <DependentUpon>UserManagement.es5.js</DependentUpon>
+    </None>
     <None Include="wwwroot\js\Account\MyProfile.es5.js" />
     <None Include="wwwroot\js\Account\MyProfile.es5.min.js" />
+    <None Include="wwwroot\scss\userManagement.css" />
+    <None Include="wwwroot\scss\userManagement.min.css" />
+    <None Include="wwwroot\scss\userManagement.scss" />
     <None Include="wwwroot\scss\Site.css" />
     <None Include="wwwroot\scss\Site.min.css" />
     <None Include="wwwroot\scss\Site.scss" />
@@ -59,8 +72,11 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AccountService\AccountService.csproj" />
+    <ProjectReference Include="..\MathService\MathService.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Services\Contracts\" />
+    <Folder Include="Services\Implementations\" />
     <Folder Include="wwwroot\css\" />
   </ItemGroup>
 

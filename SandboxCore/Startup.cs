@@ -16,6 +16,8 @@ using AccountService.Repositories.Implementations;
 
 using SandboxCore.Authentication;
 using IdentityServer4;
+using MathService.Services.Contracts;
+using MathService.Services.Implementations;
 
 namespace SandboxCore
 {
@@ -29,6 +31,8 @@ namespace SandboxCore
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
             Configuration = builder.Build();
+            Mappings.AutoMapperConfig.Configure();
+            //Calculator.InitCalculator();  //------------------------------------------------
         }
 
         public IConfigurationRoot Configuration { get; }
@@ -53,6 +57,8 @@ namespace SandboxCore
 
             services.AddSingleton<IUserRepository, UserRepository>();
             services.AddSingleton<IUserRoleRepository, UserRoleRepository>();
+
+            services.AddSingleton<IEulerService, EulerService>();
 
             Action<AccountService.AccountServiceOptions> options = (opt =>
             {

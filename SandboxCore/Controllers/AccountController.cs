@@ -235,7 +235,7 @@ namespace SandboxCore.Controllers
             claims.Add(new Claim(JwtClaimTypes.FamilyName, user.LastName ?? ""));
             claims.Add(new Claim(JwtClaimTypes.Name, displayName));
             claims.Add(new Claim(AuthenticationClaims.UserIdClaim, user.Id.ToString()));
-            claims.Add(new Claim(JwtClaimTypes.Role, user.Roles?.OrderBy(r => r.ID).FirstOrDefault()?.Name ?? ""));
+            claims.Add(new Claim(JwtClaimTypes.Role, user.Roles?.OrderBy(r => r.ID)?.FirstOrDefault()?.Name ?? ""));
             
             return claims;
         }
