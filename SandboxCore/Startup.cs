@@ -7,6 +7,15 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+
+using AccountService.Services.Contracts;
+using AccountService.Services.Implementations;
+using AccountService.Repositories.Contracts;
+using AccountService.Repositories.Implementations;
+
+using SandboxCore.Authentication;
+using IdentityServer4;
 
 namespace SandboxCore
 {
@@ -27,13 +36,38 @@ namespace SandboxCore
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // Add framework services.
+            // configure identity server with in-memory stores, keys, clients and scopes
+            services.AddIdentityServer()
+                .AddTemporarySigningCredential()
+                .AddInMemoryIdentityResources(IdentityConfig.GetIdentityResources())
+                .AddInMemoryApiResources(IdentityConfig.GetApiResources())
+                .AddInMemoryClients(IdentityConfig.GetClients())
+                .AddTestUsers(IdentityConfig.GetUsers());
+
+            services.AddAuthorization(auth =>
+            {
+                auth.AddSecurity();
+            });
+
+            services.AddSingleton<IUserDataService, UserDataService>();
+
+            services.AddSingleton<IUserRepository, UserRepository>();
+            services.AddSingleton<IUserRoleRepository, UserRoleRepository>();
+
+            Action<AccountService.AccountServiceOptions> options = (opt =>
+            {
+                opt.AppDBConnection = Configuration["ConnectionStrings:DefaultConnection"];
+            });
+            services.Configure(options);
+            services.AddSingleton(resolver => resolver.GetRequiredService<IOptions<AccountService.AccountServiceOptions>>().Value);
+
             services.AddMvc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
+
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
@@ -46,6 +80,22 @@ namespace SandboxCore
             {
                 app.UseExceptionHandler("/Home/Error");
             }
+
+            app.UseIdentityServer();
+
+            app.UseCookieAuthentication(new CookieAuthenticationOptions
+            {
+                AuthenticationScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme,
+                AutomaticAuthenticate = false,
+                AutomaticChallenge = false
+            });
+
+            app.UseCookieAuthentication(new CookieAuthenticationOptions
+            {
+                AuthenticationScheme = SandboxCore.Authentication.AuthenticationOptions.AuthScheme,
+                AutomaticAuthenticate = false,
+                AutomaticChallenge = false
+            });
 
             app.UseStaticFiles();
 

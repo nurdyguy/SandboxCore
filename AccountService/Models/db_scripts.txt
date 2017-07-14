@@ -1,0 +1,52 @@
+﻿
+
+
+
+
+
+create table Users(
+	Id 							int identity(1,1) not null,
+	Email 						varchar(50) not null,
+	FirstName					varchar(50) null,
+	LastName					varchar(50) null,
+	Salt						varchar(50) not null default 'x',
+	HashedPassword				varchar(max) not null,
+	TempPassword				varchar(20) null,	
+	IsActive					bit not null default 1,
+	RegisteredOn				datetime null,
+	LastLogOn					datetime null,
+	EmailConfirmed 				bit not null default 0,
+	PhoneNumber 				varchar(20) null,
+	PhoneNumberConfirmed		bit not null default 0,
+	AccessFailedCount			smallint not null default 0,
+	LockoutEnabled 				bit not null default 0,
+	LockoutEnd 					datetime null,	 				
+	ConcurrencyStamp 			varchar(50) null,	
+	TwoFactorEnabled 			bit not null default 0,
+	ThirdPartyGuid				varchar(50) null,
+	UserImageurl				varchar(250) null,
+
+	constraint PK_Users_Id Primary Key (Id),
+	constraint UX_Users_Email UNIQUE NONCLUSTERED  (Email)	
+)
+
+create table Roles(
+	Id							int identity (1,1) primary key not null,
+	Name						varchar(25) not null
+)
+
+
+create table UserRoles(
+	UserId						int not null,
+	RoleId						int not null,
+
+	constraint PK_UserRoles_UserId_RoleId Primary Key (UserId, RoleId),
+)
+
+
+--Seeding--
+--insert into Users (Email, FirstName, LastName, TempPassword, HashedPassword) values ('your@face.org', 'Your', 'Face', 'asdf1234', 'xxxx')
+--insert into Roles values ('Owner'), ('Admin'), ('User')
+--insert into UserRoles values (1, 1)
+
+

@@ -18,7 +18,16 @@
       "enabled": true,
       "renameLocals": true
     },
-    // Optionally generate .map file
+    // Optinally generate .map file
     "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/css/site.css",
+    "inputFiles": [
+      "wwwroot/scss/Site.css"
+      
+      // we bundle all of the css files but make sure there are no
+      // min.css files or we will have dups
+    ]
   }
 ]
