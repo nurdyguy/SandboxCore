@@ -31,8 +31,7 @@ namespace SandboxCore
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
             Configuration = builder.Build();
-            Mappings.AutoMapperConfig.Configure();
-            //Calculator.InitCalculator();  //------------------------------------------------
+            Mappings.AutoMapperConfig.Configure();            
         }
 
         public IConfigurationRoot Configuration { get; }

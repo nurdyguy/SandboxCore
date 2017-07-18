@@ -17,6 +17,11 @@ namespace MathService.Services.Implementations
 {
     public class EulerService : IEulerService
     {
+        public EulerService()
+        {
+            Calculator.InitCalculator();  //------------------------------------------------
+        }
+
         public double RunProblem566(int x, int y, int z)
         {
             var sim = new Problem566(x, y, z);
