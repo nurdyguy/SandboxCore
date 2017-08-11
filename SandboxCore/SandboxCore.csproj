@@ -41,12 +41,6 @@
     <Content Include="wwwroot\lib\bootstrap\dist\css\_bootstrap.scss" />
     <Content Include="wwwroot\scss\accounts.css" />
     <Content Include="wwwroot\scss\accounts.min.css" />
-    <Content Include="wwwroot\scss\_parallax - Copy.css">
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="wwwroot\scss\_parallax - Copy.min.css">
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
     <Content Include="wwwroot\scss\accounts.scss">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>

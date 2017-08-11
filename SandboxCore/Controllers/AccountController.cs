@@ -23,7 +23,6 @@ using SandboxCore.Models;
 namespace SandboxCore.Controllers
 {
     [Authorize]
-    [SecurityHeaders]
     public class AccountController : BaseController
     {
         private readonly IIdentityServerInteractionService _interaction;

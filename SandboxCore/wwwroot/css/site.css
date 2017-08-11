@@ -69,6 +69,10 @@ textarea {
     right: 0;
     margin: auto; }
 
+.form-wrapper {
+  padding: 10px 20px 10px 20px;
+  background-color: tan; }
+
 
 .parallax {
   height: 100vh;
