@@ -1,6 +1,7 @@
-﻿
+﻿@using SandboxCore.Models
+@using SandboxCore.Authentication
 <!DOCTYPE html>
-<html>
+<html lang="en-us">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -8,28 +9,27 @@
 
     <environment names="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap-theme.css" />
         <link rel="stylesheet" href="~/css/site.css" />
         <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/lib/jquery-ui/dist/jquery-ui.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
-        <script src="~/js/site.js" asp-append-version="true"></script>
+        <script src="~/js/site.js" ></script>
     </environment>
     <environment names="Staging,Production">
-        <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.6/css/bootstrap.min.css"
-              asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
-              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
-        <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
-        <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"
-                asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
-                asp-fallback-test="window.jQuery">
-        </script>
-        <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.6/bootstrap.min.js"
-                asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
-                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal">
-        </script>
-        <script src="~/js/site.min.js" asp-append-version="true"></script>
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
+        <link rel="stylesheet" href="~/css/site.min.css" />
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
+        <script src="~/lib/jquery-ui/dist/jquery-ui.min.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script src="~/js/site.min.js"></script>
     </environment>    
 </head>
-<body>
+<body>    
+    <div id="notification" class="notificationContact" tabindex="0">
+        <h3 id="notificationType" class=""></h3>
+        <span id="notificationMessage"></span>
+    </div>
     <nav class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
@@ -46,6 +46,10 @@
                     <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
                     <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
                     <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
+                    @if (User.IsAdmin())
+                    {
+                        <li><a asp-area="" asp-controller="Admin" asp-action="UserManagement">Admin</a></li>
+                    }
                 </ul>
                 @if (User.Identity.IsAuthenticated)
                 {
@@ -78,8 +82,24 @@
         </footer>
     </div>
 
-    
-
     @RenderSection("Scripts", required: false)
+
+    @if (Model is ResultMessage && Model != null && Model.ShowMessage)
+    {
+        var message = (ResultMessage)Model;
+        var type = message.IsError ? "error" : "success";
+        <text>
+            <script>
+                $(document).ready(function ()
+                {
+                    notificationMessage("@message.Message", "@type", false);
+                });
+            </script>
+        </text>
+    }
+
+    <div id="waitingOverlay" class="hidden">
+        <img src="~/images/spinner2.gif" />        
+    </div>
 </body>
 </html>

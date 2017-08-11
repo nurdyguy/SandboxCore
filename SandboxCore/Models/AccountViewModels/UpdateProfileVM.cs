@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace SandboxCore.Models.AccountViewModels
 {
-    public class UpdateProfileVM
+    public class UpdateProfileVM : ResultMessage
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }

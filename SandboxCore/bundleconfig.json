@@ -24,8 +24,10 @@
   {
     "outputFileName": "wwwroot/css/site.css",
     "inputFiles": [
-      "wwwroot/scss/Site.css"
-      
+      "wwwroot/scss/Site.css",
+      "wwwroot/scss/_parallax.css",
+      "wwwroot/scss/userManagement.css",
+      "wwwroot/scss/accounts.css"
       // we bundle all of the css files but make sure there are no
       // min.css files or we will have dups
     ]

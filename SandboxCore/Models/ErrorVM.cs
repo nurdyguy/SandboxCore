@@ -1,9 +1,9 @@
-﻿//using IdentityServer4.Models;
+﻿using IdentityServer4.Models;
 
-//namespace SandboxCore.Models
-//{
-//    public class ErrorVM
-//    {
-//        public ErrorMessage Error { get; set; }
-//    }
-//}
+namespace SandboxCore.Models
+{
+    public class ErrorVM
+    {
+        public ErrorMessage Error { get; set; }
+    }
+}

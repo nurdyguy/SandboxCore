@@ -5,7 +5,7 @@
 
 
 create table Users(
-	Id 							int identity(1,1) not null,
+	UserId 							int identity(1,1) not null,
 	Email 						varchar(50) not null,
 	FirstName					varchar(50) null,
 	LastName					varchar(50) null,
@@ -26,7 +26,7 @@ create table Users(
 	ThirdPartyGuid				varchar(50) null,
 	UserImageurl				varchar(250) null,
 
-	constraint PK_Users_Id Primary Key (Id),
+	constraint PK_Users_Id Primary Key (UserId),
 	constraint UX_Users_Email UNIQUE NONCLUSTERED  (Email)	
 )
 
@@ -41,6 +41,8 @@ create table UserRoles(
 	RoleId						int not null,
 
 	constraint PK_UserRoles_UserId_RoleId Primary Key (UserId, RoleId),
+	constraint FK_UserRoles_UserId Foreign Key (UserId) References Users(UserId),
+	constraint FK_UserRoles_RoleId Foreign Key (RoleId) References Roles(Id)
 )
 
 

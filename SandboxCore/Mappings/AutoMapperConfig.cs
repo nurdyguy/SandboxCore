@@ -10,7 +10,8 @@ namespace SandboxCore.Mappings
         {
             Mapper.Initialize(cfg =>
             {
-                
+                cfg.AddProfile<MappingProfile<SandboxCore.Models.AccountViewModels.UserViewModel, AccountService.Models.User>>();
+                cfg.AddProfile<MappingProfile<SandboxCore.Models.AccountViewModels.RoleViewModel, AccountService.Models.Role>>();
             });
         }
     }

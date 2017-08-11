@@ -22,7 +22,7 @@ namespace AccountService.Repositories.Implementations
         {
             using (var conn = await GetConnection())
             {
-                string query = @"Select * From [Users] Where [Id] = @userId ";
+                string query = @"Select * From [Users] Where [UserId] = @userId ";
                 var result = await conn.QueryAsync<User>(query, new { userId });
                 return result.SingleOrDefault();
             }
@@ -70,7 +70,7 @@ namespace AccountService.Repositories.Implementations
                                     Email = @Email,
                                     PhoneNumber = @PhoneNumber                                
                                 Output Inserted.*
-                                Where [Id] = @Id ";
+                                Where [UserId] = @UserId ";
                 var result = await conn.QueryAsync<User>(query, user);
                 return result.SingleOrDefault();
             }
@@ -85,7 +85,7 @@ namespace AccountService.Repositories.Implementations
                                     Salt = @salt,
                                     HashedPassword = @newHashedPassword                                
                                 Output Inserted.*
-                                Where [Id] = @userId ";
+                                Where [UserId] = @userId ";
                 var result = await conn.QueryAsync<User>(query,
                     new
                     {
@@ -93,7 +93,20 @@ namespace AccountService.Repositories.Implementations
                         newHashedPassword,
                         userId
                     });
-                return result?.SingleOrDefault()?.Id == userId;
+                return result?.SingleOrDefault()?.UserId == userId;
+            }
+        }
+
+
+        public async Task<IEnumerable<User>> GetUsersWithoutUserRole()
+        {
+            using (var conn = await GetConnection())
+            {
+                string query = @"Select * From [Users] u
+                                    left join UserRoles ur on ur.UserId = u.UserId 
+                                 where ur.UserId is null";
+                var result = await conn.QueryAsync<User>(query);
+                return result;
             }
         }
     }

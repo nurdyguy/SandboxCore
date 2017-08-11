@@ -41,3 +41,49 @@ textarea {
 .navbar-inverse {
     background-color: #1b2732;
 }
+
+.validation-summary-valid{
+    display:none;
+}
+
+#notification {
+    top: -40px;
+    position: absolute;
+    z-index: 2000;
+    width: 100%;
+    border-radius: 0 0 30px 30px;
+    color:white;
+    text-align:center;
+    padding-bottom:15px;
+
+    &.successMessage {
+        background-color: green;
+    }
+
+    &.errorMessage {
+        background-color: red;
+    }
+}
+
+#waitingOverlay {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    min-height: 100vh;
+    height: 100%;
+    opacity: 0.5;
+    z-index: 1000;
+    background-color:#141414;
+
+    img {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: auto;
+    }
+}

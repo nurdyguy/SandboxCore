@@ -39,5 +39,30 @@ namespace AccountService.Repositories.Implementations
                 return result.Single();
             }
         }
+
+        public async Task<IEnumerable<UserRole>> GetUserRolesByRole(int roleId)
+        {
+            using (var conn = await GetConnection())
+            {
+                string query = @"Select * From [UserRoles] 
+                                    Where [RoleId] = @roleId ";
+                var result = await conn.QueryAsync<UserRole>(query, new { roleId });
+                return result;
+            }
+        }
+
+        public async Task<UserRole> Delete(int userId, int roleId)
+        {
+            using (var conn = await GetConnection())
+            {
+                string query = @"Delete From [UserRoles] 
+                                 output deleted.*
+                                    Where [RoleId] = @roleId 
+                                    and [UserId] = @userId";
+                var result = await conn.QueryAsync<UserRole>(query, new { roleId, userId });
+                return result.SingleOrDefault();
+            }
+        }
+        
     }
 }

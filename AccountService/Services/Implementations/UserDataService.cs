@@ -64,7 +64,7 @@ namespace AccountService.Services.Implementations
 
             var createdUser = await _userRepo.Create(newUser);
 
-            var CreatedUserRole = await _userRoleRepo.Create(createdUser.Id, Role.User.ID);
+            var CreatedUserRole = await _userRoleRepo.Create(createdUser.UserId, Role.User.ID);
 
             createdUser.Roles = new List<Role>() { Role.User };
 
@@ -97,9 +97,55 @@ namespace AccountService.Services.Implementations
             return result;
         }
 
+        public async Task<IEnumerable<User>> GetUsersByRole(Role role)
+        {
+            var userRoles = await _userRoleRepo.GetUserRolesByRole(role.ID);
+            var users = new List<User>();
+            if (userRoles != null)
+            {
+                users = (await Task.WhenAll(userRoles.Select(ur => GetUser(ur.UserId)))).ToList();
+            }
+            return users;
+        }
 
+        public async Task<IEnumerable<User>> GetUsersWithoutRole()
+        {
+            var users = await _userRepo.GetUsersWithoutUserRole();
 
+            // don't need to build up UserRole
+            //await Task.WhenAll(users.Select(u => BuildUpUser(u)));
+            return users;
+        }
 
+        public async Task<bool> RemoveUserFromRole(int userId, int roleId)
+        {
+            if (userId == 0)
+                throw new Exception("Invalid userId");
+            if (roleId == 0)
+                throw new Exception("Invalid roleId");
+
+            var removedUserRole = await _userRoleRepo.Delete(userId, roleId);
+
+            if (removedUserRole != null)
+                return true;
+            else
+                return false;
+        }
+
+        public async Task<bool> AddUserToRole(int userId, int roleId)
+        {
+            if (userId == 0)
+                throw new Exception("Invalid userId");
+            if (roleId == 0)
+                throw new Exception("Invalid roleId");
+
+            var newUserRole = await _userRoleRepo.Create(userId, roleId);
+
+            if (newUserRole != null)
+                return true;
+            else
+                return false;
+        }
 
 
 
@@ -145,7 +191,7 @@ namespace AccountService.Services.Implementations
 
         private async Task BuildUpUser(User user)
         {
-            var userRoles = await _userRoleRepo.GetUserRolesByUser(user.Id);
+            var userRoles = await _userRoleRepo.GetUserRolesByUser(user.UserId);
             user.Roles = userRoles.Select(ur => ur.Role);
         }
 

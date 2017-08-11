@@ -8,27 +8,23 @@
     @Html.Partial("_ValidationSummary")
 
     <div class="row">
-
         @if (Model.EnableLocalLogin)
         {
             <div class="col-sm-6">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Local Login</h3>
-                    </div>
+                <div class="panel panel-default">                    
                     <div class="panel-body">
-                        <form asp-route="Login">
+                        <form asp-route="Login" id="loginForm">
                             <input type="hidden" asp-for="ReturnUrl" />
                             <fieldset>
-                                <div class="form-group"><!-- add some styling here eventually....-->
-                                    <label asp-for="Username" class="col-md-2 control-label"></label>
+                                <div class="form-group">
+                                    <label asp-for="Username" class=" control-label"></label>
                                     <div>
                                         <input class="form-control" placeholder="Username" asp-for="Username" autofocus>
                                         <span asp-validation-for="Username" class="text-danger"></span>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label asp-for="Password" class="col-md-2 control-label"></label>
+                                    <label asp-for="Password" class=" control-label"></label>
                                     <div>
                                         <input type="password" class="form-control" placeholder="Password" asp-for="Password" autocomplete="off">
                                         <span asp-validation-for="Password" class="text-danger"></span>
@@ -95,11 +91,9 @@
 </environment>
 <environment names="Staging,Production">
     <script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.14.0/jquery.validate.min.js"
-            asp-fallback-src="~/lib/jquery-validation/dist/jquery.validate.min.js"
-            asp-fallback-test="window.jQuery && window.jQuery.validator">
+            asp-fallback-src="~/lib/jquery-validation/dist/jquery.validate.min.js">
     </script>
     <script src="https://ajax.aspnetcdn.com/ajax/jquery.validation.unobtrusive/3.2.6/jquery.validate.unobtrusive.min.js"
-            asp-fallback-src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"
-            asp-fallback-test="window.jQuery && window.jQuery.validator && window.jQuery.validator.unobtrusive">
+            asp-fallback-src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js">
     </script>
 </environment>

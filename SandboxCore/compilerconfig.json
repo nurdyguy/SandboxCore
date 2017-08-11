@@ -2,5 +2,17 @@
   {
     "outputFile": "wwwroot/scss/Site.css",
     "inputFile": "wwwroot/scss/Site.scss"
+  },
+  {
+    "outputFile": "wwwroot/scss/_parallax.css",
+    "inputFile": "wwwroot/scss/_parallax.scss"
+  },
+  {
+    "outputFile": "wwwroot/scss/userManagement.css",
+    "inputFile": "wwwroot/scss/userManagement.scss"
+  },
+  {
+    "outputFile": "wwwroot/scss/accounts.css",
+    "inputFile": "wwwroot/scss/accounts.scss"
   }
 ]

@@ -11,6 +11,7 @@ namespace AccountService.Models
         public static readonly Role Owner = new Role(1, "Owner");
         public static readonly Role Admin = new Role(2, "Admin");
         public static readonly Role User = new Role(3, "User");
+        public static readonly Role AHL = new Role(2003, "AHL");
 
         [JsonConstructor]
         private Role(int id, string name)
@@ -26,6 +27,7 @@ namespace AccountService.Models
                 case 1: return Owner;
                 case 2: return Admin;
                 case 3: return User;
+                case 2003: return AHL;
                 default: return null;
             }
         }
@@ -37,6 +39,7 @@ namespace AccountService.Models
                 Owner,
                 Admin,
                 User,
+                AHL
             };
         }
     }

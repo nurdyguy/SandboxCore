@@ -7,7 +7,7 @@
         <div id="UserImage">
 
         </div>
-        <div class="well bs-component">
+        <div class=" bs-component">
             <form class="form-horizontal" asp-route-returnurl="@ViewContext.HttpContext.Request.Query["returnUrl"]">
                 <fieldset>
                     <div class="form-group">
@@ -61,9 +61,9 @@
 @section scripts
 {
     <environment names="Development">
-        <script src="~/js/account/MyProfile.js" asp-append-version="true"></script>
+        <script src="~/js/account/MyProfile.js" ></script>
     </environment>
     <environment names="Staging,Production">
-        <script src="~/js/account/MyProfile.js.min" asp-append-version="true"></script>
+        <script src="~/js/account/MyProfile.js.min" ></script>
     </environment>   
 }

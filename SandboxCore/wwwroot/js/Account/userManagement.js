@@ -4,7 +4,7 @@ $(document).ready(function ()
 {
     $('.userContainer').on('click', '.user', function ()
     {
-        $(this).toggleClass('selected');
+        $(this).toggleClass('active');
 
         //$dragging = $(this).closest('div.userContainer').find('div.user.selected');
     }).sortable(
@@ -85,13 +85,13 @@ $(document).ready(function ()
             dataType: "json",
             contentType: "application/json; charset=utf-8",
             data: JSON.stringify(newRoles),
-            success: function ()
+            success: function (result)
             {
-                //notificationMessage("Success!!", "success"); ResetFullPageAfterAction();
+                notificationMessage("New roles saved successfully.", "success"); 
             },
             error: function (e1, e2, e3)
             {
-                //notificationMessage("Something went wrong resending all invites: " + e1 + " " + e2 + " " + e3, "error");
+                notificationMessage("Something went wrong: " + e1 + " " + e2 + " " + e3, "error");
             },
             complete: function ()
             {

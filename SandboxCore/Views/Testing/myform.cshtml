@@ -1,0 +1,20 @@
+﻿@{
+    ViewData["Title"] = "Form Test";
+}
+
+
+
+@using(Html.BeginForm("myform", "testing", new {code = "" }))
+{
+    <input type="text" value="123" />
+}
+
+
+<form id="theId" asp-controller="testing" asp-action="myform" asp-route-id="" asp-route-code="">
+    <input type="text" value="asdf" />
+    
+</form>
+
+
+
+

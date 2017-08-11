@@ -293,7 +293,11 @@ namespace SandboxCore.Controllers
             return View();
         }
 
-        
+        [HttpGet]
+        public IActionResult Parallax()
+        {
+            return View();
+        }
 
         #region privateMethods
 

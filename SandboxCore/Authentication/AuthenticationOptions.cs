@@ -6,7 +6,7 @@ namespace SandboxCore.Authentication
 {
     public static class AuthenticationOptions
     {
-        public static readonly string AuthScheme = "idsrv.scheme";
+        public static readonly string AuthScheme = "sbx.scheme";
         public static readonly string UserSubjectPrefix = "user";
         public static string InvalidCredentialsErrorMessage = "Invalid username or password";
         public static bool ShowLogoutPrompt = false;

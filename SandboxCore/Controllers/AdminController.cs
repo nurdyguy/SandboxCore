@@ -8,7 +8,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using AutoMapper;
 
+using AccountService.Services.Contracts;
 using AccountService.Services.Implementations;
+using AccountService.Models;
 
 using SandboxCore.Authentication;
 using SandboxCore.Models.AccountViewModels;
@@ -19,82 +21,81 @@ namespace SandboxCore.Controllers
     [Authorize("Admin")]
     public class AdminController : Controller
     {
-        private readonly UserDataService _userDataService;
+        private readonly IUserDataService _userDataService;
         private IMemoryCache _memoryCache;
 
-        public AdminController(UserDataService userDataService, IMemoryCache memCache)
+        public AdminController(IUserDataService userDataService, IMemoryCache memCache)
         {
             _userDataService = userDataService;
             _memoryCache = memCache;
         }
-      
-        //[HttpGet, Route("Admin/UserManagement")]
-        //public async Task<IActionResult> UserManagement()
-        //{
-        //    var owners = await _userDataService.GetUsersInRoleAsync("Owner");
-        //    var admins = await _userDataService.GetUsersInRoleAsync("Admin");
-        //    var users = (await _userDataService.GetUsersInRoleAsync("User")).ToList();
 
-        //    var norole = await _userDataService.GetAllUsersWithoutRoles();
-        //    users.AddRange(norole);
-            
-        //    var vm = new UserManagementViewModel()
-        //    {
-        //        Owners = Mapper.Map<List<UserViewModel>>(owners),
-        //        Admins = Mapper.Map<List<UserViewModel>>(admins),
-        //        Users = Mapper.Map<List<UserViewModel>>(users),
-        //    };
+        [HttpGet, Route("Admin/UserManagement")]
+        public async Task<IActionResult> UserManagement()
+        {
+            var owners = await _userDataService.GetUsersByRole(Role.Owner);
+            var admins = await _userDataService.GetUsersByRole(Role.Admin);
+            var users = (await _userDataService.GetUsersByRole(Role.User)).ToList();
+
+            var norole = await _userDataService.GetUsersWithoutRole();
+            users.AddRange(norole);
+
+            var vm = new UserManagementViewModel()
+            {
+                Owners = Mapper.Map<List<UserViewModel>>(owners),
+                Admins = Mapper.Map<List<UserViewModel>>(admins),
+                Users = Mapper.Map<List<UserViewModel>>(users),
+            };
 
 
-        //    return View(vm);
-        //}
-        
-        //[HttpPost]
-        //public async Task<IActionResult> UpdateUserRoles([FromBody] UpdateUserRolesViewModel request)
-        //{
-        //    var success = true;
-        //    var message = "";
+            return View(vm);
+        }
 
-        //    if (!User.IsOwner())
-        //    {
-        //        request.NewOwners = new List<int>();
-        //        message = "Admins cannot create Owners!";
-        //    }
-            
-        //    var allRoles = new List<string>() { "Owner", "Admin", "User" };
-        //    try
-        //    {
-        //        var tasks = new List<Task>();
-        //        tasks.AddRange(request.NewOwners.Select(o => ProcessRoleChange(o, "Owner", allRoles)));
-        //        tasks.AddRange(request.NewAdmins.Select(a => ProcessRoleChange(a, "Admin", allRoles)));
-        //        tasks.AddRange(request.NewUsers.Select(u => ProcessRoleChange(u, "User", allRoles)));
+        [HttpPost]
+        public async Task<IActionResult> UpdateUserRoles([FromBody] UpdateUserRolesViewModel request)
+        {
+            var success = true;
+            var message = "";
 
-        //        await Task.WhenAll(tasks);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        success = false;
-        //        message = ex.Message;
-        //    }
+            if (!User.IsOwner())
+            {
+                request.NewOwners = new List<int>();
+                message = "Admins cannot create Owners!";
+            }
 
-        //    return Json(new { Success = success, Message = message });
-        //}
-        
+            var allRoles = new List<Role>() { Role.Owner, Role.Admin, Role.User };
+            try
+            {
+                var tasks = new List<Task>();
+                //allRoles.ForEach(r => tasks.AddRange(request.NewOwners.Select(o => ProcessRoleChange(o, r, allRoles))));
+                tasks.AddRange(request.NewOwners.Select(o => ProcessRoleChange(o, Role.Owner, allRoles)));
+                tasks.AddRange(request.NewAdmins.Select(a => ProcessRoleChange(a, Role.Admin, allRoles)));
+                tasks.AddRange(request.NewUsers.Select(u => ProcessRoleChange(u, Role.User, allRoles)));
 
-        //private async Task ProcessRoleChange(int userId, string newRole, List<string> allRoles)
-        //{
-        //    var user = await _userDataService.FindByIdAsync(userId.ToString());
+                await Task.WhenAll(tasks);
+            }
+            catch (Exception ex)
+            {
+                success = false;
+                message = ex.Message;
+            }
 
-        //    if (user.Id == 0)
-        //        return;
+            return Json(new { Success = success, Message = message });
+        }
 
-        //    var currRoles = await _userDataService.GetRolesAsync(user);
-        //    var toRemove = currRoles.Where(cr => allRoles.Contains(cr));
+        private async Task ProcessRoleChange(int userId, Role newRole, List<Role> allRoles)
+        {
+            var user = await _userDataService.GetUser(userId);
 
-        //    await Task.WhenAll(toRemove.Select(r => _userDataService.RemoveFromRoleAsync(user, r)));
+            if (user.UserId == 0)
+                return;
 
-        //    await _userDataService.AddToRoleAsync(user, newRole);
-        //}
-        
+            var currRoles = user.Roles;
+            var toRemove = currRoles.Where(cr => allRoles.Contains(cr));
+
+            await Task.WhenAll(toRemove.Select(r => _userDataService.RemoveUserFromRole(user.UserId, r.ID)));
+
+            await _userDataService.AddUserToRole(user.UserId, newRole.ID); 
+    }
     }
 }

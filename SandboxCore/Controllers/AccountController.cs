@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Security.Claims;
+using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -13,17 +14,17 @@ using IdentityServer4.Models;
 
 using AccountService.Services.Contracts;
 using AccountService.Models;
+using AccountService.Models.RequestModels;
 
 using SandboxCore.Authentication;
 using SandboxCore.Models.AccountViewModels;
-using System.Text.RegularExpressions;
-using AccountService.Models.RequestModels;
+using SandboxCore.Models;
 
 namespace SandboxCore.Controllers
 {
     [Authorize]
     [SecurityHeaders]
-    public class AccountController : Controller
+    public class AccountController : BaseController
     {
         private readonly IIdentityServerInteractionService _interaction;
         private readonly IUserDataService _userDataService;
@@ -58,7 +59,7 @@ namespace SandboxCore.Controllers
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginInputVM model)
-        {
+        { 
             if (ModelState.IsValid)
             {
                 // check password
@@ -86,6 +87,7 @@ namespace SandboxCore.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> Logout()
         {
             // delete local authentication cookie
@@ -154,7 +156,7 @@ namespace SandboxCore.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> MyProfile()
+        public async Task<IActionResult> MyProfile(ResultMessage message = null)
         {
             var user = await _userDataService.GetUser(User.UserId());            
             if(user != null)
@@ -166,6 +168,9 @@ namespace SandboxCore.Controllers
                     LastName = user.LastName,
                     PhoneNumber = user.PhoneNumber
                 };
+                if(message != null)
+                    AddMessageFields(vm, message);
+                
                 return View(vm);
             }
             return View(new UpdateProfileVM());
@@ -195,7 +200,7 @@ namespace SandboxCore.Controllers
             {
                 var updatePasswordRequest = new UpdateUserPasswordRequestModel()
                 {
-                    UserId = user.Id,
+                    UserId = user.UserId,
                     NewPassword = model.NewPassword
                 };
                 var success = await _userDataService.UpdateUserPassword(updatePasswordRequest);
@@ -204,7 +209,8 @@ namespace SandboxCore.Controllers
             await HttpContext.Authentication.SignOutAsync();
             await LogUserIn(user, false);
 
-            return View();
+            var result = new ResultMessage() { ShowMessage = true, IsError = false, Message = "Profile Updated Successfully" };
+            return await MyProfile(result);
         }
 
         [HttpPost]
@@ -214,7 +220,7 @@ namespace SandboxCore.Controllers
                 return Json(new { Available = false });
 
             var user = await _userDataService.GetUserByUsername(email);
-            if (user == null || user.Id == User.UserId())
+            if (user == null || user.UserId == User.UserId())
                 return Json(new { Available = true });
             else
                 return Json(new { Available = false });
@@ -234,8 +240,9 @@ namespace SandboxCore.Controllers
             claims.Add(new Claim(JwtClaimTypes.GivenName, user.FirstName ?? ""));
             claims.Add(new Claim(JwtClaimTypes.FamilyName, user.LastName ?? ""));
             claims.Add(new Claim(JwtClaimTypes.Name, displayName));
-            claims.Add(new Claim(AuthenticationClaims.UserIdClaim, user.Id.ToString()));
-            claims.Add(new Claim(JwtClaimTypes.Role, user.Roles?.OrderBy(r => r.ID)?.FirstOrDefault()?.Name ?? ""));
+            claims.Add(new Claim(AuthenticationClaims.UserIdClaim, user.UserId.ToString()));
+
+            user.Roles.ToList().ForEach(r => claims.Add(new Claim(JwtClaimTypes.Role, r.Name)));
             
             return claims;
         }
@@ -248,7 +255,7 @@ namespace SandboxCore.Controllers
             if (string.IsNullOrWhiteSpace(displayName))
                 displayName = user.Email;
 
-            var subject = (AuthenticationOptions.UserSubjectPrefix + user.Id.ToString()).Sha256();
+            var subject = (AuthenticationOptions.UserSubjectPrefix + user.UserId.ToString()).Sha256();
             var props = (AuthenticationProperties)null;
             if (rememberLogin)
             {

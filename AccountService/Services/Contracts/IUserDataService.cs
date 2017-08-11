@@ -1,6 +1,8 @@
 ﻿using System.Threading.Tasks;
+using System.Collections.Generic;
 using AccountService.Models;
 using AccountService.Models.RequestModels;
+
 
 namespace AccountService.Services.Contracts
 {
@@ -18,5 +20,11 @@ namespace AccountService.Services.Contracts
         Task<User> UpdateUser(UpdateUserRequestModel request);
 
         Task<bool> UpdateUserPassword(UpdateUserPasswordRequestModel request);
+
+        Task<IEnumerable<User>> GetUsersByRole(Role role);
+        Task<IEnumerable<User>> GetUsersWithoutRole();
+
+        Task<bool> RemoveUserFromRole(int userId, int roleId);
+        Task<bool> AddUserToRole(int userId, int roleId);
     }
 }

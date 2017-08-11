@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
-
+using System.Collections.Generic;
 using AccountService.Models;
+
 
 namespace AccountService.Repositories.Contracts
 {
@@ -14,5 +15,8 @@ namespace AccountService.Repositories.Contracts
         Task<User> UpdateUser(User user);
 
         Task<bool> UpdateUserPassword(int userId, string salt, string hashedPassword);
+
+
+        Task<IEnumerable<User>> GetUsersWithoutUserRole();
     }
 }

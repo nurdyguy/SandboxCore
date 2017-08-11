@@ -1,9 +1,10 @@
-﻿using SandboxCore.Authentication;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using IdentityModel;
+using SandboxCore.Authentication;
 
 namespace SandboxCore.Authentication
 {
@@ -11,12 +12,12 @@ namespace SandboxCore.Authentication
     {   
         public static bool IsOwner(this ClaimsPrincipal principal)
         {
-            return principal.HasClaim(x => x.Type == AuthenticationClaims.RoleClaim && (x.Value == "Owner"));
+            return principal.HasClaim(x => x.Type == JwtClaimTypes.Role && (x.Value == "Owner"));
         }
         
         public static bool IsAdmin(this ClaimsPrincipal principal)
         {
-            return principal.HasClaim(x => x.Type == AuthenticationClaims.RoleClaim && (x.Value == "Owner" || x.Value == "Admin"));
+            return principal.HasClaim(x => x.Type == JwtClaimTypes.Role && (x.Value == "Owner" || x.Value == "Admin"));
         }
         
         public static int UserId(this ClaimsPrincipal principal)
