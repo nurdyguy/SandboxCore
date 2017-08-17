@@ -13,7 +13,7 @@ using Microsoft.Extensions.Caching.Memory;
 using System.Collections.Concurrent;
 
 
-using _calc = MathService.Models.Constants.CombinationsCalculator;
+using _calc = MathService.Models.Constants.Calculator;
 using System.Threading;
 
 namespace SandboxCore.Controllers
@@ -33,6 +33,13 @@ namespace SandboxCore.Controllers
            
 
             return View();
+        }
+
+        [Route("Calculator/{n:int}/choose/{r:int}")]
+        public IActionResult CalcTest(int n, int r)
+        {
+            var result = _calc.nCr(n, r);
+            return Json(new { Result = result });
         }
         
         [HttpGet]

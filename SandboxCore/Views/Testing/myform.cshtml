@@ -17,9 +17,11 @@
 
 @{
     var someid = "asdf";
+    string x = null;
     string baseRoute = Url.Action("myform", "testing", new { code = "" }).ToString();
     
 }
 
+<button data-id="@(x ?? "0")"></button>
 
 
