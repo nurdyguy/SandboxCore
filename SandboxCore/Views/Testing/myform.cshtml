@@ -24,4 +24,35 @@
 
 <button data-id="@(x ?? "0")"></button>
 
+<div class="face" data-face="red"></div>
+<div class="face" data-face="green"></div>
 
+<div class="yourface" data-face="red">face 1</div>
+<div class="yourface" data-face="green">face 2</div>
+
+
+@{ 
+    var item = new { LinkToPage = "/Events/index" };
+}
+
+<a title="" class="videocarouselText" href=@item.LinkToPage.ToString()>
+    <div class="textMobileCut" style="text-align:center;">
+        asdf
+    </div>
+</a>
+        
+
+
+
+<script>
+    $(document).ready(function()
+    {
+        var html = "";
+        $('.yourface').each(function ()
+        {
+            $('.face[data-face=' + $(this).data('face') + ']').html($(this).html());
+
+        });
+        console.log(html);
+    });
+</script>

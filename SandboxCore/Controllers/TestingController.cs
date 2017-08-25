@@ -13,8 +13,10 @@ using Microsoft.Extensions.Caching.Memory;
 using System.Collections.Concurrent;
 
 
+using _Bcalc = MathService.Models.Constants.BigIntegerCalculator;
 using _calc = MathService.Models.Constants.Calculator;
 using System.Threading;
+using MathService.Models.Constants;
 
 namespace SandboxCore.Controllers
 {
@@ -30,9 +32,16 @@ namespace SandboxCore.Controllers
       
         public IActionResult Index()
         {
-           
+            //Debug.WriteLine("------------------------------------------------------------");
+            //for (var i = 0; i < 200; i++)
+            //{
+            //    var line = "";
+            //    for (var j = 1; j <= 5; j++)
+            //        line += "\"" + _calc.Factorial(5*i + j) + "\", ";
 
-            return View();
+            //    Debug.WriteLine(line);
+            //}
+            return Json(new { timer = (new System.Numerics.BigInteger(800)).Factorial() });
         }
 
         [Route("Calculator/{n:int}/choose/{r:int}")]
