@@ -26,22 +26,28 @@
     <Content Include="wwwroot\js\logoutRedirect.min.js">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
+    <Content Include="wwwroot\js\Testing\looksPromising.js" />
     <Content Include="wwwroot\lib\bootstrap\dist\css\bootstrap-bup.css">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
-    <Content Include="wwwroot\lib\bootstrap\dist\css\bootstrap-bup.css.map">
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
     <Content Include="wwwroot\lib\bootstrap\dist\css\bootstrap-bup.min.css">
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="wwwroot\lib\bootstrap\dist\css\bootstrap-bup.min.css.map">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
     <Content Include="wwwroot\lib\bootstrap\dist\css\_bootstrap.scss" />
     <Content Include="wwwroot\scss\accounts.css" />
     <Content Include="wwwroot\scss\accounts.min.css" />
     <Content Include="wwwroot\scss\accounts.scss">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="wwwroot\scss\testing.css" />
+    <Content Include="wwwroot\scss\testing.min.css" />
+    <Content Include="wwwroot\scss\_parallax - Copy.css">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="wwwroot\scss\_parallax - Copy.min.css">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="wwwroot\scss\testing.scss">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
     <Content Include="wwwroot\scss\_parallax.scss" />

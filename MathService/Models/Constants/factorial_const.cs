@@ -226,7 +226,7 @@ namespace MathService.Models.Constants
         public static BigInteger Factorial(this BigInteger n)
         {
             int _n;
-            if (int.TryParse(n.ToString(), out _n) && _n <= _factStrings.Length)            
+            if (int.TryParse(n.ToString(), out _n) && _n < _factStrings.Length)            
                 return BigInteger.Parse(_factStrings[_n]);
 
             BigInteger i = new BigInteger(_factStrings.Length - 1);
@@ -281,5 +281,6 @@ namespace MathService.Models.Constants
         {
             return new BigInteger(n).PartialFactorial(new BigInteger(x));
         }
+
     }
 }

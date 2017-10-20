@@ -17,13 +17,16 @@ using _Bcalc = MathService.Models.Constants.BigIntegerCalculator;
 using _calc = MathService.Models.Constants.Calculator;
 using System.Threading;
 using MathService.Models.Constants;
+using SandboxCore.Filters;
+using System.Numerics;
+using SandboxCore.Models;
 
 namespace SandboxCore.Controllers
 {
     [AllowAnonymous]
-    public class TestingController : Controller
+    public class TestingController : BaseController
     {
-        private IMemoryCache _memoryCache;
+        private IMemoryCache _memoryCache;        
 
         public TestingController(IMemoryCache memCache)
         {
@@ -44,11 +47,18 @@ namespace SandboxCore.Controllers
             return Json(new { timer = (new System.Numerics.BigInteger(800)).Factorial() });
         }
 
-        [Route("Calculator/{n:int}/choose/{r:int}")]
-        public IActionResult CalcTest(int n, int r)
+        [Route("Calculator/{n}/choose/{r}")]
+        public IActionResult CalcTest(string n, string r)
         {
-            var result = _calc.nCr(n, r);
-            return Json(new { Result = result });
+            var _n = BigInteger.Parse(n);
+            var _r = BigInteger.Parse(r);
+            var watch = new Stopwatch();
+            watch.Start();
+            BigInteger result;
+            for(var i = 0; i < 1000; i++)
+                result = _Bcalc.nCr(_n, _r);
+            watch.Stop();
+            return Json(new { time = watch.ElapsedMilliseconds });
         }
         
         [HttpGet]
@@ -303,14 +313,46 @@ namespace SandboxCore.Controllers
             return Json(new { timers, counter });
         }
 
+        [TestActionFilter]
         [HttpGet, Route("testing/MyForm/{code}")]
         public IActionResult MyForm(string code)
         {
             return View();
         }
 
+        [HttpGet, Route("testing/dictionary")]
+        public IActionResult DictionaryTest()
+        {
+            return View();
+        }
+
+        [HttpPost, Route("testing/dictionary")]
+        public IActionResult DictionaryTest(DictionaryViewModel model)
+        {
+
+            return new JsonResult(model.Dictionary);
+        }
+
+        [HttpGet, Route("testing/forceWait/{span:int}")]
+        public IActionResult ForceWait(int span)
+        {
+            if (span == 0)
+                span = 10;
+            span *= 1000;
+
+            Thread.Sleep(span);
+
+            return Ok();
+        }
+
         [HttpGet]
         public IActionResult Parallax()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult Promises()
         {
             return View();
         }

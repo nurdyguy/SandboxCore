@@ -128,3 +128,21 @@ textarea {
 
 #loginForm {
   padding-top: 10px; }
+
+
+/*950x392*/
+/*13x98*/
+.c {
+  display: inline-block;
+  float: left;
+  background-image: url(/images/mulley.jpg);
+  background-size: 1290% 395%;
+  background-repeat: no-repeat;
+  width: 36px;
+  height: 49px;
+  border-radius: 3px; }
+  .c.selected {
+    width: 52px;
+    height: 60px; }
+  .c.c-1-1 {
+    background-position: 0 0; }
