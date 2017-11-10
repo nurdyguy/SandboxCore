@@ -1,0 +1,21 @@
+﻿@using SandboxCore.Models;
+@{
+    ViewData["Title"] = "Test";
+}
+
+
+@{var model = ViewData["stuff"] as TestViewModel;}
+
+<script>
+    var m = {
+
+            @foreach(var s in model.Strings)
+            {
+                <text>
+                    '@s': '@s',
+                </text>
+            }
+        
+    }
+    
+</script>

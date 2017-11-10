@@ -320,6 +320,35 @@ namespace SandboxCore.Controllers
             return View();
         }
 
+        [HttpPost, Route("testing/MyForm/")]
+        public IActionResult MyForm()
+        {
+            
+            return View();
+        }
+
+        [HttpGet, Route("testing/test")]
+        public IActionResult Test()
+        {
+            var vm = new TestViewModel()
+            {
+                ResultMessage = new ResultMessage()
+                {
+                    IsError = false,
+                    Message = "Your Face",
+                    ShowMessage = false
+                },
+                Strings = new List<string>()
+                {
+                    "text1", "text2", "text3"
+                }
+            };
+
+            ViewData["stuff"] = vm;
+            return View();
+        }
+
+
         [HttpGet, Route("testing/dictionary")]
         public IActionResult DictionaryTest()
         {

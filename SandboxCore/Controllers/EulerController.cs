@@ -53,5 +53,10 @@ namespace SandboxCore.Controllers
             return Json(new { timers, Result = result.ToString() });
         }
 
+        [HttpPost, Route("Euler/post")]
+        public IActionResult TestPost()
+        {
+            return null;
+        }
     }
 }
