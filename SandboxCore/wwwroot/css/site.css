@@ -167,3 +167,27 @@ textarea {
       width: 100%;
       opacity: .3;
       border-bottom: 1px dotted white; }
+
+
+#msgWrapper {
+  min-height: 600px;
+  min-width: 400px; }
+  #msgWrapper #msgs {
+    padding: 10px 10px 10px 10px;
+    min-height: 580px;
+    min-width: 380px;
+    background-color: lightslategray; }
+    #msgWrapper #msgs .msg {
+      height: 25px;
+      width: 100%;
+      border: 1px solid lightgray;
+      display: block;
+      overflow: hidden;
+      white-space: nowrap; }
+
+#inputWrapper {
+  height: 50px;
+  width: 100%; }
+  #inputWrapper #msgInput {
+    height: 100%;
+    max-width: 100%; }

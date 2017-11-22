@@ -30,6 +30,11 @@ namespace SandboxCore
                 policy.RequireAuthenticatedUser();
                 policy.RequireRole("AHL");
             });
+
+            auth.AddPolicy("Chat", policy =>
+            {
+                policy.RequireAuthenticatedUser();
+            });
         }
     }
 }

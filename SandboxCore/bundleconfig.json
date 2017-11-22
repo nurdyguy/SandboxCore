@@ -28,7 +28,8 @@
       "wwwroot/scss/_parallax.css",
       "wwwroot/scss/userManagement.css",
       "wwwroot/scss/accounts.css",
-      "wwwroot/scss/testing.css"
+      "wwwroot/scss/testing.css",
+      "wwwroot/scss/chat.css"
       // we bundle all of the css files but make sure there are no
       // min.css files or we will have dups
     ]

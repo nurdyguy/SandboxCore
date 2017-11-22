@@ -20,6 +20,7 @@
     </Content>
     <Content Include="wwwroot\js\Account\MyProfile.min.js" />
     <Content Include="wwwroot\js\Account\UserManagement.min.js" />
+    <Content Include="wwwroot\js\chat.js" />
     <Content Include="wwwroot\js\logoutRedirect.js">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
@@ -40,14 +41,15 @@
     <Content Include="wwwroot\scss\accounts.scss">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
+    <Content Include="wwwroot\scss\chat.css" />
+    <Content Include="wwwroot\scss\chat.min.css" />
+    <Content Include="wwwroot\scss\chat.scss" />
+    <Content Include="wwwroot\scss\testing - Copy.css" />
+    <Content Include="wwwroot\scss\testing - Copy.scss">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
     <Content Include="wwwroot\scss\testing.css" />
     <Content Include="wwwroot\scss\testing.min.css" />
-    <Content Include="wwwroot\scss\_parallax - Copy.css">
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="wwwroot\scss\_parallax - Copy.min.css">
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
     <Content Include="wwwroot\scss\testing.scss">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
@@ -62,6 +64,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="1.1.2" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="1.1.3" />
     <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="1.1.2" />
+    <PackageReference Include="Microsoft.AspNetCore.WebSockets" Version="1.0.2" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="1.1.2" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="1.1.2" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="1.1.2" />

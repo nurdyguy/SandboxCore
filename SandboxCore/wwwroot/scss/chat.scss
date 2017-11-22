@@ -1,0 +1,35 @@
+﻿
+
+
+#msgWrapper{
+    min-height:600px;
+    min-width:400px;
+
+    #msgs{
+        padding:10px 10px 10px 10px;
+        min-height:580px;
+        min-width:380px;
+        background-color:lightslategray;
+        .msg {
+            height:25px;
+            width: 100%;
+            border: 1px solid lightgray;
+            display: block;
+            overflow: hidden;            
+            white-space: nowrap;
+        }
+    }
+
+}
+
+#inputWrapper{
+    height:50px;
+    width:100%;
+
+    #msgInput{
+        height:100%;
+        max-width:100%;
+    }
+}
+
+

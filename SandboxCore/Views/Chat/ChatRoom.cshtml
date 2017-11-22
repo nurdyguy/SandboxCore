@@ -1,0 +1,22 @@
+﻿@model string
+@{
+    ViewData["Title"] = "Chat";
+}
+@using SandboxCore.Authentication;
+
+<script>
+    var userName = '@User.Identity.Name'
+</script>
+<script src="~/js/chat.js"></script>
+
+
+<div class="row">
+    <div id="msgWrapper" class="col-xs-12">
+        <div id="msgs" class="col-xs-12"></div>
+    </div>
+
+    <div id="inputWrapper" class="col-xs-12">
+        <input type="text" id="msgInput" class="col-xs-12" placeholder="type message and press enter" />
+    </div>
+</div>
+

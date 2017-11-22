@@ -18,5 +18,9 @@
   {
     "outputFile": "wwwroot/scss/testing.css",
     "inputFile": "wwwroot/scss/testing.scss"
+  },
+  {
+    "outputFile": "wwwroot/scss/chat.css",
+    "inputFile": "wwwroot/scss/chat.scss"
   }
 ]

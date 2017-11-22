@@ -9,17 +9,19 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Http;
+using IdentityServer4;
 using React.AspNet;
 
 using AccountService.Services.Contracts;
 using AccountService.Services.Implementations;
 using AccountService.Repositories.Contracts;
 using AccountService.Repositories.Implementations;
-
-using SandboxCore.Authentication;
-using IdentityServer4;
 using MathService.Services.Contracts;
 using MathService.Services.Implementations;
+
+using SandboxCore.Authentication;
+using SandboxCore.Middleware;
+using SandboxCore.Helpers;
 
 namespace SandboxCore
 {
@@ -60,6 +62,8 @@ namespace SandboxCore
             services.AddSingleton<IUserRoleRepository, UserRoleRepository>();
 
             services.AddSingleton<IEulerService, EulerService>();
+
+            services.AddSingleton<ChatSocketManager>();
 
             Action<AccountService.AccountServiceOptions> options = (opt =>
             {
@@ -128,6 +132,9 @@ namespace SandboxCore
             });
 
             app.UseStaticFiles();
+
+            app.UseWebSockets();
+            app.UseMiddleware<ChatWebSocketMiddleware>();
 
             app.UseMvc(routes =>
             {

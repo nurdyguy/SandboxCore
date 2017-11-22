@@ -373,7 +373,7 @@ namespace SandboxCore.Controllers
 
             return Ok();
         }
-
+        
         [HttpGet]
         public IActionResult Parallax()
         {
