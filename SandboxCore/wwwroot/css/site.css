@@ -146,3 +146,24 @@ textarea {
     height: 60px; }
   .c.c-1-1 {
     background-position: 0 0; }
+
+#container {
+  height: 700px;
+  width: 250px;
+  overflow-y: hidden;
+  position: relative; }
+  #container .fast {
+    position: absolute;
+    top: 0; }
+    #container .fast div {
+      height: 80px;
+      width: 100%; }
+  #container .slow {
+    width: 100%;
+    position: absolute;
+    top: 0; }
+    #container .slow div {
+      height: 80px;
+      width: 100%;
+      opacity: .3;
+      border-bottom: 1px dotted white; }
