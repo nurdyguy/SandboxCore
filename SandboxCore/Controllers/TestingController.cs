@@ -1,24 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Threading;
+using System.Numerics;
+using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using AutoMapper;
 
 
 
-using System.Diagnostics;
+
 using Microsoft.Extensions.Caching.Memory;
-using System.Collections.Concurrent;
 
 
-using _Bcalc = MathService.Models.Constants.BigIntegerCalculator;
-using _calc = MathService.Models.Constants.Calculator;
-using System.Threading;
-using MathService.Models.Constants;
+
+using _calc = MathService.Calculators.Calculator;
+
 using SandboxCore.Filters;
-using System.Numerics;
 using SandboxCore.Models;
 
 namespace SandboxCore.Controllers
@@ -44,7 +45,7 @@ namespace SandboxCore.Controllers
 
             //    Debug.WriteLine(line);
             //}
-            return Json(new { timer = (new System.Numerics.BigInteger(800)).Factorial() });
+            return Json(new { timer = _calc.Factorial(new BigInteger(800))});
         }
 
         [Route("Calculator/{n}/choose/{r}")]
@@ -56,9 +57,9 @@ namespace SandboxCore.Controllers
             watch.Start();
             BigInteger result;
             for(var i = 0; i < 1000; i++)
-                result = _Bcalc.nCr(_n, _r);
+                result = _calc.nCr(_n, _r);
             watch.Stop();
-            return Json(new { time = watch.ElapsedMilliseconds });
+            return Json(new { result = result, time = watch.ElapsedMilliseconds });
         }
         
         [HttpGet]
@@ -312,80 +313,7 @@ namespace SandboxCore.Controllers
             int counter = fullList.Count;
             return Json(new { timers, counter });
         }
-
-        [TestActionFilter]
-        [HttpGet, Route("testing/MyForm/{code}")]
-        public IActionResult MyForm(string code)
-        {
-            return View();
-        }
-
-        [HttpPost, Route("testing/MyForm/")]
-        public IActionResult MyForm()
-        {
-            
-            return View();
-        }
-
-        [HttpGet, Route("testing/test")]
-        public IActionResult Test()
-        {
-            var vm = new TestViewModel()
-            {
-                ResultMessage = new ResultMessage()
-                {
-                    IsError = false,
-                    Message = "Your Face",
-                    ShowMessage = false
-                },
-                Strings = new List<string>()
-                {
-                    "text1", "text2", "text3"
-                }
-            };
-
-            ViewData["stuff"] = vm;
-            return View();
-        }
-
-
-        [HttpGet, Route("testing/dictionary")]
-        public IActionResult DictionaryTest()
-        {
-            return View();
-        }
-
-        [HttpPost, Route("testing/dictionary")]
-        public IActionResult DictionaryTest(DictionaryViewModel model)
-        {
-
-            return new JsonResult(model.Dictionary);
-        }
-
-        [HttpGet, Route("testing/forceWait/{span:int}")]
-        public IActionResult ForceWait(int span)
-        {
-            if (span == 0)
-                span = 10;
-            span *= 1000;
-
-            Thread.Sleep(span);
-
-            return Ok();
-        }
         
-        [HttpGet]
-        public IActionResult Parallax()
-        {
-            return View();
-        }
-
-        [HttpGet]
-        public IActionResult Promises()
-        {
-            return View();
-        }
-
         #region privateMethods
 
 
@@ -530,7 +458,7 @@ namespace SandboxCore.Controllers
 
         private int GetCombID(List<int> comb, int max = 51)
         {
-            UInt64 id = _calc.nCr(max + 1, comb.Count);
+            var id = _calc.nCr(max + 1, comb.Count);
             for (int i = 0; i < comb.Count; i++)
                 id -= _calc.nCr(max - comb[i], comb.Count - i);
             return (int)id;
@@ -550,7 +478,7 @@ namespace SandboxCore.Controllers
                     var t = _calc.nCr(max - pos, i);
                     if (t <= tId)
                     {
-                        tVal = t;
+                        tVal = (ulong)t;
                         done = true;
                     }
                     pos++;

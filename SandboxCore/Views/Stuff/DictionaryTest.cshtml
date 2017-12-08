@@ -1,0 +1,42 @@
+﻿@{
+    ViewData["Title"] = "Form Test";
+}
+
+<button id="test" class="btn btn-primary">Dict Test</button>
+
+
+
+<script>
+    $(document).ready(function()
+    {
+        $('#test').on('click', function ()
+        {
+            var model = {
+                Name: 'your face',
+                Value: 8,
+                Dictionary: {}
+                    //{1:1, 2:2, 3:3, 4:4}
+                
+            };
+
+            for (var i = 0; i < 5; i++)
+                model.Dictionary[i] = i;
+
+            $.ajax(
+            {
+                type: 'POST',
+                url: '',
+                data: model,
+                success: function (result)
+                {
+                    console.log(result);
+                },
+                error: function (e)
+                {
+                    
+                }
+            });
+
+        })
+    });
+</script>

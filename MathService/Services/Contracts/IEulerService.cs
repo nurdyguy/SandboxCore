@@ -8,8 +8,10 @@ namespace MathService.Services.Contracts
 {
     public interface IEulerService
     {
-        double RunProblem566(int x, int y, int z);
+        BigInteger RunProblem566(int x, int y, int z);
 
         BigInteger RunProblem590(int max);
+
+        BigInteger RunProblem483(int max);
     }
 }

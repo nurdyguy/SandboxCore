@@ -44,10 +44,6 @@
     <Content Include="wwwroot\scss\chat.css" />
     <Content Include="wwwroot\scss\chat.min.css" />
     <Content Include="wwwroot\scss\chat.scss" />
-    <Content Include="wwwroot\scss\testing - Copy.css" />
-    <Content Include="wwwroot\scss\testing - Copy.scss">
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
     <Content Include="wwwroot\scss\testing.css" />
     <Content Include="wwwroot\scss\testing.min.css" />
     <Content Include="wwwroot\scss\testing.scss">
@@ -101,6 +97,7 @@
   <ItemGroup>
     <Folder Include="Services\Contracts\" />
     <Folder Include="Services\Implementations\" />
+    <Folder Include="Views\Testing\" />
     <Folder Include="wwwroot\css\" />
     <Folder Include="wwwroot\lib\jquery-ui\dist\" />
   </ItemGroup>

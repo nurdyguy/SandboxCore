@@ -53,10 +53,19 @@ namespace SandboxCore.Controllers
             return Json(new { timers, Result = result.ToString() });
         }
 
-        [HttpPost, Route("Euler/post")]
-        public IActionResult TestPost()
+        [HttpGet, Route("Euler/583/{max:int}")]
+        public async Task<IActionResult> Problem483(int max = 5)
         {
-            return null;
+            var watch = new Stopwatch();
+            var timers = new List<double>();
+            watch.Start();
+
+            var result = _eulerService.RunProblem483(max);
+
+
+            timers.Add(watch.ElapsedMilliseconds / 1000.0);
+            watch.Stop();
+            return Json(new { timers, Result = result.ToString() });
         }
     }
 }

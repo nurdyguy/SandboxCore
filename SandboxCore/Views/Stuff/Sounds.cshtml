@@ -1,0 +1,91 @@
+﻿@using SandboxCore.Models;
+@{
+    ViewData["Title"] = "Test";
+}
+
+
+@{var model = ViewData["stuff"] as TestViewModel;}
+
+
+<div id="container">
+    <div class="row">
+        <button id="play" class="btn btn-primary">Play</button>
+        <button id="stop" class="btn btn-primary">Stop</button>
+    </div>
+    <div class="row">
+        <button id="test1" class="btn btn-primary">GET</button>
+        <button id="test2" class="btn btn-primary">POST</button>
+    </div>
+</div>
+
+<script>
+
+    var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    $(document).ready(function ()
+    {
+        $('#play').on('click', function ()
+        {
+            Play(1);
+        });
+
+        $('#stop').on('click', function ()
+        {
+            Stop();
+        });
+
+        $('#test1').on('click', function ()
+        {
+            
+        });
+
+        $('#test2').on('click', function ()
+        {
+            
+        });
+    });
+
+    function Play(x)
+    {
+        Tone();   
+    }
+
+    function Tone()
+    {
+        var oscillator = audioCtx.createOscillator();
+        var gainNode = audioCtx.createGain();
+
+        var frequency = 400;
+        var type = 'saw';
+        var volume = .1;
+        var duration = 500;
+
+        oscillator.connect(gainNode);
+        oscillator.frequency.value = frequency;
+        oscillator.type = type;
+        gainNode.connect(audioCtx.destination);
+        gainNode.gain.value = volume;
+       
+
+        oscillator.start();
+        setTimeout(function ()
+        {
+            oscillator.frequency.value = 2 * frequency;
+            setTimeout(
+                function ()
+                {
+                    oscillator.stop();
+                },
+                2*duration
+            );
+        },  duration);
+
+    }
+
+    function Stop(osc)
+    {
+        osc.stop();
+    }
+
+    
+    
+</script>
