@@ -53,7 +53,7 @@ namespace SandboxCore.Controllers
             return Json(new { timers, Result = result.ToString() });
         }
 
-        [HttpGet, Route("Euler/583/{max:int}")]
+        [HttpGet, Route("Euler/483/{max:int}")]
         public async Task<IActionResult> Problem483(int max = 5)
         {
             var watch = new Stopwatch();
@@ -65,7 +65,7 @@ namespace SandboxCore.Controllers
 
             timers.Add(watch.ElapsedMilliseconds / 1000.0);
             watch.Stop();
-            return Json(new { timers, Result = result.ToString() });
+            return Json(new { timers, Result = result });
         }
     }
 }

@@ -12,6 +12,6 @@ namespace MathService.Services.Contracts
 
         BigInteger RunProblem590(int max);
 
-        BigInteger RunProblem483(int max);
+        object RunProblem483(int max);
     }
 }

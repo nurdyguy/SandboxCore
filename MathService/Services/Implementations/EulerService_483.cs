@@ -1,8 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Numerics;
 using System.Text;
+using System.Diagnostics;
+using System.Threading.Tasks;
+using System.Linq;
 using MathService.Services.Contracts;
+using _calc = MathService.Calculators.Calculator;
+
+
 
 namespace MathService.Services.Implementations
 {
@@ -35,9 +42,175 @@ namespace MathService.Services.Implementations
         //g(20) = 12422728886023769167301/2432902008176640000 ≈ 5.106136147e3
 
         //Find g(350) and write the answer in scientific notation rounded to 10 significant digits, using a lowercase e to separate mantissa and exponent, as in the examples above.
-        public BigInteger RunProblem483(int max)
+
+
+        // solution so far-------------------------------------------------------
+        // A given permutation can be written as the product of cycles.  
+        // The order for this permutation is the LCM of the lengths of the cycles.
+        // ex:  n = 50, 1x 5-cycle, 2x 3-cycle, 2x 2-cycle so 15 numbers permute and 35 are left so 35x 1-cycle
+        // the lcm is still 30 = lcm(5, 3, 2) which is independent of the number of each cycle type
+        // the number of possible permutation like this can be calculated via formula
+        // number = (50c5 + 45c3 + 42c3 + 39c2 + 37c2 + 36c1 + 35c1 + ... + 1c1)/41!  where 41 = total number of cycles
+        //
+        // so g(n) = sum(LCM^2 * number)/n! over each combination of sums
+        //
+        // Steps:
+        // 1.  Find each possible sum of integers (i > 1) where sum <= n ---- in ex above 5 + 3 + 2 <= 50
+        // 2.  For each of these, find each linear combination of the integers where total <= n ---- in ex above 5*1 + 3*2 + 2*2 <= 50
+        // 3.  How many of these combinations are there?  Total combx * LCM^2
+        // 4.  Sum it up and divide by n!
+               
+        
+        public object RunProblem483(int max)
+        {
+            var result = FindSumCombo(max);
+            return result;
+            
+        }
+
+        private int FindSumCombo(int max)
+        {
+            var combs = _calc.GenAllCombinations(max - 1);
+            combs.RemoveAt(0);
+
+            var combBag = new ConcurrentBag<SumCombination>();
+            
+            //Parallel.ForEach(combs, c =>
+            combs.ForEach(c => 
+            {
+                var sum = 0;
+                for (var i = 0; sum <= max && i < c.Count; i++)
+                {
+                    c[i] += 2;
+                    sum += c[i];                    
+                }
+
+                if (sum <= max)
+                    combBag.Add(new SumCombination(c, max));
+            });
+
+            var combLevel = new CombinationLevel()
+            {
+                Combinations = combBag.ToList(),
+                Level = max
+            };
+
+            var nextLevel = combLevel.GetNextLevel();
+
+            nextLevel.Print();
+
+            return combBag.Count;
+        }
+
+        private int GetNextNumber(int total, int testNum)
         {
             return 0;
         }
+
+
+        private class CombinationLevel
+        {
+            public int Level { get; set; }
+            public int MaxLength { get; set; }
+            public List<SumCombination> Combinations { get; set; }
+            
+            public CombinationLevel GetNextLevel()
+            {
+                var nextLevel = new CombinationLevel()
+                {
+                    Level = this.Level + 1,
+                    Combinations = new List<SumCombination>()
+                };
+
+                var digits = 0;
+                while (digits * (digits + 1) / 2 < nextLevel.Level)
+                    digits++;
+
+                nextLevel.MaxLength = digits;
+
+                var additions = new ConcurrentBag<SumCombination>();
+
+                //Parallel.ForEach(this.Combinations, c =>
+                this.Combinations.ForEach(c =>
+                {
+                    additions.Add(new SumCombination(c.Numbers, nextLevel.Level));
+                    c.Print();
+                    if (nextLevel.Level - c.Sum == 2)
+                        if(c.Numbers[0] == 2)
+                        {
+                            var newNumbs = new List<int>(c.Numbers);
+                            newNumbs[0]++;
+                            additions.Add(new SumCombination(newNumbs, nextLevel.Level));
+                        }
+                        else
+                        {
+                            var newNumbs = new List<int>(c.Numbers).Prepend(2).ToList();
+                            additions.Add(new SumCombination(newNumbs, nextLevel.Level));
+                        }
+
+                });
+
+                // adds additions
+                nextLevel.Combinations.AddRange(additions.ToList());
+
+                // adds new largest singleton
+                nextLevel.Combinations.Add(new SumCombination(new List<int>() { nextLevel.Level }, nextLevel.Level));
+                
+                return nextLevel;
+            }
+
+            public void Print()
+            {
+                Debug.WriteLine($"Level:  {this.Level} ------------------");
+                this.Combinations.ForEach(c => c.Print());
+            }
+        }
+
+        private class SumCombination
+        {
+            //public int Max { get; }
+            public int Sum { get; set; }
+
+            public List<int> Numbers { get; set; }
+
+            public List<int> Multiples { get; set; }
+
+            public SumCombination(int max)
+            {
+                //Max = max;
+                Sum = 0;
+
+                var digits = 0;
+
+                while (digits * (digits + 1) / 2 < max)
+                    digits++;
+
+                Numbers = new List<int>(digits);
+                Multiples = new List<int>(digits);                
+            }
+
+            public SumCombination(List<int> comb, int max) : this(max)
+            {
+                for (var i = 0; i < comb.Count; i++)
+                {
+                    Numbers.Add(comb[i]);
+                    Sum += comb[i];
+                }                
+            }
+
+            
+            public void Print()
+            {
+                var str = "--- ";
+
+                for(var i = 0; i < Numbers.Count; i++)
+                {
+                    str += $" {Numbers[i]} ";
+                }
+
+                Debug.WriteLine(str);
+            }           
+        }
+
     }
 }
