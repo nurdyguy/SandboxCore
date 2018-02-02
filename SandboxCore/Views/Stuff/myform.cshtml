@@ -1,4 +1,6 @@
-﻿@{
+﻿@model  List<SandboxCore.Models.TestViewModel>
+
+@{
     ViewData["Title"] = "Form Test";
 }
 
@@ -19,9 +21,18 @@
     var someid = "asdf";
     string x = null;
     string baseRoute = Url.Action("myform", "testing", new { code = "" }).ToString();
-    
+
 }
 
+@foreach (var t in Model)
+{
+    <form action="/stuff/test/@t.Id" method="post" enctype="multipart/form-data">
+        <input type="number" value="@t.Id" />
+        <input type="text" value="@t.Name"/>
+        <input type="file" id="imageFiles" name="files" accept="image/jpeg, image/jpg" />
+        <button class="btn btn-primary">Upload</button>
+    </form>
+}
 
 
 
@@ -31,13 +42,9 @@
 }
 
 <script>
-    @{ 
-        var model = ViewData["stuff"] as Model;
-    }
-    var x = {
-       '@(model)': '@(model)'
 
-    }
+
+
 </script>
 
 <div class="hidden">
@@ -114,7 +121,7 @@
             test();
         });
 
-        #('#submit').on('click', function (e)
+        $('#submit').on('click', function (e)
         {
             e.preventDefault();
 

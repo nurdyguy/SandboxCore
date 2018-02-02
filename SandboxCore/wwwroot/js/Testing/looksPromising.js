@@ -4,7 +4,7 @@ $(document).ready(function ()
 {
     $('#promise').on('click', function ()
     {
-        PromiseTest(1);
+        f1(10)
     });
 
     $('#loop').on('click', function ()
@@ -13,64 +13,23 @@ $(document).ready(function ()
     });
 });
 
-function PromiseTest(x)
+function resolveAfter2Seconds(x)
 {
-    asyncTest1(x++).then(
-        function (result)//resolve
-        {
-            PromiseTest(x)
-        }).catch(
-        function (err)
-        {
-            console.log('error')
-        });
-}
-
-function ajax(url, type, data)
-{
-    return new Promise(function (resolve, reject)
+    return new Promise(resolve =>
     {
-        $.ajax(
+        setTimeout(() =>
         {
-            type: type,
-            url: url,
-            data: data,
-            success: function (result)
-            {
-                resolve(result);
-            },
-            error: function (e)
-            {
-                reject(e);
-            }
-        });
+            resolve(x);
+        }, 2000);
     });
 }
 
-
-function asyncTest1(x)
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/await
+// async function with await
+async function f1()
 {
-    return new Promise(function (resolve, reject)
-    {
-        setTimeout(function ()
-        {
-            console.log(x++);
-        }, 100);
-    });
+    var x = await resolveAfter2Seconds(10);
+    console.log(x); // 10
 }
 
-function asyncTest2(x)
-{
-    setTimeout(function ()
-    {
-        console.log(x);
-    }, 100);
-}
-
-
-function loop(max)
-{
-    for (var i = 1; i <= max; i++)
-        asyncTest2(i);
-}
 

@@ -68,45 +68,52 @@ namespace MathService.Services.Implementations
             
         }
 
-        private int FindSumCombo(int max)
+        private BigInteger FindSumCombo(int max)
         {
-            var startLevel = 10;
-            var combs = _calc.GenAllCombinations(startLevel);
-            combs.RemoveAt(0);
-
-            var combBag = new ConcurrentBag<SumCombination>();
+            var startLevel = 4;
             
-            //Parallel.ForEach(combs, c =>
-            combs.ForEach(c => 
+            Combinations[0] = new CombinationLevel()
             {
-                var sum = 0;
-                for (var i = 0; sum <= startLevel && i < c.Count; i++)
-                {
-                    c[i] += 2;
-                    sum += c[i];                    
-                }
-
-                if (sum <= startLevel)
-                    combBag.Add(new SumCombination(c, startLevel));
-            });
-
-            var combLevel = new CombinationLevel()
-            {
-                Combinations = combBag.ToList(),
-                Level = startLevel
+                Level = 0,
+                Combinations = new List<SumCombination>()
             };
 
-
-
-            for (var i = startLevel + 1; i <= max; i++)
+            Combinations[1] = new CombinationLevel()
             {
-                combLevel = combLevel.GetNextLevel();
-                //combLevel.Print();
+                Level = 1,
+                Combinations = new List<SumCombination>()
+            };
+
+            Combinations[2] = new CombinationLevel()
+            {
+                Level = 2,
+                Combinations = new List<SumCombination>()
+            };
+            Combinations[2].Combinations.Add(new SumCombination(new List<int>() { 2 }, 1));
+
+            Combinations[3] = new CombinationLevel()
+            {
+                Level = 3,
+                Combinations = new List<SumCombination>()
+            };
+            Combinations[3].Combinations.Add(new SumCombination(new List<int>() { 3 }, 1));
+
+            BigInteger combCounter = 2;
+
+            for (var i = startLevel; i <= max; i++)
+            {
+                Combinations[i - 3] = null;// new CombinationLevel();
+                Combinations[i] = new CombinationLevel();
+                Combinations[i] = GetNextLevel(Combinations[i - 1], Combinations[i - 2]);
+                //combCounter+= Combinations[i]
+                //Combinations[i].Print();
+                combCounter += Combinations[i].Combinations.Count;
+                Debug.WriteLine($"Level:  {i} ------- Count:   {Combinations[i].Combinations.Count} -----------");
             }
 
             //combLevel.Print();
 
-            return combLevel.Combinations.Count;
+            return combCounter;
         }
 
         private int GetNextNumber(int total, int testNum)
@@ -115,53 +122,49 @@ namespace MathService.Services.Implementations
         }
 
 
+        private CombinationLevel[] Combinations = new CombinationLevel[350];
+
+        private CombinationLevel GetNextLevel(CombinationLevel prevLevel, CombinationLevel prevLevel2)
+        {
+            var additions = new ConcurrentBag<SumCombination>();
+            var newLevel = prevLevel.Level + 1;
+            // room to iterate last number
+            Parallel.ForEach(prevLevel.Combinations, c =>
+            //prevLevel.Combinations.ForEach(c =>
+            {
+                if (c.Numbers.Count == 1 || (c.Numbers.Count > 1 && c.Numbers[c.Numbers.Count - 1] != c.Numbers[c.Numbers.Count - 2] - 1))
+                {
+                    var newNumbs = new List<int>(c.Numbers);
+                    newNumbs[c.Numbers.Count - 1]++;
+                    additions.Add(new SumCombination(newNumbs, newLevel));
+                }
+            });
+
+            // room to add a new 2
+            Parallel.ForEach(prevLevel2.Combinations, c =>
+            //prevLevel2.Combinations.ForEach(c =>
+            {
+                if (c.Numbers.Count > 0 && c.Numbers[c.Numbers.Count - 1] != 2)
+                {
+                    var newNumbs = new List<int>(c.Numbers).Append(2).ToList();
+                    additions.Add(new SumCombination(newNumbs, newLevel));
+                }
+            });
+
+            var newCombLevel = new CombinationLevel();
+            newCombLevel.Level = newLevel;
+            newCombLevel.Combinations = additions.ToList();
+            return newCombLevel;
+        }
+
         private class CombinationLevel
         {
             public int Level { get; set; }
             public int MaxLength { get; set; }
             public List<SumCombination> Combinations { get; set; }
+
+            //public CombinationLevel[] Combinations = new CombinationLevel[350];
             
-            public CombinationLevel GetNextLevel()
-            {
-                this.Level++;
-
-                var additions = new ConcurrentBag<SumCombination>();
-
-                Parallel.ForEach(this.Combinations, c =>
-                //this.Combinations.ForEach(c =>
-                {
-                    //c.Print();
-
-                    switch(this.Level - c.Sum)
-                    {
-                        case 1:// room to iterate last number
-                            if (c.Numbers.Count > 1 && c.Numbers[1] != c.Numbers[0] + 1)
-                            {
-                                var newNumbs = new List<int>(c.Numbers);
-                                newNumbs[0]++;
-                                additions.Add(new SumCombination(newNumbs, this.Level));
-                            }
-                            break;
-                        case 2:// room to add a new 2
-                            if (c.Numbers[0] != 2)
-                            {
-                                var newNumbs = new List<int>(c.Numbers).Prepend(2).ToList();
-                                additions.Add(new SumCombination(newNumbs, this.Level));                                
-                            }                            
-                            break;
-                    }
-                    
-                });
-
-                // adds additions
-                this.Combinations.AddRange(additions.ToList());
-
-                // adds new largest singleton
-                this.Combinations.Add(new SumCombination(new List<int>() { this.Level }, this.Level));
-                
-                return this;
-            }
-
             public void Print()
             {
                 Debug.WriteLine($"Level:  {this.Level} ------------------");

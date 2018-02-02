@@ -30,11 +30,38 @@ namespace SandboxCore.Controllers
             return View();
         }
 
-        [HttpPost, Route("testing/MyForm/")]
+        [HttpGet, Route("testing/MyForm/")]
         public IActionResult MyForm()
         {
-
-            return View();
+            var vm = new List<TestViewModel>()
+            {
+                new TestViewModel()
+                {
+                    Id = 1,
+                    Name = "A"
+                },
+                new TestViewModel()
+                {
+                    Id = 2,
+                    Name = "B"
+                },
+                new TestViewModel()
+                {
+                    Id = 3,
+                    Name = "C"
+                },
+                new TestViewModel()
+                {
+                    Id = 4,
+                    Name = "D"
+                },
+                new TestViewModel()
+                {
+                    Id = 5,
+                    Name = "E"
+                }
+            };
+            return View(vm);
         }
 
         [HttpGet, Route("testing/test")]
@@ -114,6 +141,13 @@ namespace SandboxCore.Controllers
             }
             timer.Stop();
             return Json(new { timer = timer.ElapsedMilliseconds });
+        }
+
+        [HttpPost, Route("stuff/test/{id:int=0}")]
+        public IActionResult Submit(int id)
+        {
+
+            return RedirectToAction("Myform");
         }
 
     }
