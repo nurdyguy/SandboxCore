@@ -17,7 +17,7 @@ namespace SandboxCore.Controllers
 {
     public class StuffController : Controller
     {
-        
+
         public IActionResult Index()
         {
             return View();
@@ -135,9 +135,9 @@ namespace SandboxCore.Controllers
             var timer = new Stopwatch();
             timer.Start();
             var max = _calc.Factorial(num);
-            for(var i = 0; i < max; i++)
+            for (var i = 0; i < max; i++)
             {
-                var result = _calc.DecodePermutation(new BigInteger(i), num);                
+                var result = _calc.DecodePermutation(new BigInteger(i), num);
             }
             timer.Stop();
             return Json(new { timer = timer.ElapsedMilliseconds });
@@ -150,5 +150,103 @@ namespace SandboxCore.Controllers
             return RedirectToAction("Myform");
         }
 
+        [HttpGet, Route("stuff/carsncolors")]
+        public IActionResult CarsnColors()
+        {
+            var FooCollection = new List<FooViewModel>
+            {
+                new FooViewModel()
+                {
+                    CarName = "red accord",
+                    Color = "red"
+                },
+                new FooViewModel()
+                {
+                    CarName = "red ford",
+                    Color = "red"
+                },
+                new FooViewModel()
+                {
+                    CarName = "red dodge",
+                    Color = "red"
+                },
+                new FooViewModel()
+                {
+                    CarName = "blue mustang",
+                    Color = "blue"
+                },
+                new FooViewModel()
+                {
+                    CarName = "blue ranchero",
+                    Color = "blue"
+                },
+                new FooViewModel()
+                {
+                    CarName = "blue escort",
+                    Color = "blue"
+                },
+                new FooViewModel()
+                {
+                    CarName = "blue chevy",
+                    Color = "blue"
+                },
+                new FooViewModel()
+                {
+                    CarName = "green pinto",
+                    Color = "green"
+                },
+                new FooViewModel()
+                {
+                    CarName = "green acura",
+                    Color = "green"
+                },
+                new FooViewModel()
+                {
+                    CarName = "yellow Mitch",
+                    Color = "yellow"
+                },
+                new FooViewModel()
+                {
+                    CarName = "yellow Beauford",
+                    Color = "yellow"
+                },
+                new FooViewModel()
+                {
+                    CarName = "yellow Jethro",
+                    Color = "yellow"
+                }
+            };
+
+
+            return View(FooCollection);
+        }
+
+        [HttpPost, Route("stuff/cars/{color}")]
+        public IActionResult Cars(string color, List<FooViewModel> cars)
+        {
+            // do stuff...
+
+            return View();
+        }
+
+        [HttpPost, Route("stuff/cars/")]
+        public IActionResult Cars2([FromBody] List<FooViewModel> cars)
+        {
+            // do stuff...
+
+            return View();
+        }
+
+        [HttpGet, Route("stuff/radio")]
+        public IActionResult Radio()
+        {
+            return View();
+        }
+
+        [HttpGet, Route("stuff/iframe")]
+        public IActionResult iframe()
+        {
+            return View();
+        }
     }
 }

@@ -40,7 +40,7 @@
                 isAnimating = true;
                 e.preventDefault();
 
-                var delta = e.originalEvent.wheelDeltaY;                
+                var delta = e.originalEvent.wheelDeltaY;
                 var $this = $(this);
 
                 console.log(delta);
@@ -77,5 +77,22 @@
 
         MyFunction(2345);
     }
-    
+
+
+        var peopleElement = document.getElementById("people");
+        //var orgChart = new getOrgChart(peopleElement, {
+        //    primaryFields: ["name", "title", "phone", "mail"],
+        //    photoFields: ["image"],
+        //    dataSource: [
+                
+        //    ]
+        //});
+    var str = [
+        @for(var i = 0; i < model.Strings.Count; i++)
+        {
+            <text>
+                { id: "@(model.Strings[i])" }@(i < model.Strings.Count - 1 ? "," : "")
+            </text>
+        }
+    ]
 </script>

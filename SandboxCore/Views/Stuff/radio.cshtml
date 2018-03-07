@@ -1,0 +1,54 @@
+﻿@using SandboxCore.Models;
+@{
+    ViewData["Title"] = "Test";
+}
+
+
+@{var model = ViewData["stuff"] as TestViewModel;}
+
+
+<div id="container">
+    <audio controls id="radio" name="media" class="audio">
+        <source src="https://kexp-mp3-128.streamguys1.com/kexp128.mp3" type="audio/mp3">
+    </audio>
+    <br />
+    <a id="record" class="btn btn-primary">record</a>
+</div>
+
+
+<script>
+    var recorder;
+    $(document).ready(function ()
+    {
+        var stream = new MediaStream();
+
+       
+
+        //audioSelect.onchange = getStream;
+        //videoSelect.onchange = getStream;
+
+        $('#record').on('click', function ()
+        {
+            record();
+
+        });
+
+    });
+
+    function record()
+    {
+        $.ajax(
+        {
+            type: 'GET',
+            url: 'https://kexp-mp3-128.streamguys1.com/kexp128.mp3',
+            //contentType: 'application/json',
+            //data: JSON.stringify(queueIds),
+            success: function (result)
+            {
+                console.log(result);
+            }
+        });
+
+    }
+    
+</script>

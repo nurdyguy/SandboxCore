@@ -1,0 +1,44 @@
+﻿@using SandboxCore.Models;
+@{
+    ViewData["Title"] = "Test";
+}
+
+
+@{var model = ViewData["stuff"] as TestViewModel;}
+
+
+<div id="container">
+    <a class="btn btn-primary" href="/home" target="myFrame">Push me</a>
+    <iframe id="myFrame" src="" name="myFrame">
+
+    </iframe>
+</div>
+
+<script>
+    $(document).ready(function ()
+    {
+        
+
+        SetIframe();
+    });
+
+    function SetIframe()
+    {
+        var query = window.location.search.substring(1);
+        if (query.indexOf('page=') == -1)
+            return;
+
+        var vars = query.split('&');
+        var kvp = [];
+        for (var i = 0; i < vars.length; i++)
+        {
+            var pair = vars[i].split('=');
+            if (pair.length == 2)
+                kvp[pair[0]] = pair[1];
+        }
+        console.log(kvp);
+
+        if (typeof kvp['page'] != 'undefined')
+            $('#myFrame').attr('src', kvp['page']);
+
+    }

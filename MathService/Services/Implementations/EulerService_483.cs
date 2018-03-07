@@ -63,12 +63,12 @@ namespace MathService.Services.Implementations
         
         public object RunProblem483(int max)
         {
-            var result = FindSumCombo(max);
+            var result = FindSumComboRecursive(max);
             return result;
             
         }
 
-        private BigInteger FindSumCombo(int max)
+        private BigInteger FindSumComboRecursive(int max)
         {
             var startLevel = 4;
             
@@ -108,12 +108,59 @@ namespace MathService.Services.Implementations
                 //combCounter+= Combinations[i]
                 //Combinations[i].Print();
                 combCounter += Combinations[i].Combinations.Count;
-                Debug.WriteLine($"Level:  {i} ------- Count:   {Combinations[i].Combinations.Count} -----------");
+                //Debug.WriteLine($"//------ Level:  {i} ------- Count:   {Combinations[i].Combinations.Count} -----------");
+                Combinations[i].Print();
             }
+
+
+            //var l0 = new int[] { };
+            //var l1 = new int[] { };
+            //var l2 = new int[] { 2 };
+            //var l3 = new int[] { 3 };
+            //var levels = new List<List<int[]>>
+            //{
+            //    new List<int[]> { },
+            //    new List<int[]> { },
+            //    new List<int[]> { new int[] { 2 } },
+            //    new List<int[]> { new int[] { 3 } }
+            //};
+
+            //for (var i = startLevel; i <= max; i++)
+            //{
+            //    var next = GetNextLevel(levels[i - 1], levels[i - 2], i);
+            //    levels.Add(next);
+            //    combCounter += next.Count();
+            //    Debug.WriteLine($"Level:  {i} ------- Count:   {levels[i].Count()} -----------");
+            //    next.ForEach(n =>
+            //    {
+            //        var str = "";
+            //        for (var j = 0; j < n.Count(); j++)
+            //        { 
+            //            str += n[j] + ", ";
+            //            str = str.TrimEnd([',']);
+            //            Debug.WriteLine(str);
+            //        }
+            //    });
+            //}
+
 
             //combLevel.Print();
 
             return combCounter;
+        }
+
+        private BigInteger FindSumCombo(int max)
+        {
+            BigInteger counter = 2;
+
+            for(var i = max; i >= 2; i--)
+            {
+
+            }
+
+
+
+            return counter;
         }
 
         private int GetNextNumber(int total, int testNum)
@@ -129,8 +176,8 @@ namespace MathService.Services.Implementations
             var additions = new ConcurrentBag<SumCombination>();
             var newLevel = prevLevel.Level + 1;
             // room to iterate last number
-            Parallel.ForEach(prevLevel.Combinations, c =>
-            //prevLevel.Combinations.ForEach(c =>
+            //Parallel.ForEach(prevLevel.Combinations, c =>
+            prevLevel.Combinations.ForEach(c =>
             {
                 if (c.Numbers.Count == 1 || (c.Numbers.Count > 1 && c.Numbers[c.Numbers.Count - 1] != c.Numbers[c.Numbers.Count - 2] - 1))
                 {
@@ -141,8 +188,8 @@ namespace MathService.Services.Implementations
             });
 
             // room to add a new 2
-            Parallel.ForEach(prevLevel2.Combinations, c =>
-            //prevLevel2.Combinations.ForEach(c =>
+            //Parallel.ForEach(prevLevel2.Combinations, c =>
+            prevLevel2.Combinations.ForEach(c =>
             {
                 if (c.Numbers.Count > 0 && c.Numbers[c.Numbers.Count - 1] != 2)
                 {
@@ -157,6 +204,63 @@ namespace MathService.Services.Implementations
             return newCombLevel;
         }
 
+        private List<int[]> GetNextLevel(List<int[]> prevLevel, List<int[]> prevLevel2, int nextlevel)
+        {
+            //var additions = new ConcurrentBag<int[]>();
+
+            //// room to iterate last number
+            //Parallel.ForEach(prevLevel, c =>
+            //{
+            //    if (c.Count() == 1 || (c.Count() > 1 && c[c.Count() - 1] != c[c.Count() - 2] - 1))
+            //    {
+            //        var newNumbs = new int[c.Count()];
+            //        c.CopyTo(newNumbs, 0);
+            //        newNumbs[c.Count() - 1]++;
+            //        additions.Add(newNumbs);
+            //    }
+            //});
+
+            //// room to add a new 2
+            //Parallel.ForEach(prevLevel2, c =>            
+            //{
+            //    if (c.Count() > 0 && c[c.Count() - 1] != 2)
+            //    {
+            //        var newNumbs = new int[c.Count() + 1];
+            //        c.CopyTo(newNumbs, 0);
+            //        newNumbs[c.Count()] = 2;
+            //        additions.Add(newNumbs);
+            //    }
+            //});
+//
+            var additions = new List<int[]>((int)(prevLevel.Count*1.1));
+
+            // room to iterate last number
+            for(var i = 0; i < prevLevel.Count(); i++)
+            {
+                if (prevLevel[i].Count() == 1 || (prevLevel[i].Count() > 1 && prevLevel[i][prevLevel[i].Count() - 1] != prevLevel[i][prevLevel[i].Count() - 2] - 1))
+                {
+                    var newNumbs = new int[prevLevel[i].Count()];
+                    prevLevel[i].CopyTo(newNumbs, 0);
+                    newNumbs[prevLevel[i].Count() - 1]++;
+                    additions.Add(newNumbs);
+                }
+            }
+
+            // room to add a new 2
+            for (var i = 0; i < prevLevel2.Count(); i++)
+            {
+                if (prevLevel2[i].Count() > 0 && prevLevel2[i][prevLevel2[i].Count() - 1] != 2)
+                {
+                    var newNumbs = new int[prevLevel2[i].Count() + 1];
+                    prevLevel2[i].CopyTo(newNumbs, 0);
+                    newNumbs[prevLevel2[i].Count()] = 2;
+                    additions.Add(newNumbs);
+                }
+            }
+
+            return additions;
+        }
+
         private class CombinationLevel
         {
             public int Level { get; set; }
@@ -167,8 +271,25 @@ namespace MathService.Services.Implementations
             
             public void Print()
             {
-                Debug.WriteLine($"Level:  {this.Level} ------------------");
-                this.Combinations.ForEach(c => c.Print());
+                Debug.WriteLine($"//----- Level:  {this.Level} -------- Count: {this.Combinations.Count()}----------");
+                Debug.Write("{ ");
+                var str = "";
+                for(var i = 0; i < this.Combinations.Count(); i++)
+                {
+                    if(i == this.Combinations.Count() - 1)
+                        str += $"{this.Combinations[i].ToString()}";
+                    else
+                        str += $"{this.Combinations[i].ToString()}, ";
+                    if(str.Length > 200 && i < this.Combinations.Count() - 1)
+                    {
+                        //str += '\n';
+                        Debug.WriteLine(str);
+                        str = "";
+                    }
+                };
+                Debug.WriteLine(str + " }, ");
+                //str = "";
+                //Debug.Write();
             }
         }
 
@@ -207,17 +328,21 @@ namespace MathService.Services.Implementations
             
             public void Print()
             {
-                var str = "--- ";
+                Debug.WriteLine(this.ToString());
+            }        
+            
+            public override string ToString()
+            {
+                var str = $"{{{Numbers[0]}";
 
-                for(var i = 0; i < Numbers.Count; i++)
+                for (var i = 1; i < Numbers.Count; i++)
                 {
-                    str += $" {Numbers[i]} ";
+                    str += $", {Numbers[i]}";
                 }
 
-                str += $" ---  Sum: {this.Sum}";
-
-                Debug.WriteLine(str);
-            }           
+                str += $"}}";
+                return str;
+            }
         }
 
     }

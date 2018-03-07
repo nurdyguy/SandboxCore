@@ -1,0 +1,103 @@
+﻿@model  List<SandboxCore.Models.FooViewModel>
+
+@{
+    ViewData["Title"] = "CarsnColors";
+}
+
+
+
+<!-- red cars -->
+<form action="/stuff/cars/red" method="post">
+    @{
+        var cars = Model.Where(c => c.Color == "red").ToList();
+        for (var i = 0; i < cars.Count; i++)
+        {
+            <text>
+            <input type="hidden" name="cars.Index" value="@i" />
+            <input type="hidden" name="cars[@i].CarName" value="@Model[i].CarName" />
+            <input type="hidden" name="cars[@i].Color" value="@Model[i].Color" />
+            </text>
+        }
+    }
+    <button class="btn btn-primary" type="submit">Red Cars</button>
+
+</form>
+
+<!-- green cars -->
+<form action="/stuff/cars/green" method="post">
+
+    @foreach (var car in Model.Where(c => c.Color == "green"))
+    {
+        <input type="hidden" name="cars" value="@car.CarName" />
+    }
+    <button class="btn btn-primary" type="submit">Green Cars</button>
+
+</form>
+
+<!-- blue cars -->
+<form action="/stuff/cars/blue" method="post">
+
+    @foreach (var car in Model.Where(c => c.Color == "blue"))
+    {
+        <input type="hidden" name="cars" value="@car.CarName" />
+        <input type="hidden" name="cars" value="@car.Color" />
+    }
+    <button class="btn btn-primary" type="submit">Blue Cars</button>
+
+</form>
+
+<!-- yeller cars -->
+<form action="/stuff/cars/yellow" method="post">
+
+    @foreach (var car in Model.Where(c => c.Color == "yellow"))
+    {
+        <input type="hidden" name="cars" value="@car.CarName" />
+        <input type="hidden" name="cars" value="@car.Color" />
+    }
+    <button class="btn btn-primary" type="submit">Yellow Cars</button>
+
+</form>
+
+<button id="ajaxPost" class="btn btn-default">ajax post</button>
+
+<div class="hidden">
+ 
+
+    
+</div>
+
+<script>
+    $(document).ready(function()
+    {
+        $('#ajaxPost').click(function ()
+        {
+            $.ajax(
+            {
+                type: 'POST',
+                url: '/stuff/cars',
+                contentType: "application/json",
+                data: JSON.stringify(cars),
+                success: function (data)
+                {
+                    // do stuff
+                },
+                error: function (e)
+                {
+                    alert(e);
+
+                }
+
+            });
+        });
+    });
+
+    var cars = [
+        { 'CarName': 'name', 'Color': 'color' },
+        { 'CarName': 'name', 'Color': 'color' },
+        { 'CarName': 'name', 'Color': 'color' },
+        { 'CarName': 'name', 'Color': 'color' },
+        { 'CarName': 'name', 'Color': 'color' }
+    ];
+
+
+</script>

@@ -63,7 +63,7 @@ namespace SandboxCore
 
             services.AddSingleton<IEulerService, EulerService>();
 
-            services.AddSingleton<ChatSocketManager>();
+            //services.AddSingleton<ChatSocketManager>();
 
             Action<AccountService.AccountServiceOptions> options = (opt =>
             {
@@ -74,6 +74,18 @@ namespace SandboxCore
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddReact();
+
+            //services.AddCors(corsOptions =>
+            //{
+            //    corsOptions.AddPolicy("cors", builder =>
+            //        builder
+            //            .AllowAnyMethod()
+            //            //.WithOrigins("http://localhost:5002")                        
+            //            .AllowAnyOrigin()
+            //            .AllowAnyHeader()
+            //            .AllowCredentials()
+            //    );
+            //});
 
             services.AddMvc();
         }
@@ -133,8 +145,10 @@ namespace SandboxCore
 
             app.UseStaticFiles();
 
-            app.UseWebSockets();
-            app.UseMiddleware<ChatWebSocketMiddleware>();
+            //app.UseWebSockets();
+            //app.UseMiddleware<ChatWebSocketMiddleware>();
+
+            //app.UseCors("cors");
 
             app.UseMvc(routes =>
             {

@@ -24,6 +24,51 @@ namespace SandboxCore.Controllers
             return View();
         }
 
+        [HttpGet, Route("Euler/482/{max:int}")]
+        public async Task<IActionResult> Problem482(int max = 5)
+        {
+            var watch = new Stopwatch();
+            var timers = new List<double>();
+            watch.Start();
+
+            var result = _eulerService.RunProblem482(max);
+
+
+            timers.Add(watch.ElapsedMilliseconds / 1000.0);
+            watch.Stop();
+            return Json(new { timers, Result = result });
+        }
+
+        [HttpGet, Route("Euler/483/{max:int}")]
+        public async Task<IActionResult> Problem483(int max = 5)
+        {
+            var watch = new Stopwatch();
+            var timers = new List<double>();
+            watch.Start();
+
+            var result = _eulerService.RunProblem483(max);
+
+
+            timers.Add(watch.ElapsedMilliseconds / 1000.0);
+            watch.Stop();
+            return Json(new { timers, Result = result });
+        }
+
+        [HttpGet, Route("Euler/500/{max:int}")]
+        public async Task<IActionResult> Problem500(int max = 5)
+        {
+            var watch = new Stopwatch();
+            var timers = new List<double>();
+            watch.Start();reader();
+
+            var result = _eulerService.RunProblem500(max);
+
+
+            timers.Add(watch.ElapsedMilliseconds / 1000.0);
+            watch.Stop();
+            return Json(new { timers, Result = result });
+        }
+
         [HttpGet, Route("Euler/566/{x:int}/{y:int}/{z:int}")]
         public async Task<IActionResult> Problem566(int x, int y, int z)
         {
@@ -53,19 +98,6 @@ namespace SandboxCore.Controllers
             return Json(new { timers, Result = result.ToString() });
         }
 
-        [HttpGet, Route("Euler/483/{max:int}")]
-        public async Task<IActionResult> Problem483(int max = 5)
-        {
-            var watch = new Stopwatch();
-            var timers = new List<double>();
-            watch.Start();
 
-            var result = _eulerService.RunProblem483(max);
-
-
-            timers.Add(watch.ElapsedMilliseconds / 1000.0);
-            watch.Stop();
-            return Json(new { timers, Result = result });
-        }
     }
 }
