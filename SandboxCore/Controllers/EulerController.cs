@@ -59,7 +59,7 @@ namespace SandboxCore.Controllers
         {
             var watch = new Stopwatch();
             var timers = new List<double>();
-            watch.Start();reader();
+            watch.Start();
 
             var result = _eulerService.RunProblem500(max);
 
