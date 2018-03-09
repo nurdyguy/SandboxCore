@@ -51,7 +51,7 @@ namespace MathService.Services.Implementations
 
         public object RunProblem500(int maxLevel)
         {
-
+            var x = _calc.IsPrime(23);
             var l = new List<int>() { 2, 1, 1, 1 };
             var result = new List<int>(l);
             //expProgression();
