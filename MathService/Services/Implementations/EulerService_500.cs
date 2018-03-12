@@ -6,8 +6,9 @@ using System.Linq;
 using MathService.Services.Contracts;
 using MathService.Models.EulerModels;
 using MathService.Models;
-using _calc = MathService.Calculators.Calculator;
 using System.Diagnostics;
+using System.IO;
+using System.Text.RegularExpressions;
 
 namespace MathService.Services.Implementations
 {
@@ -51,19 +52,21 @@ namespace MathService.Services.Implementations
 
         public object RunProblem500(int maxLevel)
         {
-            var x = _calc.IsPrime(23);
-            var l = new List<int>() { 2, 1, 1, 1 };
-            var result = new List<int>(l);
-            //expProgression();
+            var level_500500 = ReadTextFile();
 
-            for(var i = 6; i <= maxLevel; i++)
-            {
-                result = GetNextLevel(result);
-                //Print(result);
-            }
-                
-            return result;
-            return GetNumberFromExpansion(result);
+            //var result = new List<int> { 3, 1, 1 };
+            ////expProgression();
+
+            //for (var i = 6; i <= maxLevel; i++)
+            //{
+            //    result = GetNextLevel(result);
+            //    //Print(result);
+            //}
+
+
+            return new { result = level_500500, sum = level_500500.Sum() };
+            
+            return GetNumberFromExpansion(level_500500);
         }
 
         private BigInteger FindNumberOfDivisors(BigInteger num)
@@ -115,6 +118,10 @@ namespace MathService.Services.Implementations
 
             for (var i = 1; i < currLevel.Count; i++)
             {
+                // on same level so can't beat previous result
+                if (currLevel[i] == currLevel[i - 1])
+                    continue;
+                
                 //var incr = BigInteger.Pow((long)_calc.GetPrime(i), _twoPowers[currLevel[i]]);
                 var incr = toTwoPower((long)_calc.GetPrime(i), currLevel[i]);
                 
@@ -123,6 +130,10 @@ namespace MathService.Services.Implementations
                     leastIncr = incr;
                     incrPos = i;
                 }
+
+                // break out after first level 1
+                if (currLevel[i] == 1)
+                    break;
             }
 
             // check vs next new prime
@@ -200,6 +211,17 @@ namespace MathService.Services.Implementations
 
             str += $"}}";
             Debug.WriteLine(str);
+        }
+
+        private List<int> ReadTextFile()
+        {
+            var intList = new List<int>(
+            File.ReadLines("../MathService/Repositories/Constants/euler_500_answer.txt")
+                //.AsParallel() //maybe?
+                .SelectMany(line => Regex.Matches(line, @"\d+").Cast<Match>())                
+                .Select(i => int.Parse(i.Value)));
+            ;
+            return intList;
         }
     }
 }

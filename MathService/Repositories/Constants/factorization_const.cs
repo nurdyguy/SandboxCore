@@ -5,9 +5,9 @@ using System.Text;
 
 namespace MathService.Calculators
 {
-    public static partial class Calculator
+    public partial class Calculator
     {
-        public static BigInteger lcm(List<long> nums)
+        public BigInteger lcm(List<long> nums)
         {
             BigInteger l = 1;
             for (int i = nums.Count - 1; i >= 0; i--)
@@ -16,7 +16,7 @@ namespace MathService.Calculators
             return l;
         }
 
-        public static BigInteger lcm(List<BigInteger> nums)
+        public BigInteger lcm(List<BigInteger> nums)
         {
             BigInteger l = 1;
             for (int i = nums.Count - 1; i >= 0; i--)
@@ -25,12 +25,12 @@ namespace MathService.Calculators
             return l;
         }
 
-        public static BigInteger lcm(BigInteger x, BigInteger y)
+        public BigInteger lcm(BigInteger x, BigInteger y)
         {
             return x * y / BigInteger.GreatestCommonDivisor(x, y);
         }
 
-        public static BigInteger gcf(BigInteger x, BigInteger y)
+        public BigInteger gcf(BigInteger x, BigInteger y)
         {
 
             BigInteger min = new BigInteger(1);
@@ -51,7 +51,7 @@ namespace MathService.Calculators
             return 1;
         }
 
-        public static int GetMaxPowerDivisor(BigInteger num, BigInteger factor)
+        public int GetMaxPowerDivisor(BigInteger num, BigInteger factor)
         {
             if (factor < 2)
                 return -1;

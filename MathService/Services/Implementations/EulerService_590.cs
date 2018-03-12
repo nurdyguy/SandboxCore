@@ -9,18 +9,13 @@ using System.Collections.Concurrent;
 
 using MathService.Services.Contracts;
 using MathService.Models.EulerModels;
-
-using _calc = MathService.Calculators.Calculator;
-
+using MathService.Calculators;
 
 namespace MathService.Services.Implementations
 {
     public partial class EulerService: IEulerService
     {
-        public EulerService()
-        {
-            //Calculator.InitCalculator();  //------------------------------------------------
-        }
+        
 
         //Problem 590 --- https://projecteuler.net/problem=590
         //Let H(n) denote the number of sets of positive integers such that the 
@@ -39,8 +34,8 @@ namespace MathService.Services.Implementations
         //Find HL(50000). Give your answer modulo 109.
         public BigInteger RunProblem590(int num)
         {
-            var lcm50000 = BigInteger.Parse(_calc._e590_lcm50000);
-            var lcm50000_primeFactorization = _calc._e590_lcm50000_primeFactorization;
+            //var lcm50000 = BigInteger.Parse(_calc._e590_lcm50000);
+            //var lcm50000_primeFactorization = _calc._e590_lcm50000_primeFactorization;
 
 
             //var powers = GetPrimeFactorization(lcm50000);
@@ -221,7 +216,7 @@ namespace MathService.Services.Implementations
             return sum * 2;
         }
 
-        private static List<List<BigInteger>> GetAllSubsets(int n)
+        private List<List<BigInteger>> GetAllSubsets(int n)
         {
             var subsets = new List<List<BigInteger>>();
             for (int r = 1; r <= n; r++)
@@ -230,7 +225,7 @@ namespace MathService.Services.Implementations
             return subsets;
         }
 
-        public static int GetCombID(List<int> comb, int max)
+        public int GetCombID(List<int> comb, int max)
         {
             BigInteger id = _calc.nCr(max + 1, comb.Count);
             for (int i = 0; i < comb.Count; i++)
@@ -238,7 +233,7 @@ namespace MathService.Services.Implementations
             return (int)id;
         }
 
-        public static List<BigInteger> GetCombFromID(int id, int combLength, int max)
+        public List<BigInteger> GetCombFromID(int id, int combLength, int max)
         {
             List<BigInteger> comb = new List<BigInteger>(combLength);
             var tId = _calc.nCr(max, combLength) - (UInt64)id;
@@ -265,7 +260,7 @@ namespace MathService.Services.Implementations
             return comb;
         }
 
-        private static void PrintSomething()
+        private void PrintSomething()
         {
             //for (int i = 0; i < 2000; i++)
             //    if (BigInteger.Compare(_calc.Factorial(i), _calc.ShortFactorial(i, 1)) != 0)
@@ -299,7 +294,7 @@ namespace MathService.Services.Implementations
             //}
         }
 
-        private static void PrintArray(List<BigInteger> arr)
+        private void PrintArray(List<BigInteger> arr)
         {
             var str = "";
             for(int i = 0; i < arr.Count() - 1; i++)
@@ -308,7 +303,7 @@ namespace MathService.Services.Implementations
             Debug.WriteLine(str);
         }
 
-        private static void PrintArray(List<int> arr)
+        private void PrintArray(List<int> arr)
         {
             var str = "";
             for (int i = 0; i < arr.Count() - 1; i++)

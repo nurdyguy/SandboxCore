@@ -6,8 +6,11 @@ namespace MathService.Repositories.Contracts
 {
     public interface IPrimeRepository
     {
+        //void InitPrimes();
+
         bool IsPrime(ulong num);
         bool IsPrime(int num);
+
         int GetPrime(int index);
         List<int> GetAllPrimes(int max);
         List<int> GetFirstNPrimes(int n);

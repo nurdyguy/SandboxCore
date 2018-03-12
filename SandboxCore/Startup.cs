@@ -22,6 +22,9 @@ using MathService.Services.Implementations;
 using SandboxCore.Authentication;
 using SandboxCore.Middleware;
 using SandboxCore.Helpers;
+using MathService.Calculators;
+using MathService.Repositories.Contracts;
+using MathService.Repositories.Implementations;
 
 namespace SandboxCore
 {
@@ -62,6 +65,8 @@ namespace SandboxCore
             services.AddSingleton<IUserRoleRepository, UserRoleRepository>();
 
             services.AddSingleton<IEulerService, EulerService>();
+            services.AddSingleton<ICalculator, Calculator>();
+            services.AddSingleton<IPrimeRepository, PrimeRepository>();
 
             //services.AddSingleton<ChatSocketManager>();
 

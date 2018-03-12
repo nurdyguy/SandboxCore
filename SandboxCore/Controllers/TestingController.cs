@@ -15,23 +15,25 @@ using AutoMapper;
 
 using Microsoft.Extensions.Caching.Memory;
 
+using MathService.Calculators;
 
-
-using _calc = MathService.Calculators.Calculator;
 
 using SandboxCore.Filters;
 using SandboxCore.Models;
+
 
 namespace SandboxCore.Controllers
 {
     [AllowAnonymous]
     public class TestingController : BaseController
     {
-        private IMemoryCache _memoryCache;        
+        private IMemoryCache _memoryCache;
+        private ICalculator _calc;
 
-        public TestingController(IMemoryCache memCache)
+        public TestingController(IMemoryCache memCache, ICalculator calc)
         {
             _memoryCache = memCache;
+            _calc = calc;
         }
       
         public IActionResult Index()

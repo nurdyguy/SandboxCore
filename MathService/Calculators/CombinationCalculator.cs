@@ -7,7 +7,7 @@ using System.Diagnostics;
 
 namespace MathService.Calculators
 {
-    public static partial class Calculator
+    public partial class Calculator
     {
 
 
@@ -17,7 +17,7 @@ namespace MathService.Calculators
         // 
         // converts Combination into integer
         // max is the largest possible number
-        public static BigInteger EncodeCombination(List<int> comb, int max)
+        public BigInteger EncodeCombination(List<int> comb, int max)
         {
             var id = nCr(max + 1, comb.Count);
             for (int i = 0; i < comb.Count; i++)
@@ -26,7 +26,7 @@ namespace MathService.Calculators
         }
 
         // gets Combination from integer 
-        public static List<int> DecodeCombination(BigInteger id, int max, int combLength)
+        public List<int> DecodeCombination(BigInteger id, int max, int combLength)
         {
             List<int> comb = new List<int>(combLength);
             var tId = nCr(max + 1, combLength) - id;
@@ -53,7 +53,7 @@ namespace MathService.Calculators
 
         }
         
-        public static List<List<int>> GenAllCombinations(int max)
+        public List<List<int>> GenAllCombinations(int max)
         {
             var combs = new List<List<int>>();
             for (var i = 0; i <= max; i++)

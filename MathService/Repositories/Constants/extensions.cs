@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MathService.Calculators
 {
-    public static partial class Calculator
+    public partial class Calculator
     {
         
     }

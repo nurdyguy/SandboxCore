@@ -5,9 +5,9 @@ using System.Text;
 
 namespace MathService.Calculators
 {
-    public static partial class Calculator
+    public partial class Calculator
     {
-        private static readonly string[] _factStrings =
+        private readonly string[] _factStrings =
         {
             "1",
             "1", "2", "6", "24", "120",
@@ -223,7 +223,7 @@ namespace MathService.Calculators
 			
         };
 
-        public static BigInteger Factorial(this BigInteger n)
+        public BigInteger Factorial(BigInteger n)
         {
             int _n;
             if (int.TryParse(n.ToString(), out _n) && _n < _factStrings.Length)            
@@ -239,28 +239,28 @@ namespace MathService.Calculators
             return result;
         }
 
-        public static BigInteger Factorial(ulong n)
+        public BigInteger Factorial(ulong n)
         {
-            return new BigInteger(n).Factorial();
+            return Factorial(new BigInteger(n));
         }
 
-        public static BigInteger Factorial(long n)
+        public BigInteger Factorial(long n)
         {
-            return new BigInteger(n).Factorial();
+            return Factorial(new BigInteger(n));
         }
 
-        public static BigInteger Factorial(int n)
+        public BigInteger Factorial(int n)
         {
-            return new BigInteger(n).Factorial();
+            return Factorial(new BigInteger(n));
         }
 
-        public static BigInteger Factorial(short n)
+        public BigInteger Factorial(short n)
         {
-            return new BigInteger(n).Factorial();
+            return Factorial(new BigInteger(n));
         }
 
         // partial factorial from x+1 to n, INCLUSIVE
-        private static BigInteger PartialFactorial(this BigInteger n, BigInteger x)
+        public BigInteger PartialFactorial(BigInteger n, BigInteger x)
         {
             if (n < x || n < 0 || x < 0)
                 throw new Exception("Invalid");
@@ -277,9 +277,9 @@ namespace MathService.Calculators
             return result;            
         }
 
-        private static BigInteger PartialFactorial(ulong n, ulong x)
+        public BigInteger PartialFactorial(ulong n, ulong x)
         {
-            return new BigInteger(n).PartialFactorial(new BigInteger(x));
+            return PartialFactorial(new BigInteger(n), new BigInteger(x));
         }
 
     }

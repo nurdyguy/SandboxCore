@@ -7,12 +7,12 @@ using System.Diagnostics;
 
 namespace MathService.Calculators
 {
-    public static partial class Calculator
+    public partial class Calculator
     {
 
 
         // converts Permutation into integer
-        public static BigInteger EncodePermutation(int[] perm)
+        public BigInteger EncodePermutation(int[] perm)
         {
 
 
@@ -21,7 +21,7 @@ namespace MathService.Calculators
         }
 
         // gets Permutation from Integer --- https://stackoverflow.com/questions/1506078/fast-permutation-number-permutation-mapping-algorithms
-        public static int[] DecodePermutation(BigInteger code, int size)
+        public int[] DecodePermutation(BigInteger code, int size)
         {
             int index = 0;            
             BigInteger m = code;
@@ -69,7 +69,7 @@ namespace MathService.Calculators
         //            i += 1
         //        end if
         //    end while
-        public static void GenAllPermutations(int n)
+        public void GenAllPermutations(int n)
         {
             var curr = new int[n];
             for (var a = 0; a < n; a++)

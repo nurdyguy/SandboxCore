@@ -5,17 +5,32 @@ using System.Numerics;
 using System.Diagnostics;
 using System.Linq;
 using MathService.Models;
+using MathService.Repositories.Contracts;
 
 namespace MathService.Calculators
 {
-    public static partial class Calculator
+    public partial class Calculator : ICalculator
     {
-        public static double Distance(Point<double> p1, Point<double> p2)
+        private readonly IPrimeRepository _primeRepo;
+
+        public Calculator(IPrimeRepository primeRepo)
+        {
+            _primeRepo = primeRepo;
+            InitCalculator();
+        }
+
+        public void InitCalculator()
+        {
+            //_primeRepo.InitPrimes();
+            Debug.WriteLine("-------InitCalculator-------");
+        }
+
+        public double Distance(Point<double> p1, Point<double> p2)
         {
             return Math.Sqrt(Math.Pow(p1.X - p2.X, 2) + Math.Pow(p1.Y - p2.Y, 2) + Math.Pow(p1.Z - p2.Z, 2));
         }
 
-        public static long Distance(Point<long> p1, Point<long> p2)
+        public long Distance(Point<long> p1, Point<long> p2)
         {
             var result = Math.Sqrt(Math.Pow(p1.X - p2.X, 2) + Math.Pow(p1.Y - p2.Y, 2) + Math.Pow(p1.Z - p2.Z, 2));
             if (Math.Ceiling(result) == Math.Floor(result))
@@ -23,7 +38,7 @@ namespace MathService.Calculators
             return -1;
         }
 
-        public static int Distance(Point<int> p1, Point<int> p2)
+        public int Distance(Point<int> p1, Point<int> p2)
         {
             var result = Math.Sqrt(Math.Pow(p1.X - p2.X, 2) + Math.Pow(p1.Y - p2.Y, 2) + Math.Pow(p1.Z - p2.Z, 2));
             if (Math.Ceiling(result) == Math.Floor(result))
@@ -43,7 +58,7 @@ namespace MathService.Calculators
         //    Debug.WriteLine(line);
         //}
 
-        private static void PrintArray(int[] arr)
+        private void PrintArray(int[] arr)
         {
             var str = "( ";
             for (int i = 0; i < arr.Count() - 1; i++)

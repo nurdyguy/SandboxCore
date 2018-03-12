@@ -10,13 +10,18 @@ using Microsoft.AspNetCore.Authorization;
 using Newtonsoft.Json;
 using SandboxCore.Models;
 using SandboxCore.Filters;
-using _calc = MathService.Calculators.Calculator;
-
+using MathService.Calculators;
 
 namespace SandboxCore.Controllers
 {
     public class StuffController : Controller
     {
+        private readonly ICalculator _calc;
+
+        public StuffController(ICalculator calc)
+        {
+            _calc = calc;
+        }
 
         public IActionResult Index()
         {
