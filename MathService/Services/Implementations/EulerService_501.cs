@@ -30,8 +30,10 @@ namespace MathService.Services.Implementations
 
         public object RunProblem501(int exp)
         {
-            _calc.GetPrime(5);
-            return BigInteger.One;
+            var max = (int)Math.Pow(10, exp);
+            var p = _calc.SieveOfErat(max);
+            var result = p.Count(n => n);
+            return result;
         }
 
 

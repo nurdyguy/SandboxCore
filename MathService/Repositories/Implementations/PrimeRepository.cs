@@ -52,7 +52,6 @@ namespace MathService.Repositories.Implementations
 
         public int GetPrime(int index)
         {
-            SieveOfErat(1000000000);
             if (index < _primes.Length)
                 return _primes[index];
             else
@@ -71,18 +70,42 @@ namespace MathService.Repositories.Implementations
             return primes;
         }
 
-        private void SieveOfErat(int max)
+        public bool[] SieveOfErat(int max)
         {
             var nums = new bool[max];
             nums[0] = false; nums[1] = false;
             for (var i = 2; i < nums.Count(); i++)
                 nums[i] = true;
 
+            for (var j = 2; j * 2 < nums.Count(); j++)
+                nums[j * 2] = false;
+            for (var j = 2; j * 3 < nums.Count(); j++)
+                nums[j * 3] = false;
+            
             var maxCheck = (int)Math.Sqrt(nums.Count());
-            for (var i = 2; i < maxCheck; i++)
+            for (var i = 5; i < maxCheck; i++)            
                 if (nums[i])
-                    for (var j = 2; j*i < nums.Count(); j++)
-                        nums[j*i] = false;
+                    for (var j = 2; j * i < nums.Count(); j++)
+                        nums[j * i] = false;                
+            
+
+            //for (var i = 6; i < maxCheck; i+=6)
+            //{
+            //    if (nums[i - 1])
+            //    {
+            //        var check = i - 1;
+            //        for (var j = 2; j * check < nums.Count(); j++)
+            //            nums[j * check] = false;
+            //    }
+
+            //    if (nums[i + 1])
+            //    {
+            //        var check = i + 1;
+            //        for (var j = 2; j * check < nums.Count(); j++)
+            //            nums[j * check] = false;
+            //    }
+            //}
+            return nums;
         }
     }
 }
