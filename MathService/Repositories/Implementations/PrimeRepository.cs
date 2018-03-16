@@ -61,7 +61,17 @@ namespace MathService.Repositories.Implementations
 
         public List<int> GetAllPrimes(int max)
         {
-            return _primes.Where(p => p <= max).ToList();;
+            return _primes.Where(p => p <= max).ToList();
+        }
+
+        public List<int> GetAllPrimes(long max)
+        {
+            return _primes.Where(p => p <= max).ToList();
+        }
+
+        public List<int> GetAllPrimes(ulong max)
+        {
+            return _primes.Where(p => (ulong)p <= max).ToList();
         }
 
         public List<int> GetFirstNPrimes(int n)

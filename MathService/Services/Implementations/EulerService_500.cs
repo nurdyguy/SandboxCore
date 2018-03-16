@@ -68,7 +68,7 @@ namespace MathService.Services.Implementations
 
             //return new { result = level_500500, sum = level_500500.Sum() };
 
-            return GetNumberFromExpansion(level, _mod).ToString();
+            return BigInteger.Remainder(GetNumberFromExpansion(level, _mod), _mod).ToString();
         }
 
         private int GetLevelFactorCount(List<int> level)
