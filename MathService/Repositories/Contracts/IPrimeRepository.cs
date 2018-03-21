@@ -15,6 +15,6 @@ namespace MathService.Repositories.Contracts
         List<int> GetAllPrimes(int max);
         List<int> GetFirstNPrimes(int n);
 
-        bool[] SieveOfErat(int max);
+        List<bool> SieveOfErat(int max);
     }
 }

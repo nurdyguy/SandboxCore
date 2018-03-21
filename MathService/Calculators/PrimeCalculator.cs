@@ -31,7 +31,7 @@ namespace MathService.Calculators
             return _primeRepo.GetFirstNPrimes(n);
         }
 
-        public bool[] SieveOfErat(int max)
+        public List<bool> SieveOfErat(int max)
         {
             return _primeRepo.SieveOfErat(max);
         }

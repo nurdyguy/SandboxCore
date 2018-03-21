@@ -6,6 +6,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 
 using MathService.Repositories.Contracts;
+using System.Collections;
 
 
 //using MathService.Repositories.Constants;
@@ -70,42 +71,79 @@ namespace MathService.Repositories.Implementations
             return primes;
         }
 
-        public bool[] SieveOfErat(int max)
+        public List<bool> SieveOfErat(int max)
         {
-            var nums = new bool[max];
-            nums[0] = false; nums[1] = false;
-            for (var i = 2; i < nums.Count(); i++)
-                nums[i] = true;
+            // runs Sieve of Eratsthenes for odd numbers
+            //max = max/2;
+            //var nums = new List<bool>(max) { false };
+            //for (var i = 1; i < max; i++)
+            //    nums.Add(true);
 
-            for (var j = 2; j * 2 < nums.Count(); j++)
-                nums[j * 2] = false;
-            for (var j = 2; j * 3 < nums.Count(); j++)
-                nums[j * 3] = false;
-            
-            var maxCheck = (int)Math.Sqrt(nums.Count());
-            for (var i = 5; i < maxCheck; i++)            
+            //var maxCheck = (int)Math.Sqrt(nums.Count());
+            //for (var i = 1; i < maxCheck; i++)
+            //    if (nums[i])
+            //    {
+            //        var add = 2 * i + 1;
+            //        for (var j = i + add; j < nums.Count(); j += add)
+            //            nums[j] = false;
+            //    }
+
+            max = max / 2;
+            var nums = new BitArray(max);
+            nums.SetAll(true);
+            nums[0] = false;
+
+            var maxCheck = (int)Math.Sqrt(nums.Length);
+            for (var i = 1; i < maxCheck; i++)
                 if (nums[i])
-                    for (var j = 2; j * i < nums.Count(); j++)
-                        nums[j * i] = false;                
+                {
+                    var add = 2 * i + 1;
+                    for (var j = i + add; j < nums.Length; j += add)
+                        nums[j] = false;
+                }
             
+            //WriteFile(ConvertToByte(nums).ToArray());
+            //var bools = ReadFile();
+            return new List<bool>();
+        }
+        
+        private List<byte> BoolsToBytes(List<bool> bools)
+        {
+            var bytesCount = bools.Count() / 8;
+            var bytes = new List<byte>(bytesCount);
+            
+            for(var i = 0; i < bytesCount; i++)
+            {
+                byte val = 0;
+                for (var j = 0; j < 8; j++)
+                {
+                    val <<= 1;
+                    if (bools[8*i+j]) val |= 1;
+                }
+                bytes.Add(val);
+            }
+            return bytes;
+        }
 
-            //for (var i = 6; i < maxCheck; i+=6)
-            //{
-            //    if (nums[i - 1])
-            //    {
-            //        var check = i - 1;
-            //        for (var j = 2; j * check < nums.Count(); j++)
-            //            nums[j * check] = false;
-            //    }
+        private List<bool> BytesToBools(byte[] bytes)
+        {
+            var bools = new List<bool>();
+            var bits = new BitArray(bytes);
+            
+            return bools;
+        }
 
-            //    if (nums[i + 1])
-            //    {
-            //        var check = i + 1;
-            //        for (var j = 2; j * check < nums.Count(); j++)
-            //            nums[j * check] = false;
-            //    }
-            //}
-            return nums;
+        private void WriteFile(byte[] bytes)
+        {
+            File.WriteAllBytes("../MathService/Repositories/Constants/prime_bools.txt", bytes);
+        }
+
+        private List<bool> ReadFile()
+        {
+            var bytes = File.ReadAllBytes("../MathService/Repositories/Constants/prime_bools.txt");
+            var intList = BytesToBools(bytes);
+
+            return intList;
         }
     }
 }
