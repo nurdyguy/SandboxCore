@@ -74,7 +74,7 @@ namespace MathService.Repositories.Implementations
         public List<bool> SieveOfErat(int max)
         {
             // runs Sieve of Eratsthenes for odd numbers
-            //max = max/2;
+            //max = max / 2;
             //var nums = new List<bool>(max) { false };
             //for (var i = 1; i < max; i++)
             //    nums.Add(true);
@@ -88,23 +88,29 @@ namespace MathService.Repositories.Implementations
             //            nums[j] = false;
             //    }
 
-            max = max / 2;
-            var nums = new BitArray(max);
-            nums.SetAll(true);
-            nums[0] = false;
+            //max = 2000000000;
+            //max /= 2;
+            //var nums = new BitArray(max);
+            //nums.SetAll(true);
+            //nums[0] = false;
 
-            var maxCheck = (int)Math.Sqrt(nums.Length);
-            for (var i = 1; i < maxCheck; i++)
-                if (nums[i])
-                {
-                    var add = 2 * i + 1;
-                    for (var j = i + add; j < nums.Length; j += add)
-                        nums[j] = false;
-                }
+            //var maxCheck = (int)Math.Sqrt(nums.Length);
+            //for (var i = 1; i < maxCheck; i++)
+            //    if (nums[i])
+            //    {
+            //        var add = 2 * i + 1;
+            //        for (var j = i + add; j < nums.Length; j += add)
+            //            nums[j] = false;
+            //    }
+
+            //WriteFile(nums);
             
-            //WriteFile(ConvertToByte(nums).ToArray());
-            //var bools = ReadFile();
-            return new List<bool>();
+            var bits = ReadFile();
+            var bools = new List<bool>(bits.Length);
+            var p = 0;
+            for (var i = 0; i < bits.Length; i++)
+                if (bits[i]) p++;
+            return bools;
         }
         
         private List<byte> BoolsToBytes(List<bool> bools)
@@ -125,6 +131,24 @@ namespace MathService.Repositories.Implementations
             return bytes;
         }
 
+        private byte[] ToByteArray(BitArray bits)
+        {
+            var bytesCount = bits.Length / 8;
+            var bytes = new byte[bytesCount];
+
+            for (var i = 0; i < bytesCount; i++)
+            {
+                byte val = 0;
+                for (var j = 0; j < 8; j++)
+                {
+                    val <<= 1;
+                    if (bits[8 * i + j]) val |= 1;
+                }
+                bytes[i] = val;
+            }
+            return bytes;
+        }
+
         private List<bool> BytesToBools(byte[] bytes)
         {
             var bools = new List<bool>();
@@ -138,10 +162,16 @@ namespace MathService.Repositories.Implementations
             File.WriteAllBytes("../MathService/Repositories/Constants/prime_bools.txt", bytes);
         }
 
-        private List<bool> ReadFile()
+        private void WriteFile(BitArray bits)
+        {
+            var bytes = ToByteArray(bits);
+            File.WriteAllBytes("../MathService/Repositories/Constants/prime_bools.txt", bytes);
+        }
+
+        private BitArray ReadFile()
         {
             var bytes = File.ReadAllBytes("../MathService/Repositories/Constants/prime_bools.txt");
-            var intList = BytesToBools(bytes);
+            var intList = new BitArray(bytes);
 
             return intList;
         }
