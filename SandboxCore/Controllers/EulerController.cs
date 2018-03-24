@@ -68,6 +68,7 @@ namespace SandboxCore.Controllers
             watch.Stop();
             return Json(new { timers, Result = result });
         }
+        
 
         [HttpGet, Route("Euler/501/{exp:int}")]
         public async Task<IActionResult> Problem501(int exp = 2)
@@ -75,10 +76,9 @@ namespace SandboxCore.Controllers
             var watch = new Stopwatch();
             var timers = new List<double>();
             watch.Start();
-
+            
             var result = _eulerService.RunProblem501(exp);
-
-
+            
             timers.Add(watch.ElapsedMilliseconds / 1000.0);
             watch.Stop();
             return Json(new { timers, Result = result });

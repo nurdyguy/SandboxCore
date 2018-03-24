@@ -6,7 +6,6 @@ using System.Linq;
 using MathService.Services.Contracts;
 using MathService.Models.EulerModels;
 using MathService.Models;
-using _calc = MathService.Calculators.Calculator;
 
 
 namespace MathService.Services.Implementations
@@ -54,13 +53,20 @@ namespace MathService.Services.Implementations
             var pMax = Math.Pow(max, 1.0 / 3.0);
             var pPrimes = _calc.GetAllPrimes((int)pMax);
 
-            for(var i = 0; i < pPrimes.Count; i++)
+            if (exp <= 8)
             {
-                var qMax = (ulong)(max / Math.Pow(pPrimes[i], 3));
-                var qPrimes = _calc.GetAllPrimes(qMax);
-                count += (ulong)qPrimes.Count();
-                if (qPrimes.Any(q => q == pPrimes[i]))
-                    count--;
+                for (var i = 0; i < pPrimes.Count; i++)
+                {
+                    var qMax = (ulong)(max / Math.Pow(pPrimes[i], 3));
+                    var qPrimes = _calc.GetAllPrimes(qMax);
+                    count += (ulong)qPrimes.Count();
+                    if (qPrimes.Any(q => q == pPrimes[i]))
+                        count--;
+                }
+            }
+            else
+            {
+
             }
 
             return count;
@@ -72,5 +78,6 @@ namespace MathService.Services.Implementations
             
             return count;
         }
+
     }
 }

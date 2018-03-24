@@ -14,15 +14,16 @@ namespace MathService.Repositories.Implementations
 {
     public class PrimeRepository : IPrimeRepository
     {
-        private readonly string _primesFile_1 = "../MathService/Repositories/Constants/primes_1.txt";
+        private readonly string _primesFile_1 = "../MathService/Repositories/Constants/_primes_1.txt";
         private readonly int[] _primes;
         private readonly int _maxPrime;
+
+        private bool[] _boolPrimes;
 
         public PrimeRepository()
         {
             HashSet<int> primeHashSet = new HashSet<int>(
             File.ReadLines(_primesFile_1)
-                //.AsParallel() //maybe?
                 .SelectMany(line => Regex.Matches(line, @"\d+").Cast<Match>())
                 .Select(m => m.Value)
                 .Select(int.Parse));
@@ -78,6 +79,49 @@ namespace MathService.Repositories.Implementations
         {
             var primes = new List<int>(_primes.Take(n));
             return primes;
+        }
+
+        public bool[] SieveOfErat(int max)
+        {
+            var nums = new bool[max];
+            nums[0] = false; nums[1] = false;
+            for (var i = 2; i < nums.Count(); i++)
+                nums[i] = true;
+
+            for (var j = 2; j * 2 < nums.Count(); j++)
+                nums[j * 2] = false;
+            for (var j = 2; j * 3 < nums.Count(); j++)
+                nums[j * 3] = false;
+            
+            var maxCheck = (int)Math.Sqrt(nums.Count());
+            for (var i = 5; i < maxCheck; i++)            
+                if (nums[i])
+                    for (var j = 2; j * i < nums.Count(); j++)
+                        nums[j * i] = false;                
+            
+            
+            //for (var i = 6; i < maxCheck; i+=6)
+            //{
+            //    if (nums[i - 1])
+            //    {
+            //        var check = i - 1;
+            //        for (var j = 2; j * check < nums.Count(); j++)
+            //            nums[j * check] = false;
+            //    }
+
+            //    if (nums[i + 1])
+            //    {
+            //        var check = i + 1;
+            //        for (var j = 2; j * check < nums.Count(); j++)
+            //            nums[j * check] = false;
+            //    }
+            //}
+            return nums;
+        }
+
+        private void CompressBoolArray()
+        {
+            //var compressed = new bool[1000000];
         }
     }
 }
