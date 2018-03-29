@@ -17,7 +17,7 @@ namespace MathService.Calculators
         List<int> GetAllPrimes(long max);
         List<int> GetAllPrimes(ulong max);
         List<int> GetFirstNPrimes(int n);
-        bool[] SieveOfErat(int max);
+        List<bool> SieveOfErat(int max);
         #endregion
 
         #region CombinationCalculations

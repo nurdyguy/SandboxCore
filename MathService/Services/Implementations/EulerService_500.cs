@@ -52,7 +52,7 @@ namespace MathService.Services.Implementations
 
         public object RunProblem500(int maxFactors)
         {
-            var level_500500 = ReadTextFile();
+            //var level_500500 = ReadTextFile();
 
             var level = new List<int> { 2, 1, 1 };
             //var levelFactorCount = GetLevelFactorCount(result);

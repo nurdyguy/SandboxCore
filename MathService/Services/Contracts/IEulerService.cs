@@ -8,10 +8,12 @@ namespace MathService.Services.Contracts
 {
     public interface IEulerService
     {
-        BigInteger RunProblem482(int max);
+        object RunProblem461(int max);
+        BigInteger RunProblem482(int max);        
         object RunProblem483(int max);        
         object RunProblem500(int num);
         object RunProblem501(int num);
+        object RunProblem504(int max);
         BigInteger RunProblem566(int x, int y, int z);
         BigInteger RunProblem590(int max);
     }
