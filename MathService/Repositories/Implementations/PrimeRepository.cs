@@ -103,14 +103,37 @@ namespace MathService.Repositories.Implementations
             //            nums[j] = false;
             //    }
 
+            max = 2000000000;
+            max /= 2;
+            var nums = new BitArray(max);
+            nums.SetAll(true);
+            nums[0] = false;
+            {
+                int i = 1;
+                var maxCheck = (int)Math.Sqrt(nums.Length);
+                while (i < maxCheck)
+                {
+                    if (nums[i])
+                    {
+                        var add = 2 * i + 1;
+                        for (var j = i + add; j < nums.Length; j += add)
+                            nums[j] = false;
+                    }
+                    i++;
+                }
+            }
+            var bits = new List<bool>(nums.Length);
+            for (var i = 0; i < nums.Length; i++)
+                bits.Add(nums[i]);
+
             //WriteFile(nums);
-            
-            var bits = ReadFile();
-            var bools = new List<bool>(bits.Length);
-            var p = 0;
-            for (var i = 0; i < bits.Length; i++)
-                if (bits[i]) p++;
-            return bools;
+
+            //var bits = ReadFile();
+            //var bools = new List<bool>(bits.Length);
+            //var p = 0;
+            //for (var i = 0; i < bits.Length; i++)
+            //    if (bits[i]) p++;
+            return bits;
         }
         
         private List<byte> BoolsToBytes(List<bool> bools)
