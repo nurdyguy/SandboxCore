@@ -15,30 +15,40 @@ namespace MathService.Repositories.Implementations
 {
     public class PrimeRepository : IPrimeRepository
     {
-        private readonly string _primesFile_1 = "../MathService/Repositories/Constants/primes_1.txt";
-        private readonly int[] _primes;
+        //private readonly string _primesFile_1 = "../MathService/Repositories/Constants/_primes_1.txt";
+        //private readonly int[] _primes;
         private readonly int _maxPrime;
+
+        private readonly string _primesFile_1 = "../MathService/Repositories/Constants/_prime_bits_1.txt";
+        private readonly BitArray _primes_bitArray_1;
+        
 
         public PrimeRepository()
         {
-            HashSet<int> primeHashSet = new HashSet<int>(
-            File.ReadLines(_primesFile_1)
-                //.AsParallel() //maybe?
-                .SelectMany(line => Regex.Matches(line, @"\d+").Cast<Match>())
-                .Select(m => m.Value)
-                .Select(int.Parse));
+            //HashSet<int> primeHashSet = new HashSet<int>(
+            //File.ReadLines(_primesFile_1)
+            //    .SelectMany(line => Regex.Matches(line, @"\d+").Cast<Match>())
+            //    .Select(m => m.Value)
+            //    .Select(int.Parse));
 
             //Predicate<int> isPrime = primeHashSet.Contains;
 
-            _primes = primeHashSet.ToArray();
-            _maxPrime = _primes[_primes.Count() - 1];            
+            //_primes = primeHashSet.ToArray();
+            //_maxPrime = _primes[_primes.Count() - 1];       
+
+            _primes_bitArray_1 = ReadBitArrayFile(_primesFile_1);
+
         }
         
         public bool IsPrime(ulong num)
         {
-            
+            if (num % 2 == 0)
+                return false;
 
-            return true;
+            if (num < int.MaxValue)
+                return _primes_bitArray_1[(int)num];
+
+            return false;
         }
 
         public bool IsPrime(long num)
@@ -53,26 +63,50 @@ namespace MathService.Repositories.Implementations
 
         public int GetPrime(int index)
         {
-            if (index < _primes.Length)
-                return _primes[index];
-            else
-                return -1;
+            // will need to loop through...
+            return -1;
            
         }
 
         public List<int> GetAllPrimes(int max)
         {
-            return _primes.Where(p => p <= max).ToList();;
+            var primes = new List<int>(max);
+            for (var i = 0; i < max; i++)
+                if (_primes_bitArray_1[i])
+                    primes.Add(i);
+            return primes;
+        }
+
+        public List<int> GetAllPrimes(long max)
+        {
+            if (max < int.MaxValue)
+                return GetAllPrimes((int)max);
+            return new List<int>();
+        }
+
+        public List<int> GetAllPrimes(ulong max)
+        {
+            if(max < int.MaxValue)
+                return GetAllPrimes((int)max);
+            return new List<int>();
         }
 
         public List<int> GetFirstNPrimes(int n)
         {
-            var primes = new List<int>(_primes.Take(n));
+            var primes = new List<int>(n);
+            var count = 0;
+            for(var i = 0; count <= n && i < _primes_bitArray_1.Length; i++)
+                if(_primes_bitArray_1[i])
+                {
+                    primes.Add(i);
+                    count++;
+                }
             return primes;
         }
 
         public List<bool> SieveOfErat(int max)
         {
+
             // runs Sieve of Eratsthenes for odd numbers
             //max = max / 2;
             //var nums = new List<bool>(max) { false };
@@ -125,15 +159,12 @@ namespace MathService.Repositories.Implementations
             var bits = new List<bool>(nums.Length);
             for (var i = 0; i < nums.Length; i++)
                 bits.Add(nums[i]);
-
-            //WriteFile(nums);
-
-            //var bits = ReadFile();
-            //var bools = new List<bool>(bits.Length);
-            //var p = 0;
-            //for (var i = 0; i < bits.Length; i++)
-            //    if (bits[i]) p++;
-            return bits;
+            
+            
+            
+            var bools = new List<bool>();
+            
+            return bools;
         }
         
         private List<byte> BoolsToBytes(List<bool> bools)
@@ -191,12 +222,11 @@ namespace MathService.Repositories.Implementations
             File.WriteAllBytes("../MathService/Repositories/Constants/prime_bools.txt", bytes);
         }
 
-        private BitArray ReadFile()
+        private BitArray ReadBitArrayFile(string file)
         {
-            var bytes = File.ReadAllBytes("../MathService/Repositories/Constants/prime_bools.txt");
-            var intList = new BitArray(bytes);
-
-            return intList;
+            var bytes = File.ReadAllBytes(file);
+            return new BitArray(bytes);
         }
+        
     }
 }

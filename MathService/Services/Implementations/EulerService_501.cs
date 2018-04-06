@@ -13,30 +13,71 @@ namespace MathService.Services.Implementations
     public partial class EulerService : IEulerService    
     {
         //https://projecteuler.net/problem=501
-        //
-        //Problem 501 ---- Eight Divisors
+
         //The eight divisors of 24 are 1, 2, 3, 4, 6, 8, 12 and 24. 
-        //The ten numbers not exceeding 100 having exactly eight divisors 
-        //are 24, 30, 40, 42, 54, 56, 66, 70, 78 and 88. Let f(n) be the count of numbers not exceeding n with exactly eight divisors.
+        //The ten numbers not exceeding 100 having exactly eight divisors are 24, 30, 40, 42, 54, 56, 66, 70, 78 and 88. 
+        //Let f(n) be the count of numbers not exceeding n with exactly eight divisors.
         //You are given f(100) = 10, f(1000) = 180 and f(10^6) = 224427.
+
         //Find f(10^12).
-		//
-		//
-		//Notes:  
-		//8 divisors means p7 or p3*p1 or p1*p1*p1
-		//all p7 				all primes p < seventh root of 10^x -- super easy
-		//all p3*p1				all first all p < third root of 10^x, times all p < 10^x / p3 excluding p3 itself (counted in p7) -- still pretty easy
-		//all p1*p1*p1
+
+        //-----------------------------------------------------------------------------------
+        //Notes:
+        // Can have 8 divisors if p^7 or p^3*q^1 or p^1*q^1*r^1 where p, q, r all prime
+        // 1.  Get total with p^7 so all primes where p^7 < 10^exp      => p < 7th root of 10^exp ---- very easy
+        // 2.  Get total with p^3*q                                     => p < cube root of 10^exp times q < 10^exp/p^3 excluding p itself ---- still pretty easy
+        // 3.  Get total with p*q*r                                     =>   ---- more complicated
 
         public object RunProblem501(int exp)
         {
-            var max = (int)Math.Pow(10, exp);
-            var p = _calc.SieveOfErat(max);
-            var result = p.Count(n => n);
-            return result;
+            var total = (ulong)0;
+
+            var singles =  GetSinglePrimeFactorCount(exp);
+            var doubles =  GetTwoPrimeFactorsCount(exp);
+            var triples =  GetThreePrimeFactorsCount(exp);
+
+            return new { singles, doubles, triples };
+        }
+        
+        private ulong GetSinglePrimeFactorCount(int exp)
+        {
+            var maxPrime = Math.Pow(Math.Pow(10, exp), 1.0/7.0);
+            return (ulong)_calc.GetAllPrimes((int)maxPrime).Count();
         }
 
+        //p^3 * q
+        private ulong GetTwoPrimeFactorsCount(int exp)
+        {
+            var count = (ulong)0;
+            var max = Math.Pow(10, exp);
+            var pMax = Math.Pow(max, 1.0 / 3.0);
+            var pPrimes = _calc.GetAllPrimes((int)pMax);
 
-        
+            if (exp <= 8)
+            {
+                for (var i = 0; i < pPrimes.Count; i++)
+                {
+                    var qMax = (ulong)(max / Math.Pow(pPrimes[i], 3));
+                    var qPrimes = _calc.GetAllPrimes(qMax);
+                    count += (ulong)qPrimes.Count();
+                    if (qPrimes.Any(q => q == pPrimes[i]))
+                        count--;
+                }
+            }
+            else
+            {
+
+            }
+
+            return count;
+        }
+
+        private ulong GetThreePrimeFactorsCount(int exp)
+        {
+            var count = (ulong)0;
+            
+            return count;
+        }
+
     }
 }

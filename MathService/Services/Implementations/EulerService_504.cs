@@ -6,7 +6,7 @@ using System.Linq;
 using MathService.Services.Contracts;
 using MathService.Models.EulerModels;
 using MathService.Models;
-
+using System.Diagnostics;
 
 namespace MathService.Services.Implementations
 {
@@ -46,6 +46,7 @@ namespace MathService.Services.Implementations
                             var sqrt = Math.Sqrt(lp);
                             if (Math.Floor(sqrt) == Math.Ceiling(sqrt))
                                 count++;
+                                //Debug.WriteLine($"----{a}, {b}, {c}, {d}: {lp}----");
                         }
            // var latticePoints = GetLatticePoints(pts);
 
@@ -70,17 +71,8 @@ namespace MathService.Services.Implementations
         }
         private long PointsInTriangle(int x, int y)
         {
-            var points = (x - 1)*(y - 1);
-            // or does this need gcf?
-            if(x%y == 0)
-            {
-                points += x / y - 1;
-            }
-            else if(y%x == 0)
-            {
-                points += y / x - 1;
-            }
-
+            long points = ((x - 1)*(y - 1) - gcf(x, y) + 1)/2;
+            
             return points;
         }
         private long PointsOnAxis(int a, int b, int c, int d)
@@ -88,6 +80,18 @@ namespace MathService.Services.Implementations
             return a + b + c + d - 3;
         }
 
+        private long gcf(int x, int y)
+        {
+            while (x != 0 && y != 0)
+            {
+                if (x > y)
+                    x %= y;
+                else
+                    y %= x;
+            }
+
+            return x == 0 ? y : x;
+        }
         
     }
 }

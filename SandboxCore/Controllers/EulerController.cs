@@ -26,6 +26,7 @@ namespace SandboxCore.Controllers
 
         [HttpGet, 
         Route("Euler/{problemNumber:int}/{x:int}"),
+        Route("Euler/{problemNumber:int}/{x:int}/{y:int}"),
         Route("Euler/{problemNumber:int}/{x:int}/{y:int}/{z:int}")]
         public async Task<IActionResult> Problem(int problemNumber, int x = 1, int y = 1, int z = 1)
         {
@@ -36,6 +37,12 @@ namespace SandboxCore.Controllers
             object result;
             switch(problemNumber)
             {
+                case 401:
+                    result = _eulerService.RunProblem401(x);
+                    break;
+                case 461:
+                    result = _eulerService.RunProblem461(x);
+                    break;
                 case 482:
                     result = _eulerService.RunProblem482(x);
                     break;
@@ -66,7 +73,6 @@ namespace SandboxCore.Controllers
             watch.Stop();
             return Json(new { timers, Result = result });
         }
-
         
     }
 }

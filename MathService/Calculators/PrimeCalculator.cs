@@ -26,6 +26,14 @@ namespace MathService.Calculators
         {
             return _primeRepo.GetAllPrimes(max);
         }
+        public List<int> GetAllPrimes(long max)
+        {
+            return _primeRepo.GetAllPrimes(max);
+        }
+        public List<int> GetAllPrimes(ulong max)
+        {
+            return _primeRepo.GetAllPrimes(max);
+        }
         public List<int> GetFirstNPrimes(int n)
         {
             return _primeRepo.GetFirstNPrimes(n);

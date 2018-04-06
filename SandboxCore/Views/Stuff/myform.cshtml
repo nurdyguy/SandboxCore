@@ -41,12 +41,32 @@
     <button id="submit" type="submit">Push Me</button>
 }
 
-
+    <a id="test" class="btn btn-success">Run Test</a>
 
 
 
 <script>
+    $(document).ready(function ()
+    {
+        $('#test').on('click', RunTest);
+    });
 
+    function RunTest()
+    {
+        var chars = ['a', 'b', 'c', 'd'];
+        var myArr = [];
+        for (var i = 0; i < 10; i++)
+        {
+            var obj = { num: i, char: chars[i % 4] };
+            myArr.push(obj);
+
+            if (i == 5)
+                obj = {};
+        }
+        console.log(myArr);
+
+        
+    }
 
 
 </script>

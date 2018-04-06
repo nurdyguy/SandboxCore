@@ -50,23 +50,33 @@ namespace MathService.Services.Implementations
 
 
 
-        public object RunProblem500(int maxLevel)
+        public object RunProblem500(int maxFactors)
         {
-            var level_500500 = ReadTextFile();
+            var p = _calc.GetFirstNPrimes(10);
 
-            //var result = new List<int> { 3, 1, 1 };
-            ////expProgression();
-
-            //for (var i = 6; i <= maxLevel; i++)
-            //{
-            //    result = GetNextLevel(result);
-            //    //Print(result);
-            //}
-
-
-            return new { result = level_500500, sum = level_500500.Sum() };
+            var level = new List<int> { 2, 1, 1 };
             
-            return GetNumberFromExpansion(level_500500);
+            for(var i = 5; i <= maxFactors; i++)
+            {
+                level = GetNextLevel(level);
+                //Print(result);
+
+                
+            }
+
+
+
+            //return new { result = level_500500, sum = level_500500.Sum() };
+
+            return BigInteger.Remainder(GetNumberFromExpansion(level, _mod), _mod).ToString();
+        }
+
+        private int GetLevelFactorCount(List<int> level)
+        {
+            var factorCount = 0;
+            for (var i = 0; i < level.Count; i++)
+                factorCount += _levelPowers[level[i]];
+            return factorCount;
         }
 
         private BigInteger FindNumberOfDivisors(BigInteger num)
@@ -98,13 +108,20 @@ namespace MathService.Services.Implementations
 
             for (var i = 0; i < levels.Count; i++)
             {
-                var twoPower = 2;
-                for (var j = 2; j <= levels[i]; j++)
-                    twoPower *= 2;
-                twoPower--;
+                num *= BigInteger.Pow(primes[i], _levelPowers[levels[i]]);//.ModPow(primes[i], _levelPowers[levels[i]], _mod);
+            }
+            return num;
+        }
 
-                for (var k = 1; k <= twoPower; k++)
-                    num *= primes[i];
+        private BigInteger GetNumberFromExpansion(List<int> levels, BigInteger mod)
+        {
+            var num = BigInteger.One;
+
+            var primes = _calc.GetFirstNPrimes(levels.Count);
+
+            for (var i = 0; i < levels.Count; i++)
+            {
+                num *= BigInteger.ModPow(primes[i], _levelPowers[levels[i]], mod);
             }
             return num;
         }
@@ -162,11 +179,12 @@ namespace MathService.Services.Implementations
             Debug.WriteLine(str);
         }
 
+        private static BigInteger _mod = BigInteger.Parse("500500507");
+        private static List<int> _levelPowers = new List<int> { 0, 1, 3, 7, 15, 31, 63, 127, 255, 511, 1023 };
         private static List<ulong> _twoPowers = new List<ulong>(){ 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144, 524288, 1048576, 2097152, 4194304, 8388608, 16777216, 33554432, 67108864,
             134217728, 268435456, 536870912, 1073741824, 2147483648, 4294967296, 8589934592, 17179869184, 34359738368, 68719476736, 137438953472, 274877906944, 549755813888, 1099511627776, 2199023255552, 4398046511104, 8796093022208, 17592186044416, 35184372088832,
             70368744177664, 140737488355328, 281474976710656, 562949953421312, 1125899906842624, 2251799813685248, 4503599627370496, 9007199254740992, 18014398509481984, 36028797018963968, 72057594037927936, 144115188075855872, 288230376151711744, 576460752303423488,
             1152921504606846976, 2305843009213693952, 4611686018427387904, 9223372036854775808 };
-
         private static List<string> _twoLevels = new List<string>()
         {
             "2","4","16","256","65536","4294967296","18446744073709551616","340282366920938463463374607431768211456","115792089237316195423570985008687907853269984665640564039457584007913129639936",

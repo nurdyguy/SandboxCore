@@ -13,7 +13,9 @@ namespace MathService.Calculators
         bool IsPrime(ulong num);
         bool IsPrime(int num);
         int GetPrime(int index);        
-        List<int> GetAllPrimes(int max);        
+        List<int> GetAllPrimes(int max);
+        List<int> GetAllPrimes(long max);
+        List<int> GetAllPrimes(ulong max);
         List<int> GetFirstNPrimes(int n);
         List<bool> SieveOfErat(int max);
         #endregion
