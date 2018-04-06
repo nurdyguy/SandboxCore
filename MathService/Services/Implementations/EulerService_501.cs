@@ -42,7 +42,7 @@ namespace MathService.Services.Implementations
         private ulong GetSinglePrimeFactorCount(int exp)
         {
             var maxPrime = Math.Pow(Math.Pow(10, exp), 1.0/7.0);
-            return (ulong)_calc.GetAllPrimes((int)maxPrime).Count();
+            return _calc.GetPrimeCount((long)maxPrime);
         }
 
         //p^3 * q
@@ -53,21 +53,14 @@ namespace MathService.Services.Implementations
             var pMax = Math.Pow(max, 1.0 / 3.0);
             var pPrimes = _calc.GetAllPrimes((int)pMax);
 
-            if (exp <= 8)
+            for (var i = 0; i < pPrimes.Count; i++)
             {
-                for (var i = 0; i < pPrimes.Count; i++)
-                {
-                    var qMax = (ulong)(max / Math.Pow(pPrimes[i], 3));
-                    var qPrimes = _calc.GetAllPrimes(qMax);
-                    count += (ulong)qPrimes.Count();
-                    if (qPrimes.Any(q => q == pPrimes[i]))
-                        count--;
-                }
+                var qMax = (ulong)(max / Math.Pow(pPrimes[i], 3));
+                count += _calc.GetPrimeCount(qMax);
+                if (pPrimes[i] <= _calc.getPrime)
+                    count--;
             }
-            else
-            {
-
-            }
+            
 
             return count;
         }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
@@ -16,7 +17,10 @@ namespace MathService.Repositories.Contracts
         List<int> GetAllPrimes(long max);
         List<int> GetAllPrimes(ulong max);
         List<int> GetFirstNPrimes(int n);
+        ulong GetPrimeCount(int max);
+        ulong GetPrimeCount(long max);
+        ulong GetPrimeCount(ulong max);
+        BitArray SieveOfErat(long max);
 
-        List<bool> SieveOfErat(int max);
     }
 }

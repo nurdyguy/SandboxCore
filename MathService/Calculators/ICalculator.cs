@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Text;
@@ -17,7 +18,10 @@ namespace MathService.Calculators
         List<int> GetAllPrimes(long max);
         List<int> GetAllPrimes(ulong max);
         List<int> GetFirstNPrimes(int n);
-        List<bool> SieveOfErat(int max);
+        BitArray SieveOfErat(long max);
+        ulong GetPrimeCount(int max);
+        ulong GetPrimeCount(long max);
+        ulong GetPrimeCount(ulong max);
         #endregion
 
         #region CombinationCalculations

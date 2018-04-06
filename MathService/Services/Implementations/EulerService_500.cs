@@ -48,11 +48,12 @@ namespace MathService.Services.Implementations
         //2310			= 2^1 * 3^1 * 5^1 * 7^1 * 11^1
 
 
-
+        private static List<int> _primes { get; set; }
 
         public object RunProblem500(int maxFactors)
         {
             //var level_500500 = ReadTextFile();
+            _primes = new List<int>(_calc.GetFirstNPrimes(600000));
 
             var level = new List<int> { 2, 1, 1 };
             //var levelFactorCount = GetLevelFactorCount(result);
@@ -90,11 +91,10 @@ namespace MathService.Services.Implementations
         private BigInteger GetNumberFromPrimeFactorization(List<int> powers)
         {
             var num = BigInteger.One;
-            var primes = _calc.GetFirstNPrimes(powers.Count);
 
             for (var i = 0; i < powers.Count; i++)
                 for (var p = 0; p < powers[i]; p++)
-                    num *= primes[i];
+                    num *= _primes[i];
 
 
             return num;
@@ -103,12 +103,10 @@ namespace MathService.Services.Implementations
         private BigInteger GetNumberFromExpansion(List<int> levels)
         {
             var num = BigInteger.One;
-
-            var primes = _calc.GetFirstNPrimes(levels.Count);
-
+            
             for (var i = 0; i < levels.Count; i++)
             {
-                num *= BigInteger.Pow(primes[i], _levelPowers[levels[i]]);//.ModPow(primes[i], _levelPowers[levels[i]], _mod);
+                num *= BigInteger.Pow(_primes[i], _levelPowers[levels[i]]);//.ModPow(primes[i], _levelPowers[levels[i]], _mod);
             }
             return num;
         }
@@ -116,12 +114,10 @@ namespace MathService.Services.Implementations
         private BigInteger GetNumberFromExpansion(List<int> levels, BigInteger mod)
         {
             var num = BigInteger.One;
-
-            var primes = _calc.GetFirstNPrimes(levels.Count);
-
+            
             for (var i = 0; i < levels.Count; i++)
             {
-                num *= BigInteger.ModPow(primes[i], _levelPowers[levels[i]], mod);
+                num *= BigInteger.ModPow(_primes[i], _levelPowers[levels[i]], mod);
             }
             return num;
         }
@@ -130,7 +126,7 @@ namespace MathService.Services.Implementations
         {
             // level increase is prime^(2^current level value)
             var nextLevel = new List<int>(currLevel);
-            var leastIncr = toTwoPower((long)_calc.GetPrime(0), currLevel[0]);
+            var leastIncr = toTwoPower((long)_primes[0], currLevel[0]);
             var incrPos = 0;
 
             for (var i = 1; i < currLevel.Count; i++)
@@ -140,7 +136,7 @@ namespace MathService.Services.Implementations
                     continue;
                 
                 //var incr = BigInteger.Pow((long)_calc.GetPrime(i), _twoPowers[currLevel[i]]);
-                var incr = toTwoPower((long)_calc.GetPrime(i), currLevel[i]);
+                var incr = toTwoPower((long)_primes[i], currLevel[i]);
                 
                 if (incr < leastIncr)
                 {
@@ -154,7 +150,7 @@ namespace MathService.Services.Implementations
             }
 
             // check vs next new prime
-            var nextPrime = _calc.GetPrime(currLevel.Count);
+            var nextPrime = _primes[currLevel.Count];
             if (nextPrime < leastIncr)
                 nextLevel.Add(1);
             else

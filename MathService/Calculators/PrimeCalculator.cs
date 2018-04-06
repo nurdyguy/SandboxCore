@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 
 using MathService.Repositories.Contracts;
+using System.Collections;
 
 namespace MathService.Calculators
 {
@@ -39,9 +40,23 @@ namespace MathService.Calculators
             return _primeRepo.GetFirstNPrimes(n);
         }
 
-        public List<bool> SieveOfErat(int max)
+        public BitArray SieveOfErat(long max)
         {
             return _primeRepo.SieveOfErat(max);
+        }
+
+        public ulong GetPrimeCount(int max)
+        {
+            return _primeRepo.GetPrimeCount(max);
+        }
+        public ulong GetPrimeCount(long max)
+        {
+            return _primeRepo.GetPrimeCount(max);
+        }
+
+        public ulong GetPrimeCount(ulong max)
+        {
+            return _primeRepo.GetPrimeCount(max);
         }
     }
 }
