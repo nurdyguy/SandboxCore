@@ -59,6 +59,9 @@ namespace MathService.Repositories.Implementations
         
         public bool IsPrime(ulong num)
         {
+            if (num % 2 == 0)
+                return false;
+
             if (num < int.MaxValue)
                 return _primes[0][(int)num];
 
@@ -180,9 +183,33 @@ namespace MathService.Repositories.Implementations
             //        }                        
             //    }
             //}
-
-            //for(var i = 0; i < numFiles; i++)
-            //    WriteFile(nums[i], _primes_files[i]);                
+            
+            //max = 2000000000;
+            //max /= 2;
+            //var nums = new BitArray((int)max);
+            //nums.SetAll(true);
+            //nums[0] = false;
+            //{
+            //    int i = 1;
+            //    var maxCheck = (int)Math.Sqrt(nums.Length);
+            //    while (i < maxCheck)
+            //    {
+            //        if (nums[i])
+            //        {
+            //            var add = 2 * i + 1;
+            //            for (var j = i + add; j < nums.Length; j += add)
+            //                nums[j] = false;
+            //        }
+            //        i++;
+            //    }
+            //}
+            //var bits = new List<bool>(nums.Length);
+            //for (var i = 0; i < nums.Length; i++)
+            //    bits.Add(nums[i]);
+            
+            
+            
+            //var bools = new List<bool>();
             
 
             var bits = ReadBitArrayFile(_primes_files[(int)max]);
@@ -252,6 +279,6 @@ namespace MathService.Repositories.Implementations
             return new BitArray(bytes);
         }
         
-        
+
     }
 }

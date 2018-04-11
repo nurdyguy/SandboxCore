@@ -57,7 +57,7 @@ namespace MathService.Services.Implementations
             {
                 var qMax = (ulong)(max / Math.Pow(pPrimes[i], 3));
                 count += _calc.GetPrimeCount(qMax);
-                if (pPrimes[i] <= _calc.getPrime)
+                if (pPrimes[i] <= _calc.GetPrime(i))
                     count--;
             }
             

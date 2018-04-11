@@ -56,7 +56,7 @@ namespace MathService.Services.Implementations
             _primes = new List<int>(_calc.GetFirstNPrimes(600000));
 
             var level = new List<int> { 2, 1, 1 };
-            //var levelFactorCount = GetLevelFactorCount(result);
+            
             for(var i = 5; i <= maxFactors; i++)
             {
                 level = GetNextLevel(level);

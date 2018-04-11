@@ -125,6 +125,22 @@ namespace SandboxCore.Controllers
         [HttpGet]
         public IActionResult Promises()
         {
+            var max = 100000000;
+            var c1 = BigInteger.Zero;
+            var c2 = BigInteger.Zero;
+            Parallel.Invoke(
+                () => c1 = SumEvens(max),
+                () => c2 = SumOdds(max)
+            );
+
+            var result1 = c1 + c2;
+
+
+            BigInteger c3 = SumEvens(max);
+            BigInteger c4 = SumOdds(max);
+
+            var result2 = c3 + c4;
+
             return View();
         }
 
@@ -252,6 +268,26 @@ namespace SandboxCore.Controllers
         public IActionResult iframe()
         {
             return View();
+        }
+
+        private BigInteger SumEvens(int max)
+        {
+            var counter = BigInteger.Zero;
+            for (var i = 1; i <= max; i++)
+                if (i % 2 == 0)
+                    counter += i;
+
+            return counter;
+        }
+
+        private BigInteger SumOdds(int max)
+        {
+            var counter = BigInteger.Zero;
+            for (var i = 1; i <= max; i++)
+                if ( (i-1) % 2 == 0)
+                    counter += i;
+
+            return counter;
         }
     }
 }
