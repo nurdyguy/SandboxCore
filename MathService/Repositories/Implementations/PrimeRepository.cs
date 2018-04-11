@@ -104,6 +104,13 @@ namespace MathService.Repositories.Implementations
             return primes;
         }
 
+        public BitArray GetPrimeBitArray(int length)
+        {
+            var result = new BitArray(_primes_bitArray_1);
+            result.Length = length;
+            return result;
+        }
+
         public List<bool> SieveOfErat(int max)
         {
 

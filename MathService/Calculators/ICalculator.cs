@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Text;
@@ -17,6 +18,7 @@ namespace MathService.Calculators
         List<int> GetAllPrimes(long max);
         List<int> GetAllPrimes(ulong max);
         List<int> GetFirstNPrimes(int n);
+        BitArray GetPrimeBitArray(int length);
         List<bool> SieveOfErat(int max);
         #endregion
 

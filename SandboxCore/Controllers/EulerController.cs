@@ -43,6 +43,9 @@ namespace SandboxCore.Controllers
                 case 461:
                     result = _eulerService.RunProblem461(x);
                     break;
+                case 467:
+                    result = _eulerService.RunProblem467(x);
+                    break;
                 case 482:
                     result = _eulerService.RunProblem482(x);
                     break;
@@ -60,6 +63,9 @@ namespace SandboxCore.Controllers
                     break;
                 case 566:
                     result = _eulerService.RunProblem566(x, y, z);
+                    break;
+                case 574:
+                    result = _eulerService.RunProblem574(x);
                     break;
                 case 590:
                     result = _eulerService.RunProblem590(x);
