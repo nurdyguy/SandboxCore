@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
@@ -40,7 +41,11 @@ namespace MathService.Calculators
             return _primeRepo.GetFirstNPrimes(n);
         }
 
-        public BitArray SieveOfErat(long max)
+        public BitArray GetPrimeBitArray(int length)
+        {
+            return _primeRepo.GetPrimeBitArray(length);
+        }
+        public List<bool> SieveOfErat(int max)
         {
             return _primeRepo.SieveOfErat(max);
         }

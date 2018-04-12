@@ -20,7 +20,8 @@ namespace MathService.Repositories.Contracts
         ulong GetPrimeCount(int max);
         ulong GetPrimeCount(long max);
         ulong GetPrimeCount(ulong max);
-        BitArray SieveOfErat(long max);
-
+        BitArray SieveOfErat(long max);        
+        BitArray GetPrimeBitArray(int length);
+        List<bool> SieveOfErat(int max);
     }
 }

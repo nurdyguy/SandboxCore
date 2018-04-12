@@ -112,13 +112,22 @@ namespace MathService.Repositories.Implementations
         {
             var primes = new List<int>(n) { 2 };
             var count = 0;
-            for(var i = 0; count <= n && i < _primes[0].Length; i++)
+            var max = n - 1;
+            for(var i = 0; count < max && i < _primes[0].Length; i++)
                 if(_primes[0][i])
                 {
                     primes.Add(2*i + 1);
                     count++;
                 }
             return primes;
+        }
+
+        public BitArray GetPrimeBitArray(int length)
+        {
+            var result = new BitArray(_primes[0]);
+            result.Length = length;
+            return result;
+
         }
 
         public ulong GetPrimeCount(int max)
@@ -215,7 +224,11 @@ namespace MathService.Repositories.Implementations
             var bits = ReadBitArrayFile(_primes_files[(int)max]);
             return bits;
         }
-        
+
+        public List<bool> SieveOfErat(int max)
+        {
+            return null;
+        }
         private List<byte> BoolsToBytes(List<bool> bools)
         {
             var bytesCount = bools.Count() / 8;

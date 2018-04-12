@@ -18,10 +18,12 @@ namespace MathService.Calculators
         List<int> GetAllPrimes(long max);
         List<int> GetAllPrimes(ulong max);
         List<int> GetFirstNPrimes(int n);
-        BitArray SieveOfErat(long max);
+
         ulong GetPrimeCount(int max);
         ulong GetPrimeCount(long max);
         ulong GetPrimeCount(ulong max);
+        BitArray GetPrimeBitArray(int length);
+        List<bool> SieveOfErat(int max);
         #endregion
 
         #region CombinationCalculations
