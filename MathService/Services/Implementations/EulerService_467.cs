@@ -49,25 +49,73 @@ namespace MathService.Services.Implementations
         private BitArray _primeBitPattern { get; set; }
         public object RunProblem467(int num)
         {
-            var primes = ;
-            
-
-            
-
-            return 0;
+            var pN = new List<int>();
+            var cN = new List<int>();
+            BuildDigitSequences(pN, cN, num);
+            var result = BuildSuperInt(pN, cN);
+            return new { result };
         }
 
-        private int[] BuildSuperInt(int[] seq1, int[] seq2)
+        private List<int> BuildSuperInt(List<int> seq1, List<int> seq2)
         {
-            var length = Math.Max(seq1.Length, seq2.Length);
-            var super = new int[length*2];
+            var length = Math.Max(seq1.Count(), seq2.Count());
+            var super = new List<int>(seq1.Count() + seq2.Count());
 
+            int i1 = 0;
+            int i2 = 0;
+            var done = false;
+
+            while(!done)
+            {
+                if(i1 == -1)
+                {
+                    if(i2 > -1)
+                        CopySeguenceSegment(seq2, super, i2);
+                    break;
+                }
+                if(i2 == -1)
+                {
+                    CopySeguenceSegment(seq1, super, i1);
+                    break;
+                }
+                
+                var n1 = FindNext(seq1, i1, seq2[i2]);
+                var n2 = FindNext(seq2, i2, seq1[i1]);
+
+                if(n1 < n2)
+                {
+                    super.Add(seq1[i1++]);
+                    //CopySeguenceSegment(seq2, super, i2, n1 - 1);
+                    //i2 = n1 - 1;
+                }
+                else if (n2 < n1)
+                {
+                    super.Add(seq2[i2++]);
+                    //CopySeguenceSegment(seq1, super, i1, n2 - 1);
+                    //i1 = n2 - 1;
+                }
+                else
+                {
+                    if (n1 == int.MaxValue)
+                        break;
+                    super.Add(seq1[i1++]);
+                    i2++;
+                    //CopySeguenceSegment(seq1, super, i1, i1);
+                    //i1++;
+                    //i2++;
+                }
+
+                if (i1 >= seq1.Count())
+                    i1 = -1;
+                if (i2 >= seq2.Count())
+                    i2 = -1;                
+            }
 
 
             return super;
         }
 
-        private bool IsSuperInt(int[] seq, int[] super)
+        private bool IsSuperInt(List<int> seq, List<int> super)
         {
             var passed = true;
 
@@ -85,20 +133,41 @@ namespace MathService.Services.Implementations
                 if (!primes.Contains(c++))
                     comps.Add(c - 1);
             }
-            
 
-            
-            
+            for (var i = 0; i < primes.Count(); i++)
+                pDigs.Add(SumDigits(primes[i]));
+            for (var i = 0; i < comps.Count(); i++)
+                cDigs.Add(SumDigits(comps[i]));
+
         }
 
         private int SumDigits(int num)
         {
             var result = 0;
-            var div = 10;
             while(num > 0)
             {
-                result += num / div;
+                var t = num;
+                num /= 10;
+                result += t - 10 * num;
             }
+            if (result > 9)
+                result = SumDigits(result);
+            return result;
+        }
+
+        private int FindNext(List<int> seq, int start, int value)
+        {
+            for (var i = start; i < seq.Count(); i++)
+                if (seq[i] == value)
+                    return i;
+            return int.MaxValue;
+        }
+
+        private void CopySeguenceSegment(List<int> fromSeq, List<int> toSeq, int start, int end = int.MaxValue)
+        {
+            end = Math.Min(fromSeq.Count() + 1, end);
+            for (var i = start; i <= end; i++)
+                toSeq.Add(fromSeq[i]);
         }
     }
 }
