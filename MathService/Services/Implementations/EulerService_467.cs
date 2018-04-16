@@ -6,6 +6,7 @@ using System.Linq;
 using MathService.Services.Contracts;
 using MathService.Models.EulerModels;
 using System.Collections;
+using System.Collections.Concurrent;
 
 namespace MathService.Services.Implementations
 {
@@ -45,15 +46,29 @@ namespace MathService.Services.Implementations
         // Notes:
         // 1.  Get P_n and C_n as arrays
         // 2.  Start with the one with more digits and build out the superInt
-
-        private BitArray _primeBitPattern { get; set; }
+        
         public object RunProblem467(int num)
         {
+            
+            var mod = 1000000007;
             var pN = new List<int>();
             var cN = new List<int>();
             BuildDigitSequences(pN, cN, num);
-            var result = BuildSuperInt(pN, cN);
-            return new { result };
+
+
+            var common = FindLongestCommonSubInteger(pN, cN.Where(i => i != 3 && i != 6 && i != 9).ToList());
+            return new { Count = common.Count(), Common = PrintableList(common) };
+
+
+            var resultList = BuildSuperInt(pN, cN);
+            //var result = BuildResultNum(resultList);
+
+            var p = IsSuperInt(pN, resultList);
+            var c = IsSuperInt(cN, resultList);
+
+            var bigResult = BuildResultBigInt(resultList, mod);
+
+            return new { Result = PrintableList(resultList), pN = PrintableList(pN), p, cN = PrintableList(cN), c };
         }
 
         private List<int> BuildSuperInt(List<int> seq1, List<int> seq2)
@@ -61,54 +76,101 @@ namespace MathService.Services.Implementations
             var length = Math.Max(seq1.Count(), seq2.Count());
             var super = new List<int>(seq1.Count() + seq2.Count());
 
-            int i1 = 0;
-            int i2 = 0;
-            var done = false;
+            int i1 = 0, i2 = 0, n1 = 0, n2 = 0;
 
-            while(!done)
+            
+            while(i1 < seq1.Count() || i2 < seq2.Count())
             {
-                if(i1 == -1)
-                {
-                    if(i2 > -1)
-                        CopySeguenceSegment(seq2, super, i2);
-                    break;
-                }
-                if(i2 == -1)
-                {
-                    CopySeguenceSegment(seq1, super, i1);
-                    break;
-                }
-                
-                var n1 = FindNext(seq1, i1, seq2[i2]);
-                var n2 = FindNext(seq2, i2, seq1[i1]);
-
-                if(n1 < n2)
-                {
-                    super.Add(seq1[i1++]);
-                    //CopySeguenceSegment(seq2, super, i2, n1 - 1);
-                    //i2 = n1 - 1;
-                }
-                else if (n2 < n1)
-                {
-                    super.Add(seq2[i2++]);
-                    //CopySeguenceSegment(seq1, super, i1, n2 - 1);
-                    //i1 = n2 - 1;
-                }
+                // old --- FindNext(seq1, i1, seq2[i2]) - i1;
+                if (i2 < seq2.Count())
+                    n1 = seq1.IndexOf(seq2[i2], i1) - i1;
                 else
-                {
-                    if (n1 == int.MaxValue)
-                        break;
-                    super.Add(seq1[i1++]);
-                    i2++;
+                    n1 = -1;
+                
+                // old --- FindNext(seq2, i2, seq1[i1]) - i2;
+                if (i1 < seq1.Count())
+                    n2 = seq2.IndexOf(seq1[i1], i2) - i2;
+                else
+                    n2 = -1;
+                            
+
+                if(n1 < 0 && n2 >= 0)
+                {// next num in seq1 matches somewhere in seq2 but next num in seq2 is not in seq1
+                    // take front of seq2 up to match
+                    CopySeguenceSegment(seq2, super, i2, i2 + n2);
+                    i2+= n2 + 1;
+                    // take match from both
+                    //CopySeguenceSegment(seq2, super, i2, i2);
+                    i1++;
+                    //i2++;
+                    // continue
+                    
+                }
+                else if(n2 < 0 && n1 >= 0)
+                {// next num in seq2 matches somewhere in seq1 but next num in seq1 is not in seq2
+                    // take front of seq1 up to match
+                    CopySeguenceSegment(seq1, super, i1, i1 + n1);
+                    i1 += n1 + 1;
+                    // take match from both
                     //CopySeguenceSegment(seq1, super, i1, i1);
                     //i1++;
-                    //i2++;
-                }
+                    i2++;
+                    // continue
 
-                if (i1 >= seq1.Count())
-                    i1 = -1;
-                if (i2 >= seq2.Count())
-                    i2 = -1;                
+                }
+                else if(n1 < 0 && n2 < 0)
+                {// both seq and mutually exclusive
+                    // iterate through rest and always take smaller number until both are done                    
+                    while(i1 < seq1.Count() || i2 < seq2.Count())
+                    {
+                        if (i1 >= seq1.Count())
+                        {
+                            CopySeguenceSegment(seq2, super, i2);
+                            i2 = seq2.Count();
+                            continue;
+                        }
+                        if (i2 >= seq2.Count())
+                        {
+                            CopySeguenceSegment(seq1, super, i1);
+                            i1 = seq1.Count();
+                            continue;
+                        }
+
+                        if (seq1[i1] < seq2[i2])
+                            super.Add(seq1[i1++]);
+                        else
+                            super.Add(seq2[i2++]);                        
+                    }
+                }
+                else if(n1 < n2)
+                {// next num in seq2 matching in seq1 is closer to front than next num in seq1 is in seq2
+                    // take front of seq1 up to match
+                    CopySeguenceSegment(seq1, super, i1, i1 + n1);
+                    i1 += n1 + 1;
+                    // take match from both
+                    //CopySeguenceSegment(seq2, super, i2, i2);
+                    i2++;
+                    // continue
+                }
+                else if(n2 < n1)
+                {// next num in seq1 matching in seq2 is closer to front thatn naext num in seq2 is in seq1
+                 // take front of seq2 up to match
+                    CopySeguenceSegment(seq2, super, i2, i2 + n2);
+                    i2 += n2 + 1;
+                    // take match from both
+                    //CopySeguenceSegment(seq1, super, i1, i1);
+                    i1++;
+                    // continue
+                }
+                else
+                {// both have a match at same spot
+                    if (seq1[i1] < seq2[i2])
+                        super.Add(seq1[i1++]);
+                    else
+                        super.Add(seq2[i2++]);
+
+
+                }              
             }
 
 
@@ -117,10 +179,14 @@ namespace MathService.Services.Implementations
 
         private bool IsSuperInt(List<int> seq, List<int> super)
         {
-            var passed = true;
-
-
-            return passed;
+            int next = 0;
+            for(var i = 0; i < seq.Count(); i++)
+            {
+                next = super.IndexOf(seq[i], next);
+                if (next == -1)
+                    return false;
+            }
+            return true;
         }
 
         private void BuildDigitSequences(List<int> pDigs, List<int> cDigs, int size)
@@ -160,14 +226,64 @@ namespace MathService.Services.Implementations
             for (var i = start; i < seq.Count(); i++)
                 if (seq[i] == value)
                     return i;
-            return int.MaxValue;
+            return -1;
         }
 
         private void CopySeguenceSegment(List<int> fromSeq, List<int> toSeq, int start, int end = int.MaxValue)
         {
-            end = Math.Min(fromSeq.Count() + 1, end);
+            end = Math.Min(fromSeq.Count() - 1, end);
             for (var i = start; i <= end; i++)
                 toSeq.Add(fromSeq[i]);
+        }
+
+        private long BuildResultNum(List<int> seq)
+        {
+            long result = 0;
+            for (var i = 0; i < seq.Count(); i++)
+                result += seq[seq.Count() - i - 1] * (long)Math.Pow(10, i);
+            return result;
+        }
+
+        private BigInteger BuildResultBigInt(List<int> seq, int mod)
+        {
+            var result = BigInteger.Zero;
+            for (var i = 0; i < seq.Count(); i++)
+                result += seq[seq.Count() - i - 1] * BigInteger.ModPow(10, i, mod);
+            return BigInteger.Remainder(result, mod);
+        }
+
+        private string PrintableList(List<int> seq)
+        {
+            var str = $"{seq[0]}";
+            for (var i = 1; i < seq.Count(); i++)
+                str += $", {seq[i]}";
+            return str;
+        }
+
+        private List<int> FindLongestCommonSubInteger(List<int> seq1, List<int> seq2)
+        {
+            if (IsSuperInt(seq1, seq2))
+                return seq1;
+
+            var length = seq1.Count() - 1;
+            var matches = new ConcurrentBag<List<int>>();
+
+            var common = new List<int>(seq1.Count());
+            var i2 = 0;
+            for(var i = 0; i < seq1.Count(); i++)
+            {
+                var n = seq2.IndexOf(seq1[i], i2);
+                if (n >= 0)
+                {
+                    common.Add(seq1[i]);
+                    i2 = n;
+                }
+                
+                
+            }
+
+
+            return common;
         }
     }
 }
