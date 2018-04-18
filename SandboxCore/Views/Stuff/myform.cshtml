@@ -1,4 +1,4 @@
-﻿@model  List<SandboxCore.Models.TestViewModel>
+﻿@model List<SandboxCore.Models.TestViewModel>
 
 @{
     ViewData["Title"] = "Form Test";
@@ -14,7 +14,7 @@
 
 <form id="theId" asp-controller="testing" asp-action="myform" asp-route-id="" asp-route-code="">
     <input type="text" value="asdf" />
-    
+
 </form>
 
 @{
@@ -28,7 +28,7 @@
 {
     <form action="/stuff/test/@t.Id" method="post" enctype="multipart/form-data">
         <input type="number" value="@t.Id" />
-        <input type="text" value="@t.Name"/>
+        <input type="text" value="@t.Name" />
         <input type="file" id="imageFiles" name="files" accept="image/jpeg, image/jpg" />
         <button class="btn btn-primary">Upload</button>
     </form>
@@ -36,12 +36,15 @@
 
 
 
-@{ Html.BeginForm("getstuff", "Testing", FormMethod.Post);
-    <input type="hidden" value="123" />
+@{ Html.BeginForm("dictionary", "testing", FormMethod.Post);
+    <input id="hidden" type="hidden" value="123" />
     <button id="submit" type="submit">Push Me</button>
+
+    <input type="submit" value="x" />
+    <input type="submit" value="y" />
 }
 
-    <a id="test" class="btn btn-success">Run Test</a>
+<a id="test" class="btn btn-success">Run Test</a>
 
 
 
@@ -49,6 +52,12 @@
     $(document).ready(function ()
     {
         $('#test').on('click', RunTest);
+
+        $(document).on('submit', 'form', function ()
+        {
+            $('#hidden').val($(this).val());
+
+        });
     });
 
     function RunTest()
@@ -65,7 +74,7 @@
         }
         console.log(myArr);
 
-        
+
     }
 
 
@@ -93,14 +102,14 @@
 
     <div class="row hidden">
         @for (var i = 1; i <= 4; i++)
-    {
+        {
             <div class="col-xs-12">
                 @for (var j = 1; j <= 13; j++)
-            {
+                {
                     <div class=" c c-@i-@j"></div>
-            }
+                }
             </div>
-    }
+        }
 
 
         <div class=" c "></div>
@@ -125,7 +134,7 @@
 </div>
 
 <script>
-    $(document).ready(function()
+    $(document).ready(function ()
     {
         var html = "";
         $('.yourface').each(function ()
@@ -160,19 +169,19 @@
 
     function ajaxLoop(i)
     {
-        if(i < 20)
+        if (i < 20)
             $.ajax(
-            {
-                url: "/testing/forceWait/15",
-                success: function (result)
                 {
-                    ajaxLoop(++i);
-                },
-                error: function (e)
-                {
-                
-                }
-            });
+                    url: "/testing/forceWait/15",
+                    success: function (result)
+                    {
+                        ajaxLoop(++i);
+                    },
+                    error: function (e)
+                    {
+
+                    }
+                });
 
     }
 

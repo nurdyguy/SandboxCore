@@ -55,9 +55,9 @@ namespace MathService.Services.Implementations
             var cN = new List<int>();
             BuildDigitSequences(pN, cN, num);
 
-
-            var common = FindLongestCommonSubInteger(pN, cN.Where(i => i != 3 && i != 6 && i != 9).ToList());
-            return new { Count = common.Count(), Common = PrintableList(common) };
+            //Where(i => i != 3 && i != 6 && i != 9).ToList()
+            var common = FindLongestCommonSubInteger(pN, cN);
+            //return new { Count = common.Count(), Common = PrintableList(common) };
 
 
             var resultList = BuildSuperInt(pN, cN);
@@ -81,39 +81,42 @@ namespace MathService.Services.Implementations
             
             while(i1 < seq1.Count() || i2 < seq2.Count())
             {
-                // old --- FindNext(seq1, i1, seq2[i2]) - i1;
+                var skip = 0;
+                for (var i = i2; i < seq2.Count(); i++)
+                    if (seq2[i] == 3 || seq2[i] == 6 || seq2[i] == 9)
+                        skip++;
+                    else
+                        break;
+
                 if (i2 < seq2.Count())
-                    n1 = seq1.IndexOf(seq2[i2], i1) - i1;
+                    n1 = seq1.IndexOf(seq2[i2 + skip], i1) - i1 ;
                 else
                     n1 = -1;
                 
-                // old --- FindNext(seq2, i2, seq1[i1]) - i2;
                 if (i1 < seq1.Count())
                     n2 = seq2.IndexOf(seq1[i1], i2) - i2;
                 else
                     n2 = -1;
-                            
-
-                if(n1 < 0 && n2 >= 0)
+                
+                if (n1 < 0 && n2 >= 0)
                 {// next num in seq1 matches somewhere in seq2 but next num in seq2 is not in seq1
                     // take front of seq2 up to match
                     CopySeguenceSegment(seq2, super, i2, i2 + n2);
                     i2+= n2 + 1;
                     // take match from both
-                    //CopySeguenceSegment(seq2, super, i2, i2);
+                    
                     i1++;
-                    //i2++;
                     // continue
                     
                 }
                 else if(n2 < 0 && n1 >= 0)
                 {// next num in seq2 matches somewhere in seq1 but next num in seq1 is not in seq2
-                    // take front of seq1 up to match
+                    // take front of seq1 up to match 
+                    //--- compensate for skip ---
                     CopySeguenceSegment(seq1, super, i1, i1 + n1);
                     i1 += n1 + 1;
                     // take match from both
-                    //CopySeguenceSegment(seq1, super, i1, i1);
-                    //i1++;
+                    
                     i2++;
                     // continue
 
@@ -144,11 +147,12 @@ namespace MathService.Services.Implementations
                 }
                 else if(n1 < n2)
                 {// next num in seq2 matching in seq1 is closer to front than next num in seq1 is in seq2
-                    // take front of seq1 up to match
+                    // take front of seq1 up to match 
+                    //--- compensate for skip ---
                     CopySeguenceSegment(seq1, super, i1, i1 + n1);
                     i1 += n1 + 1;
                     // take match from both
-                    //CopySeguenceSegment(seq2, super, i2, i2);
+                    
                     i2++;
                     // continue
                 }
@@ -158,12 +162,13 @@ namespace MathService.Services.Implementations
                     CopySeguenceSegment(seq2, super, i2, i2 + n2);
                     i2 += n2 + 1;
                     // take match from both
-                    //CopySeguenceSegment(seq1, super, i1, i1);
+                    
                     i1++;
                     // continue
                 }
-                else
-                {// both have a match at same spot
+                else // n1 == n2
+                {// both have a match at same spot 
+                    //--- compensate for skip ---
                     if (seq1[i1] < seq2[i2])
                         super.Add(seq1[i1++]);
                     else

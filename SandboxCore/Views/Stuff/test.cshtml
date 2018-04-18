@@ -6,6 +6,10 @@
 
 @{var model = ViewData["stuff"] as TestViewModel;}
 
+<style id="myStyle">
+    .myClass { color: red);
+    .myClassSecond { color: black};
+</style>
 
 <div id="container">
     <div class="fast">
@@ -34,6 +38,8 @@
     var isAnimating = false;
     $(document).ready(function ()
     {
+        var currStyles = $('#myStyle').html();
+        debugger;
         $('#container').on('DOMMouseScroll mousewheel', function (e)
         {
             if (!isAnimating)
