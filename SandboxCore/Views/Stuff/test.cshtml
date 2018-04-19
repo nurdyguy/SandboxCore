@@ -4,105 +4,35 @@
 }
 
 
-@{var model = ViewData["stuff"] as TestViewModel;}
 
-<style id="myStyle">
-    .myClass { color: red);
-    .myClassSecond { color: black};
-</style>
 
 <div id="container">
-    <div class="fast">
-        @for (var i = 1; i <= 100; i++)
-        {
-            <div>@i. This is row @i</div>
-
-        }
-    </div>
-
-    <div class="slow">
-        @for (var j = 0; j < 25; j++)
-        {
-            var r = 255 - j;
-            var g = 127 + (int)(.5 * j);
-            var b = 10 + j;
-            <div class="color" style="background-color:rgb(@r, @g, @b)"></div>
-
-        }
-    </div>
-    
+    @Html.ActionLink("asdf1", "asdf2", new { }, new { @class = "buildButton" })
 </div>
 
 <script>
-
-    var isAnimating = false;
-    $(document).ready(function ()
+    
+    $(document).ready(function () 
     {
-        var currStyles = $('#myStyle').html();
-        debugger;
-        $('#container').on('DOMMouseScroll mousewheel', function (e)
+        
+        $(".buildButton").on("click", function (e) 
         {
-            if (!isAnimating)
+            if (ConfirmProjectSubmit())
             {
-                isAnimating = true;
-                e.preventDefault();
-
-                var delta = e.originalEvent.wheelDeltaY;
-                var $this = $(this);
-
-                console.log(delta);
-
-
-                var newFast = parseInt($this.find('.fast').css('top'), 10) + delta;
-                var newSlow = parseInt($this.find('.slow').css('top'), 10) + delta / 4;
-
-                if (newFast > 0)
-                    newFast = 0;
-                if (newSlow > 0)
-                    newSlow = 0;
-
-                console.log(newFast + "   |   " + newSlow);
-
-                $this.find('.fast').animate({ top: newFast + 'px' }, 100);
-                $this.find('.slow').animate({ top: newSlow + 'px' }, 100, function () { isAnimating = false; });
+                alert('confirm');
 
             }
+            else
+            {
+                e.preventDefault();
+                alert('cancel');
+            }
         });
-        var m = MyObj(123);
-        //m.MyFunction();
-        
     });
-
-    function MyObj(x)
+    function ConfirmProjectSubmit()
     {
-        this.x = x;
-        var _this = this;
-        this.MyFunction = function (y)
-        {
-            console.log(this);
-            console.log(_this);
-        }
-
-        MyFunction(2345);
+        // some confirm
+        return false;
     }
-
-
-        var peopleElement = document.getElementById("people");
-        //var orgChart = new getOrgChart(peopleElement, {
-        //    primaryFields: ["name", "title", "phone", "mail"],
-        //    photoFields: ["image"],
-        //    dataSource: [
-                
-        //    ]
-        //});
-    var str = [
-        @for(var i = 0; i < model.Strings.Count; i++)
-        {
-            <text>
-                { id: "@(model.Strings[i])" }@(i < model.Strings.Count - 1 ? "," : "")
-            </text>
-        }
-    ];
-
     
 </script>

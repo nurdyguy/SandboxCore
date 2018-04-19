@@ -68,7 +68,7 @@ namespace MathService.Services.Implementations
 
             var bigResult = BuildResultBigInt(resultList, mod);
 
-            return new { Result = PrintableList(resultList), pN = PrintableList(pN), p, cN = PrintableList(cN), c };
+            return new { Result = PrintableList(resultList), pN = PrintableList(pN), p, cN = PrintableList(cN), c, answer = bigResult };
         }
 
         private List<int> BuildSuperInt(List<int> seq1, List<int> seq2)
@@ -82,11 +82,13 @@ namespace MathService.Services.Implementations
             while(i1 < seq1.Count() || i2 < seq2.Count())
             {
                 var skip = 0;
-                if (seq2[i2] == 3 || seq2[i2] == 6 || seq2[i2] == 9)
-                    skip++;
+                
+                if (i2 < seq2.Count())                
+                    if (seq2[i2] == 3 || seq2[i2] == 6 || seq2[i2] == 9)
+                        skip++;
 
-                if (i2 < seq2.Count())
-                    n1 = seq1.IndexOf(seq2[i2 + skip], i1) - i1 ;
+                if(i2 + skip < seq2.Count())
+                    n1 = seq1.IndexOf(seq2[i2 + skip], i1) - i1;           
                 else
                     n1 = -1;
                 
@@ -111,13 +113,32 @@ namespace MathService.Services.Implementations
                 }
                 else if(n2 < 0 && n1 >= 0)
                 {// next num in seq2 matches somewhere in seq1 but next num in seq1 is not in seq2
-                    
-                    // take front of seq1 up to match 
-                    CopySeguenceSegment(seq1, super, i1, i1 + n1);
+                    //--- compensate for skip ---
+                    if (skip > 0)
+                    {
+                        var skipVal = seq2[i2];
+                        var skipAdded = false;
+
+                        for (var i = 0; i < n1; i++)
+                        {
+                            if (skipVal < seq1[i1 + i] && !skipAdded)
+                            {
+                                super.Add(skipVal);
+                                skipAdded = true;
+                            }
+                            else
+                                super.Add(seq1[i1 + i]);
+                        }
+                        if (!skipAdded)
+                            super.Add(skipVal);
+                        super.Add(seq1[i1 + n1]);
+                    }
+                    else // take front of seq1 up to match 
+                        CopySeguenceSegment(seq1, super, i1, i1 + n1);
 
                     // move forward
-                    i1 += n1 + 1;                    
-                    i2++;
+                    i1 += n1 + 1;
+                    i2 += 1 + skip;
                     // continue
 
                 }
@@ -166,7 +187,6 @@ namespace MathService.Services.Implementations
                         if(!skipAdded)
                             super.Add(skipVal);
                         super.Add(seq1[i1 + n1]);
-
                     }
                     else // take front of seq1 up to match                     
                         CopySeguenceSegment(seq1, super, i1, i1 + n1);
