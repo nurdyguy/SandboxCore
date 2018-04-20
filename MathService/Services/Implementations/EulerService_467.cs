@@ -145,26 +145,9 @@ namespace MathService.Services.Implementations
                 else if(n1 < 0 && n2 < 0)
                 {// both seq and mutually exclusive
                     // iterate through rest and always take smaller number until both are done                    
-                    while(i1 < seq1.Count() || i2 < seq2.Count())
-                    {
-                        if (i1 >= seq1.Count())
-                        {
-                            CopySeguenceSegment(seq2, super, i2);
-                            i2 = seq2.Count();
-                            continue;
-                        }
-                        if (i2 >= seq2.Count())
-                        {
-                            CopySeguenceSegment(seq1, super, i1);
-                            i1 = seq1.Count();
-                            continue;
-                        }
-
-                        if (seq1[i1] < seq2[i2])
-                            super.Add(seq1[i1++]);
-                        else
-                            super.Add(seq2[i2++]);                        
-                    }
+                    var merged = SmallestMergeTwoLists(new List<int>(seq1.Skip(i1)), new List<int>(seq2.Skip(i2)));
+                    super.AddRange(merged);
+                    break;
                 }
                 else if(n1 < n2)
                 {// next num in seq2 matching in seq1 is closer to front than next num in seq1 is in seq2                    
@@ -209,13 +192,32 @@ namespace MathService.Services.Implementations
                 else // n1 == n2
                 {// both have a match at same spot 
                     //--- compensate for skip ---
-
-
-                    // add next
-                    if (seq1[i1] < seq2[i2])
-                        super.Add(seq1[i1++]);
+                    if (skip > 0)
+                    {
+                        var skipVal = seq2[i2];
+                        if (skipVal < seq1[n1])
+                        {
+                            super.Add(skipVal);
+                            if (seq1[i1] < seq2[i2])
+                                super.Add(seq1[i1++]);
+                            else
+                                super.Add(seq2[i2 + skip]);
+                            i2 += 1 + skip;
+                        }
+                        else
+                        {
+                            super.Add(seq1[i1++]);
+                            super.Add(skipVal);
+                            super.Add(seq2[i2 + skip]);
+                            i2 += 1 + skip;
+                        }
+                    }
                     else
-                        super.Add(seq2[i2++]);
+                        // add next
+                        if (seq1[i1] < seq2[i2])
+                            super.Add(seq1[i1++]);
+                        else
+                            super.Add(seq2[i2++]);
 
 
                 }              
@@ -332,6 +334,39 @@ namespace MathService.Services.Implementations
 
 
             return common;
+        }
+
+        private List<int> SmallestMergeTwoLists(List<int> seq1, List<int> seq2)
+        {
+            var merge = new List<int>(seq1.Count() + seq2.Count());
+
+            int i = 0, j = 0;
+            while(i < seq1.Count() || j < seq2.Count())
+            {
+                if (i >= seq1.Count())
+                {
+                    CopySeguenceSegment(seq2, merge, j);
+                    return merge;
+                }
+
+                if(j >= seq2.Count())
+                {
+                    CopySeguenceSegment(seq1, merge, i);
+                    return merge;
+                }
+
+                if (seq1[i] < seq2[j])
+                    merge.Add(seq1[i++]);
+                else if (seq2[j] < seq1[i])
+                    merge.Add(seq1[j++]);
+                else
+                {
+                    merge.Add(seq1[i++]);
+                    j++;
+                }                
+            }
+
+            return merge;
         }
     }
 }
