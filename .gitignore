@@ -261,4 +261,4 @@ __pycache__/
 *.pyc
 
 # appSetting with private values
-#appsettings.json
+appsettings.json
